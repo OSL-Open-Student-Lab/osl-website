@@ -18,12 +18,14 @@ from src.email_token import *
 from src import *
 
 
+
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth')
 
 
 @auth_bp.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
+        print(request.json())
         new_username = request.form['username']
         new_password = request.form['password']
         new_conf_password = request.form['confirm_password']
@@ -33,7 +35,6 @@ def register():
 
         if not bool(re.match(r'[^@]+@[^@]+\.[^@]+', new_email)):
             err = 'The email adress is invalid'
-            j = 0
             print(err, {'Error':'The email adress is invalid'})
         
         if new_password != new_conf_password:
@@ -102,3 +103,4 @@ def logout():
 @auth_bp.route('/', methods=['GET'])
 def index_redirect():
     return redirect(url_for('auth.login'))
+
