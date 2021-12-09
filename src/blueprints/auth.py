@@ -1,5 +1,7 @@
 import re
 
+from functools import wraps
+
 from flask import (
     Blueprint, 
     session, 
@@ -7,7 +9,11 @@ from flask import (
     render_template, 
     url_for, 
     redirect,
-    flash)
+    flash,
+    jsonify,
+    abort)
+
+from flask_mail import Message
 
 from werkzeug.security import (
     generate_password_hash, 
@@ -18,89 +24,110 @@ from src.email_token import *
 from src import *
 
 
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth')
 
-auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth')
 
+def login_required(func):
+    @wraps(func)
+    def wrapper(self):
+        return func(self)
+    return wrapper
 
 @auth_bp.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        print(request.json())
-        new_username = request.form['username']
-        new_password = request.form['password']
-        new_conf_password = request.form['confirm_password']
-        new_email = request.form['email']
+        req = request.get_json('username')
+        # print(req, req['username'], req['email'], req['password'], req['confirm_password'])
 
-        err = ''
+        new_username = req['username']
+        new_password = str(req['password'])
+        new_conf_password = str(req['confirm_password'])
+        new_email = req['email']
 
         if not bool(re.match(r'[^@]+@[^@]+\.[^@]+', new_email)):
-            err = 'The email adress is invalid'
-            print(err, {'Error':'The email adress is invalid'})
+            print('The email adress is invalid')
+            return {'Error': 'The email adress is invalid'}, 400
         
         if new_password != new_conf_password:
-            err = 'Passwords are not the same'
-            print(err, {'Error':'Passwords are not the same'})
-            
-        if not err:
-            new_user = Users(
-                name=new_username, 
-                password=generate_password_hash(password=new_password),
-                email=new_email)
-            try:
-                db.session.add(new_user)
-                db.session.commit()
-            except:
-                print('We have trouble with database!')
+            print('Passwords are not the same', new_conf_password, new_password)
+            return {'Error':'Passwords are not the same'}, 400
 
-            session['username'] = new_username
-            session['password'] = generate_password_hash(new_password)
+        if new_username is None or new_password is None:
+            print('Missing username or password')
+            return {'Error':'Missing username or password'}, 400
 
 
-            new_email_token = generate_confirmation_token(new_email)
-            # flash('Registration is almost done. Check your mailbox before login!')
-            return redirect(url_for('auth.login'))
+        user_exists = Users.query.filter_by(name=new_username).first()
+        if user_exists is not None:
+            return {'Error':'User with this name already exists'}, 400
+
+        email_exists = Users.query.filter_by(email=new_email).first()
+        if email_exists is not None:
+            return {'Error':'User with this email already exists'}, 400
         
-        flash(err)
-            
-    return request.get_json()
-    # return render_template('register.html')
+        
+        new_user = Users(
+            name=new_username, 
+            password=generate_password_hash(password=new_password),
+            email=new_email,
+            email_confirm=False)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+        except:
+            print('We have trouble with database!')
+
+        # session['username'] = new_username
+        # session['user_id'] = new_user.id
+        # new_email_token = generate_confirmation_token(new_email)
+        # flash('Registration is almost done. Check your mailbox before login!')
+        print( {'username':new_username, 'user_id':new_user.id, 'redirect':url_for('auth.login')}, 201)
+        return {'username':new_username, 'user_id':new_user.id, 'redirect':url_for('auth.login')}, 201
 
 
-
-@auth_bp.route('/login', methods=['POST', 'GET'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
 
     if 'username' in session:
-        return redirect(url_for('home.index'))
+        session.clear()
+        print(f'session - {session.items()}')
+        # return {'username':session['username'], 'user_id':session['user_id'], 'redirect':url_for('api.index')}
 
     if request.method == 'POST':
-        checking_username = request.form['username']
-        checking_password = request.form['password']
+        req = request.get_json('username')
 
-        checking_user = db.session.query().filter_by(name=checking_username).first()
+        checking_username = req['username']
+        checking_password = str(req['password'])
+
+        print(
+            f'checking_username: {checking_username}\n',
+            f'checking_password: {checking_password}\n'
+        )
+
+        checking_user = db.session.query(Users).filter_by(name=checking_username).first()
         print(checking_user)
         if not checking_user:
-            return "Error: no such user!"
-        else:
-            db_username = checking_user.name
-            db_password = checking_user.password
+            return {'Error':'User not found'}, 500
+
+        db_password = checking_user.password
+        db_id = checking_user.id
 
         if check_password_hash(db_password, checking_password):
             session.permanent = True
             session['username'] = checking_username
-            session['password'] = generate_password_hash(checking_password)
-            return redirect(url_for('home.index'))
+            session['user_id'] = db_id
 
-    return render_template('login.html')
+            return {'username':checking_username, 'user_id':db_id, 'redirect':url_for('api.index')}, 202
 
 
 @auth_bp.route('/logout', methods=['GET'])
 def logout():
     session.clear()
-    return redirect(url_for('home.index'))
+    return {'username':None, 'user_id':None, 'redirect':url_for('api.index')}
 
 
-@auth_bp.route('/', methods=['GET'])
-def index_redirect():
-    return redirect(url_for('auth.login'))
+@auth_bp.route('/activate', methods=['GET'])
+def activate():
+    return {}
+
 
