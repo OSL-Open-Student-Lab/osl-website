@@ -7,7 +7,6 @@ from flask_wtf import form
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from functools import wraps
 
 from src.models import Users, db
 from src import *
