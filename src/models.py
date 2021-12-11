@@ -1,6 +1,4 @@
-from enum import unique
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey, Table
 
 db = SQLAlchemy()
@@ -25,8 +23,12 @@ class Facilities(db.Model):
 class FacilityBooking(db.Model):
     __tablename__ = 'FacilityBooking'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    from_time = db.Column(db.DateTime, unique=True)
-    to_time = db.Column(db.DateTime, unique=True)
+    from_time = db.Column(db.String, unique=True)
+    to_time = db.Column(db.String, unique=True)
+    created_at = db.Column(db.String)
+    updated_at = db.Column(db.String, nullable=True)
+    user_id = db.Column(db.Integer)
+    facility_id = db.Column(db.Integer)
 
 
 class FacilityType(db.Model):
@@ -53,15 +55,20 @@ class UserAudit(db.Model):
 
 class Users(db.Model):
     __tablename__ = 'Users'
+    
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(), nullable=True)
-    email = db.Column(db.String(), nullable=False, unique=True)
-    email_confirm = db.Column(db.Boolean, unique=False, default=False)
+    email = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
+    is_authenticated = db.Column(db.Boolean, nullable=False, default=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
+    is_anonymous = db.Column(db.Boolean, nullable=False, default=False)
+
+    def get_id(self):
+        return self.id
 
 
-users_news_table = Table('UsersToNews', db.metadata, 
-    db.Column('news_id', ForeignKey('News.id'), primary_key=True),
-    db.Column('author_id', ForeignKey('Users.id'), primary_key=True),
-)
-
+# users_news_table = Table('UsersToNews', db.metadata, 
+#     db.Column('news_id', ForeignKey('News.id'), primary_key=True),
+#     db.Column('author_id', ForeignKey('Users.id'), primary_key=True),
+# )
