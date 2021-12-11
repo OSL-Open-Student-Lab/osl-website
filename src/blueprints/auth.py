@@ -1,7 +1,7 @@
 import re
 import functools
 
-from flask import Blueprint, session, request, url_for
+from flask import Blueprint, session, request, url_for, render_template
 from flask_login import login_user, user_logged_in, logout_user
 from flask_wtf import form
 
@@ -13,11 +13,9 @@ from src.models import Users, db
 from src import *
 
 
-auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth')
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth', template_folder='../templates')
 
-############################
-#|Login manager decorators|#
-############################
+
 @lm.user_loader
 def load_user(user_id):
     return Users.query.get(user_id)
@@ -27,28 +25,19 @@ def load_user(user_id):
 def unauthorized():
     return {'Error':'User unauthorized', 'redirect':url_for('auth.login')}, 403
 
-###############################
-#|Basic authentication routes|#
-###############################
-@auth_bp.route('/register', methods=['POST'])
+
+@auth_bp.route('/register', methods=['POST', 'GET'])
 def register():
-    if user_logged_in:
-        return {'logout!': url_for('auth.logout')}
+    # if user_logged_in:
+    #     return {'logout!': url_for('auth.logout')}
 
     if request.method == 'POST':
         # form
-        form_data = form.request.get_json()
-        usrname = form_data['username']
-        passwd = form_data['password']
-        email = form_data['email']
+        form_data = dict(request.form)
 
-
-        req = request.get_json('username')
-        new_username = req['username']
-        new_password = str(req['password'])
-        new_conf_password = str(req['confirm_password'])
-        new_email = req['email']
-
+        new_username = form_data.get('username')
+        new_password = form_data.get('password')
+        new_email = form_data.get('email')
 
         if not bool(re.match(r'[^@]+@[^@]+\.[^@]+', new_email)):
             print('The email adress is invalid')
@@ -82,6 +71,8 @@ def register():
         return {'username':new_username, 
                 'user_id' :new_user.id,
                 'redirect':url_for('auth.login')}, 200
+    print(render_template('register.html'))
+    return render_template('register.html')
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -118,6 +109,7 @@ def logout():
     logout_user()
     return {'username':None, 'user_id':None, 'redirect':url_for('api.index')}
 
+
 @auth_bp.route('/is_authorized')
 def is_auth():
-    pass
+    return {'Is authorized': bool(user_logged_in)}
