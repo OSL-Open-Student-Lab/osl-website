@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey, Table
 
 db = SQLAlchemy()
@@ -53,16 +54,13 @@ class UserAudit(db.Model):
     record_id = db.Column(db.String(), nullable=False)
 
 
-class Users(db.Model):
+class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
-    is_authenticated = db.Column(db.Boolean, nullable=False, default=False)
-    is_active = db.Column(db.Boolean, nullable=False, default=False)
-    is_anonymous = db.Column(db.Boolean, nullable=False, default=False)
 
     def get_id(self):
         return self.id

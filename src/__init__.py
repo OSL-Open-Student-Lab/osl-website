@@ -4,8 +4,7 @@ from datetime import timedelta
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
-app.permanent_session_lifetime = timedelta(days=14)
 
 lm = LoginManager()
-lm.session_protection = 'strong'
+# lm.session_protection = 'strong'
 lm.init_app(app)

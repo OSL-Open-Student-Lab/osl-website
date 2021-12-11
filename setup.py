@@ -7,7 +7,7 @@ from src.models import db
 
 db.init_app(app)
 
-# Session(app)
+Session(app)
 
 
 app.register_blueprint(auth.auth_bp)
