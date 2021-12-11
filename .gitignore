@@ -1,5 +1,6 @@
-.database/**
-.database-js/**
-.blueprints/__pychache__/**
-.__pychache__/**
-.legacy/**
+# .database/**
+# .database-js/**
+# .blueprints/__pychache__/**
+# .__pychache__/**
+# .legacy/**
+tasks.txt
