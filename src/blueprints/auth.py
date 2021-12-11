@@ -3,6 +3,7 @@ import functools
 
 from flask import Blueprint, session, request, url_for
 from flask_login import login_user, user_logged_in, logout_user
+from flask_wtf import form
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -24,7 +25,7 @@ def load_user(user_id):
 
 @lm.unauthorized_handler
 def unauthorized():
-    return {'User unauthorized':'Cock', 'login':url_for('auth.login')}
+    return {'Error':'User unauthorized', 'redirect':url_for('auth.login')}, 403
 
 ###############################
 #|Basic authentication routes|#
@@ -35,19 +36,23 @@ def register():
         return {'logout!': url_for('auth.logout')}
 
     if request.method == 'POST':
+        # form
+        form_data = form.request.get_json()
+        usrname = form_data['username']
+        passwd = form_data['password']
+        email = form_data['email']
+
+
         req = request.get_json('username')
         new_username = req['username']
         new_password = str(req['password'])
         new_conf_password = str(req['confirm_password'])
         new_email = req['email']
 
+
         if not bool(re.match(r'[^@]+@[^@]+\.[^@]+', new_email)):
             print('The email adress is invalid')
             return {'Error': 'The email adress is invalid'}, 400
-        
-        if new_password != new_conf_password:
-            print('Passwords are not the same', new_conf_password, new_password)
-            return {'Error':'Passwords are not the same'}, 400
 
         if new_username is None or new_password is None:
             print('Missing username or password')
@@ -76,10 +81,10 @@ def register():
 
         return {'username':new_username, 
                 'user_id' :new_user.id,
-                'redirect':url_for('auth.login')}, 201
+                'redirect':url_for('auth.login')}, 200
 
 
-@auth_bp.route('/login', methods=['POST', 'GET'])
+@auth_bp.route('/login', methods=['POST'])
 def login():   
     if user_logged_in:
         return {'logout from login!': url_for('auth.logout')}
@@ -113,3 +118,6 @@ def logout():
     logout_user()
     return {'username':None, 'user_id':None, 'redirect':url_for('api.index')}
 
+@auth_bp.route('/is_authorized')
+def is_auth():
+    pass

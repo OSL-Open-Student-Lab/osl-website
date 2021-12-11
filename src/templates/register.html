@@ -13,10 +13,12 @@
         {% endfor%}
     </div>
     <div class="regform_div">
-        <form method="post">
-            <ul>
-                <input for="username" id="username" type="text">
-            </ul>
+        <form method="post" action={{ url_for('auth.register') }} enctype="application/x-www-form-urlencoded">
+            <input type="" name="email">
+            <input type="text" name="username">
+            <input type="password" name="password">
+            <input type="password" name="confirm_password">
+            <input type="submit">
         </form>
     </div>
 </body>
