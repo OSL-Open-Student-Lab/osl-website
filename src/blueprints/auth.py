@@ -14,7 +14,9 @@ from src import *
 
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth')
 
-# login manager decorators
+############################
+#|Login manager decorators|#
+############################
 @lm.user_loader
 def load_user(user_id):
     return Users.query.get(user_id)
@@ -24,8 +26,9 @@ def load_user(user_id):
 def unauthorized():
     return {'User unauthorized':'Cock', 'login':url_for('auth.login')}
 
-
-# Basic authentication routes
+###############################
+#|Basic authentication routes|#
+###############################
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if user_logged_in:
