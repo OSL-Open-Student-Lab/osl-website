@@ -1,0 +1,8 @@
+tasks.txt
+database/
+database-js/
+src/blueprints/__pychache__/
+src/__pychache__/
+legacy/
+test_requests.py
+setup.py
