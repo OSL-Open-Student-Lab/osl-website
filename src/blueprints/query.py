@@ -15,7 +15,6 @@ query_bp = Blueprint('query', __name__, url_prefix='/api/query')
 def queries():
     if request.method == 'POST':
         req = request.get_json('user_id')
-
         user_id = req['user_id']
         from_date = datetime.datetime.strptime(req['from_date'], r'%d-%m-%Y %H:%M:%S') #2021-12-12 14:12:00
         to_date = datetime.datetime.strptime(req['to_date'], r'%d-%m-%Y %H:%M:%S')
