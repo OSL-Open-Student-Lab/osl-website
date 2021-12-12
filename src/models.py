@@ -24,12 +24,10 @@ class Facilities(db.Model):
 class FacilityBooking(db.Model):
     __tablename__ = 'FacilityBooking'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    from_time = db.Column(db.String, unique=True)
-    to_time = db.Column(db.String, unique=True)
-    created_at = db.Column(db.String)
-    updated_at = db.Column(db.String, nullable=True)
-    user_id = db.Column(db.Integer)
-    facility_id = db.Column(db.Integer)
+    from_time = db.Column(db.DateTime)
+    to_time = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, ForeignKey('Users.id'))
+    facility_id = db.Column(db.Integer, ForeignKey('Facilities.id'))
 
 
 class FacilityType(db.Model):
