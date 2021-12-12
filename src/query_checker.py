@@ -54,6 +54,6 @@ while True:
         print(f'[ERROR]: {err}')
     else:
         print('[INFO]: END OF CKECKING')
-        sleep(0.5)
+        sleep(1)
 
     print('\n[INFO]: NEXT CHECKING')
