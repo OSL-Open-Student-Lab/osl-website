@@ -1,8 +1,8 @@
 import sqlite3
-from datetime import datetime, timedelta
-from time import sleep, time
 
-from sqlalchemy import exc
+from datetime import datetime, timedelta
+from time import sleep
+
 
 connection = sqlite3.connect('../database/site.db')
 curs = connection.cursor()

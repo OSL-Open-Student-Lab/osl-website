@@ -69,8 +69,8 @@ def validate_datetime_intervals(in1: tuple, in2: tuple, eql=True):
     right_now = datetime.datetime.now()
     if eql:
         return not(in1[0] < right_now or in1[1] < right_now) and \
-               ((right_now < in2[0] < in2[1] < in1[0] < in1[1]) or \
-               (right_now < in1[0] < in1[1] < in2[0] < in2[1]))
+               ((in2[0] < in2[1] < in1[0] < in1[1]) or \
+               (in1[0] < in1[1] < in2[0] < in2[1]))
     else:
         return not(in1[0] <= right_now or in1[1] <= right_now)
 
