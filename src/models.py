@@ -1,14 +1,14 @@
+from enum import unique
+from os import name
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+
 from sqlalchemy import ForeignKey, Table
+from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
-class Cards(db.Model):
-    __tablename__ = 'Cards'
-    id = db.Column(db.Integer, unique=True, primary_key=True)
-    enabled = db.Column(db.Boolean, default=True)
-
+# Main tables
 
 class EnterLog(db.Model):
     __tablename__ = 'LogEnter'
@@ -19,15 +19,6 @@ class Facilities(db.Model):
     __tablename__ = 'Facilities'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String())
-
-
-class FacilityBooking(db.Model):
-    __tablename__ = 'FacilityBooking'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    from_time = db.Column(db.DateTime)
-    to_time = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, ForeignKey('Users.id'))
-    facility_id = db.Column(db.Integer, ForeignKey('Facilities.id'))
 
 
 class FacilityType(db.Model):
@@ -60,11 +51,49 @@ class Users(UserMixin, db.Model):
     name = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
 
-    def get_id(self):
-        return self.id
+    card_rel = relationship('Cards', backref='user')
 
 
-# users_news_table = Table('UsersToNews', db.metadata, 
-#     db.Column('news_id', ForeignKey('News.id'), primary_key=True),
-#     db.Column('author_id', ForeignKey('Users.id'), primary_key=True),
-# )
+class Roles(db.Model):
+    __tablename__ = 'Roles'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(150), unique=True)
+    can_booking = db.Column(db.Boolean, default=True)
+    can_post_news = db.Column(db.Boolean, default=False)
+    have_admin_access = db.Column(db.Boolean, default=False)
+
+
+# Relationship tables
+
+class FacilityBooking(db.Model):
+    __tablename__ = 'FacilityBooking'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    from_time = db.Column(db.DateTime)
+    to_time = db.Column(db.DateTime)
+
+    user_id = db.Column(ForeignKey(Users.id))
+    facility_id = db.Column(ForeignKey(Facilities.id))
+
+    user_rel = relationship('Users', foreign_keys='FacilityBooking.user_id')
+    facility_rel = relationship('Facilities', foreign_keys='FacilityBooking.facility_id')
+
+
+class Cards(db.Model):
+    __tablename__ = 'Cards'
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    enabled = db.Column(db.Boolean, default=True)
+    user_id = db.Column(ForeignKey(Users.id))
+
+
+NewsAuthors = db.Table('NewsAuthors', 
+    db.Column('news_id', db.Integer, db.ForeignKey('News.id'), primary_key=True),
+    db.Column('author_id', db.Integer, db.ForeignKey('Users.id'), primary_key=True)
+)
+
+
+UserRoles = db.Table('UserRoles',
+    db.Column('user_id', db.Integer, db.ForeignKey('Users.id'), primary_key=True),
+    db.Column('role_id', db.Integer, db.ForeignKey('Roles.id'), primary_key=True)
+)
