@@ -63,8 +63,7 @@ def register():
 
         return {'Status': 'User created successfully '}, 200
 
-    if request.method == 'GET':
-        return render_template('register.html')
+    return render_template('register.html')
 
 
 @auth_bp.route('/login', methods=['POST', 'GET'])
@@ -89,8 +88,7 @@ def login():
 
             return {'Status': 'User logged in successfully'}, 200
 
-    if request.method == 'GET':
-        return render_template('login.html')
+    return render_template('login.html')
 
 
 @auth_bp.route('/logout', methods=['GET'])
