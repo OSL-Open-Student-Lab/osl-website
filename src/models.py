@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
 from sqlalchemy import ForeignKey, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 db = SQLAlchemy()
 
@@ -13,18 +13,6 @@ db = SQLAlchemy()
 class EnterLog(db.Model):
     __tablename__ = 'LogEnter'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
-
-class Facilities(db.Model):
-    __tablename__ = 'Facilities'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String())
-
-
-class FacilityType(db.Model):
-    __tablename__ = 'FacilityType'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(), unique=True)
 
 
 class News(db.Model):
@@ -43,6 +31,16 @@ class UserAudit(db.Model):
     record_id = db.Column(db.String(), nullable=False)
 
 
+class FacilityBooking(db.Model):
+    __tablename__ = 'FacilityBooking'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    from_time = db.Column(db.DateTime)
+    to_time = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
+    user_rel = db.relationship('Users')
+    # facility = db.Column(db.Integer, db.ForeignKey('Facilities.id'))
+
 class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
     
@@ -50,8 +48,28 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
+    # card_rel = relationship('Cards', backref='user')
+    fac_bookings = db.relationship('FacilityBooking', backref='booking_users', lazy='dynamic')
 
-    card_rel = relationship('Cards', backref='user')
+
+
+
+
+
+class Facilities(db.Model):
+    __tablename__ = 'Facilities'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String())
+    # types = relationship('FacilityType', backref='type', lazy=True)
+    # bookings = db.relationship('FacilityBooking', backref='facilities', lazy='select', uselist=True)
+
+
+class FacilityType(db.Model):
+    __tablename__ = 'FacilityType'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(), unique=True)
+    # type_id =  db.Column(db.Integer, db.ForeignKey('Facilities.id'), nullable=False)
+    # type_rel = relationship('Facilities')
 
 
 class Roles(db.Model):
@@ -64,36 +82,27 @@ class Roles(db.Model):
     have_admin_access = db.Column(db.Boolean, default=False)
 
 
+
 # Relationship tables
 
-class FacilityBooking(db.Model):
-    __tablename__ = 'FacilityBooking'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    from_time = db.Column(db.DateTime)
-    to_time = db.Column(db.DateTime)
-
-    user_id = db.Column(ForeignKey(Users.id))
-    facility_id = db.Column(ForeignKey(Facilities.id))
-
-    user_rel = relationship('Users', foreign_keys='FacilityBooking.user_id')
-    facility_rel = relationship('Facilities', foreign_keys='FacilityBooking.facility_id')
+# class Cards(db.Model):
+#     __tablename__ = 'Cards'
+#     id = db.Column(db.Integer, unique=True, primary_key=True)
+#     enabled = db.Column(db.Boolean, default=True)
+#     # user_id = db.Column(ForeignKey(Users.id))
 
 
-class Cards(db.Model):
-    __tablename__ = 'Cards'
-    id = db.Column(db.Integer, unique=True, primary_key=True)
-    enabled = db.Column(db.Boolean, default=True)
-    user_id = db.Column(ForeignKey(Users.id))
 
+# class NewsAuthors(db.Model):
+#     __tablename__ = 'NewsAuthors'
 
-NewsAuthors = db.Table('NewsAuthors', 
-    db.Column('news_id', db.Integer, db.ForeignKey('News.id'), primary_key=True),
-    db.Column('author_id', db.Integer, db.ForeignKey('Users.id'), primary_key=True)
-)
+#     news_id = db.Column(db.Integer, db.ForeignKey('News.id'), primary_key=True)
+#     author_id = db.Column(db.Integer, db.ForeignKey('Users.id'), primary_key=True)
 
+# class UserRoles(db.Model):
+#     __tablename__ = 'UserRoles'
 
-UserRoles = db.Table('UserRoles',
-    db.Column('user_id', db.Integer, db.ForeignKey('Users.id'), primary_key=True),
-    db.Column('role_id', db.Integer, db.ForeignKey('Roles.id'), primary_key=True)
-)
+#     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), primary_key=True)
+#     role_name = db.Column(db.String(150), db.ForeignKey('Roles.name'))
+
