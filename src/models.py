@@ -8,20 +8,6 @@ from sqlalchemy.orm import backref, relationship
 
 db = SQLAlchemy()
 
-# Main tables
-
-class EnterLog(db.Model):
-    __tablename__ = 'LogEnter'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
-
-class News(db.Model):
-    __tablename__ = 'News'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.Text())
-    annotation = db.Column(db.Text())
-    pic = db.Column(db.String(), default='default.jpg')
-
 
 class UserAudit(db.Model):
     __tablename__ = 'UserAudit'
@@ -53,9 +39,6 @@ class Users(UserMixin, db.Model):
 
 
 
-
-
-
 class Facilities(db.Model):
     __tablename__ = 'Facilities'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -80,29 +63,3 @@ class Roles(db.Model):
     can_booking = db.Column(db.Boolean, default=True)
     can_post_news = db.Column(db.Boolean, default=False)
     have_admin_access = db.Column(db.Boolean, default=False)
-
-
-
-# Relationship tables
-
-
-# class Cards(db.Model):
-#     __tablename__ = 'Cards'
-#     id = db.Column(db.Integer, unique=True, primary_key=True)
-#     enabled = db.Column(db.Boolean, default=True)
-#     # user_id = db.Column(ForeignKey(Users.id))
-
-
-
-# class NewsAuthors(db.Model):
-#     __tablename__ = 'NewsAuthors'
-
-#     news_id = db.Column(db.Integer, db.ForeignKey('News.id'), primary_key=True)
-#     author_id = db.Column(db.Integer, db.ForeignKey('Users.id'), primary_key=True)
-
-# class UserRoles(db.Model):
-#     __tablename__ = 'UserRoles'
-
-#     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), primary_key=True)
-#     role_name = db.Column(db.String(150), db.ForeignKey('Roles.name'))
-
