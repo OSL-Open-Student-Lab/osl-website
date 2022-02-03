@@ -1,7 +1,7 @@
-tasks.txt
+# folders
 database/
-src/blueprints/__pychache__/
-src/__pychache__/
-__pychache__/
-legacy/
-test_requests.py
+**/__pycache__/
+
+# files
+poetry.lock
+pyproject.toml
