@@ -1,17 +1,11 @@
-import re
-import functools
-
-from werkzeug.security import generate_password_hash, check_password_hash
-
-from flask import Blueprint, session, request, url_for, render_template
-from flask_login import login_user, user_logged_in, logout_user
-from flask_wtf import form
-
-from src.models import Users, db
 from src import *
+from src.models import Users, db
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, jsonify, session, request
 
 
-auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth',)
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/v1/auth',)
 
 
 @lm.user_loader
@@ -21,10 +15,10 @@ def load_user(user_id):
 
 @lm.unauthorized_handler
 def unauthorized():
-    return {'Error': 'User unauthorized'}, 403
+    return jsonify(error_message='user unauthorized', status=403)
 
 
-@auth_bp.route('/register', methods=['POST', 'GET'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
         form_data = dict(request.form)
@@ -36,33 +30,30 @@ def register():
             user_exists = Users.query.filter_by(name=new_username).first()
             email_exists = Users.query.filter_by(email=new_email).first()
         except:
-            return {'Error': 'Unable to load data from the database'}, 500
-            # logging
+            return jsonify(error_message='Unable to load data from the database', status=500)
 
         if user_exists is not None:
-            return {'Error': 'User with this name already exists'}, 400
-            # logging
+            return jsonify(error_message='User with this name already exists', status=400)
+
         if email_exists is not None:
-            return {'Error': 'User with this email already exists'}, 400
+            return jsonify(error_message='User with this email already exists', status=400)
 
         new_user = Users(
             name=new_username,
             password=generate_password_hash(password=new_password),
-            email=new_email)
+            email=new_email,
+            role_id=0)
 
         try:
             db.session.add(new_user)
             db.session.commit()
         except:
-            return {'Error': 'Unable to write data to the database'}, 500
-            # logging
+            return jsonify(error_message='Unable to write data to the database', status=500)
 
-        return {'Status': 'User created successfully '}, 200
-
-    return render_template('register.html')
+        return jsonify(message='User created successfully', status=200)
 
 
-@auth_bp.route('/login', methods=['POST', 'GET'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         form_data = dict(request.form)
@@ -73,28 +64,26 @@ def login():
             checking_user = db.session.query(Users).\
                             filter_by(name=checking_username).first()
             if not checking_user:
-                return {'Error': 'User not found'}, 500
+                return jsonify(error_message='User not found', status=500)
         except:
-            return {'Error': 'Unable load data from the database'}, 500
+            return jsonify(error_message='Unable load data from the database', status=500)
         else:
             db_password = checking_user.password
 
         if check_password_hash(db_password, checking_password):
             login_user(checking_user, remember=True)
+            return jsonify(message='User logged in successfully', status=200)
 
-            return {'Status': 'User logged in successfully'}, 200
-
-    return render_template('login.html')
 
 
 @auth_bp.route('/logout', methods=['GET'])
+@login_required
 def logout():
     logout_user()
-    return {'username': None,
-            'user_id': None,
-            'redirect': url_for('api.index')}
+    print(session)
+    return jsonify(message='Logged out successfully', status=200)
 
 
-@auth_bp.route('/is_authorized', methods=['GET'])
+@auth_bp.route('/current', methods=['GET'])
 def is_auth():
-    return {'Is authorized': bool(user_logged_in)}
+    return jsonify(authorized=current_user.is_authenticated, status=200)
