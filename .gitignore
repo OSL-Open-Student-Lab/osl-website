@@ -1,7 +1,7 @@
 tasks.txt
 database/
-database-js/
 src/blueprints/__pychache__/
 src/__pychache__/
+__pychache__/
 legacy/
 test_requests.py
