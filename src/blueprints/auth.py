@@ -11,11 +11,7 @@ from src.models import Users, db
 from src import *
 
 
-auth_bp = Blueprint(
-    name='auth',
-    import_name=__name__,
-    url_prefix='/api/auth',
-    template_folder='../templates')
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/auth',)
 
 
 @lm.user_loader

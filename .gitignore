@@ -5,3 +5,4 @@ database/
 # files
 poetry.lock
 pyproject.toml
+src/blueprints/home.py
