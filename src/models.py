@@ -1,13 +1,9 @@
-from enum import unique
-from os import name
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
-from sqlalchemy import ForeignKey, Table
-from sqlalchemy.orm import backref, relationship
-
 
 db = SQLAlchemy()
+
 
 class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
