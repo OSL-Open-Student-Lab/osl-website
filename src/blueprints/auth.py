@@ -42,7 +42,7 @@ def register():
             name=new_username,
             password=generate_password_hash(password=new_password),
             email=new_email,
-            role_id=0)
+            role_id=2)
 
         try:
             db.session.add(new_user)
