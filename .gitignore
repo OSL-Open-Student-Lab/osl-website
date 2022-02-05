@@ -1,8 +1,3 @@
 # folders
 database/
 **/__pycache__/
-
-# files
-poetry.lock
-pyproject.toml
-src/blueprints/home.py
