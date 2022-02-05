@@ -13,5 +13,9 @@ with app.app_context():
 if __name__ == '__main__':
     app.register_blueprint(auth.auth_bp)
     app.register_blueprint(query.query_bp)
-  
+    
+    @app.route('/')
+    def index():
+        return 'home'
+
     app.run(debug=True)
