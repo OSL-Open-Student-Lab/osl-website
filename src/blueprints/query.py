@@ -5,7 +5,7 @@ from flask_login import login_required
 from src.models import db, FacilityBooking
 
 
-query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/api/v1/queries')
+query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
 
 
 @query_bp.route('', methods=['POST', 'GET'])

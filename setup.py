@@ -1,22 +1,18 @@
-from flask import render_template
 from src import app
 from src.models import db
-from src.blueprints import auth, query
+from src.blueprints import api
 from flask_session import Session
 
-db.init_app(app)
-Session(app)
 
 
-with app.app_context():
-    db.create_all()
+def create_app(testing=True):
+    db.init_app(app)
+    Session(app)
 
-if __name__ == '__main__':
-    app.register_blueprint(auth.auth_bp)
-    app.register_blueprint(query.query_bp)
+    with app.app_context():
+        db.create_all()
     
-    @app.route('/')
-    def index():
-        return '''<h1>Home</h1>'''
+    app.register_blueprint(api.api_bp)
 
-    app.run(ssl_context=('cert.pem', 'key.pem'))
+    return app
+    # app.run(ssl_context=('cert.pem', 'key.pem'))

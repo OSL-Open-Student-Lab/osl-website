@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, jsonify, session, request
 
 
-auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/api/v1/auth',)
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
 
 
 @lm.user_loader
