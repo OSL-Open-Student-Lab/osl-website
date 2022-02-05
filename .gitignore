@@ -1,3 +1,4 @@
 # folders
 database/
 **/__pycache__/
+env/
