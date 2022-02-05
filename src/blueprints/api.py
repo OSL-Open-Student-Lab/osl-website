@@ -5,7 +5,7 @@ api_bp = Blueprint(name="home", import_name=__name__, url_prefix="/api/v1/")
 
 api_bp.register_blueprint(auth.auth_bp)
 api_bp.register_blueprint(query.query_bp)
-api_bp.register_blueprint(admin.devices_bp)
+api_bp.register_blueprint(admin.admin_bp)
 
 @api_bp.route('/', methods=["GET"])
 def index():
