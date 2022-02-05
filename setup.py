@@ -1,3 +1,4 @@
+from flask import render_template
 from src import app
 from src.models import db
 from src.blueprints import auth, query
@@ -16,6 +17,6 @@ if __name__ == '__main__':
     
     @app.route('/')
     def index():
-        return 'home'
+        return render_template('home')
 
     app.run(debug=True)
