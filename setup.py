@@ -15,4 +15,3 @@ def create_app(testing=True):
     app.register_blueprint(api.api_bp)
 
     return app
-    # app.run(ssl_context=('cert.pem', 'key.pem'))
