@@ -17,6 +17,6 @@ if __name__ == '__main__':
     
     @app.route('/')
     def index():
-        return render_template('home')
+        return '''<h1>Home</h1>'''
 
-    app.run(ssl_context='adhoc')
+    app.run(ssl_context=('cert.pem', 'key.pem'))
