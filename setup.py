@@ -19,4 +19,4 @@ if __name__ == '__main__':
     def index():
         return render_template('home')
 
-    app.run(debug=True)
+    app.run(ssl_context='adhoc')
