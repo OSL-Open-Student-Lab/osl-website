@@ -38,6 +38,7 @@ def queries():
         return jsonify(message='Booking was successfully added', status=200)
     
     if request.method == 'GET':
+        print('QUERIES GET METHOD')
         try:
             all_positions = db.session.query(FacilityBooking).\
                 filter(FacilityBooking.from_time>datetime.datetime.now()).all()
