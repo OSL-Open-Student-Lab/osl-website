@@ -19,16 +19,78 @@
     ],
     "paths": {
         "/auth/register":{
-
+            "post":{
+                "tags":[
+                    "Auth requests"
+                ],
+                "parameters":[
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "New user's email address",
+                        "required": true
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "New user's name",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "New user's password",
+                        "required": true
+                    }                    
+                ]
+            }
         },
         "/auth/login":{
-
+            "post":{
+                "tags":[
+                    "Auth requests"
+                ]
+            }
         },
         "/auth/logout":{
-
+            "get":{
+                "tags":[
+                    "Auth requests"
+                ]
+            }
         },
         "/auth/current":{
-
+            "get":{
+                "tags":[
+                    "Auth requests"
+                ]
+            }
+        },
+        "/admin/add_user_role":{
+            "post":{
+                "tags":[
+                    "Admin panel requests"
+                ]
+            }
+        },
+        "admin/add_facility":{
+            "post":{
+                "tags":[
+                    "Admin panel requests"
+                ]
+            }
+        },
+        "/queries":{
+            "post":{
+                "tags":[
+                    "Qeury requests"
+                ]
+            },
+            "get":{
+                "tags":[
+                    "Qeury requests"
+                ]
+            }
         }
     }
 }
