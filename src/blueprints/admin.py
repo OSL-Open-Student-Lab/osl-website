@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from src.models import Roles, db
+from src.models import FacilityType, Roles, db
 
 admin_bp = Blueprint(name="admin", import_name=__name__, url_prefix="/admin")
 
@@ -51,8 +51,21 @@ def add_user_role():
         return jsonify(message='New role was created successfully', status=200)
 
 
-@admin_bp.route("/", methods=["POST", "GET"])
+@admin_bp.route("/add_facility", methods=["POST", "GET"])
 @login_required
 @admin_required
 def get_device_list():
-    return "get_device_list"
+    if request.method == 'POST':
+        data = request.json
+        type = data['type']
+
+        try:
+            new_facility_type = FacilityType(type=type)
+            db.session.add(new_facility_type)
+            db.session.commit()
+        except Exception as err:
+            print(err)
+            return jsonify(error_message='Unable to write data to the database', status=500)
+
+        return jsonify(message='New role was created successfully', status=200)
+
