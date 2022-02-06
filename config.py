@@ -8,7 +8,7 @@ PATH = pathlib.Path(__file__)
 SECRET_KEY = os.getenv('OSL_SECRET_KEY')
 
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///../database/site.db'
-SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace('postgres', 'postgresql')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 SESSION_TYPE = 'sqlalchemy'
