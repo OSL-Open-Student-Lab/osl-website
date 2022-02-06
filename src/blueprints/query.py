@@ -2,6 +2,7 @@ import datetime
 
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
+from sqlalchemy import exc
 from src.models import db, FacilityBooking
 
 
@@ -12,11 +13,15 @@ query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
 @login_required
 def queries():
     if request.method == 'POST':
-        data = request.get_json('user_id')
-        user_id = data['user_id']
-        from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
-        to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
-        facility_id = data['facility_id']
+        try:
+            data = request.get_json('user_id')
+            user_id = data['user_id']
+            from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
+            to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
+            facility_id = data['facility_id']
+        except Exception as err:
+            return jsonify(error_message=f"Can't get data: {err}", status=500)
+
 
         booking_timedelta = to_date - from_date
 
@@ -29,11 +34,11 @@ def queries():
                 to_time=to_date,
                 user_id=user_id,
                 facility_id=facility_id)
-
             db.session.add(new_facility)
             db.session.commit()
-        except Exception as e:
-            return jsonify(error_message='Unable to write data to the database', status=500)
+        except exc.SQLAlchemyError as err:
+            print("SQLAlchemyError-----------> ", err)
+            return jsonify(error_message=f'Unable to write data to the database', status=500)
 
         return jsonify(message='Booking was successfully added', status=200)
     
@@ -42,7 +47,7 @@ def queries():
         try:
             all_positions = db.session.query(FacilityBooking).\
                 filter(FacilityBooking.from_time>datetime.datetime.now()).all()
-        except Exception as e:
+        except exc.SQLAlchemyError as e:
             print(e)
             return jsonify(error_message='Unable to get data from the database', status=500)
         
