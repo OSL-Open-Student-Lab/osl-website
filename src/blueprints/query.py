@@ -13,7 +13,7 @@ query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
 @login_required
 def queries():
     if request.method == 'POST':
-        try:
+     try:
             data = request.get_json('user_id')
             user_id = data['user_id']
             from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')

@@ -42,9 +42,11 @@
                         "description": "New user's password",
                         "required": true
                     }                    
-                ]
-            }
-        },
+                ],
+				"responces":{
+				}
+			}
+        }
         "/auth/login":{
             "post":{
                 "tags":[
