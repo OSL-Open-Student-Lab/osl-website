@@ -36,17 +36,19 @@
                         "description": "New user's name",
                         "required": true
                     },
-                    {
-                        "name": "password",
+                    { "name": "password",
                         "in": "query",
                         "description": "New user's password",
                         "required": true
                     }                    
                 ],
-				"responces":{
+				"responses":{
+				"Unable to write data to the database":{
+					"status":500,
+					}
 				}
 			}
-        }
+        },
         "/auth/login":{
             "post":{
                 "tags":[
