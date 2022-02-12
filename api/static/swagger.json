@@ -44,7 +44,7 @@
                 ],
 				"responses":{
 				"Unable to write data to the database":{
-					"status":500,
+					"status":500
 					}
 				}
 			}

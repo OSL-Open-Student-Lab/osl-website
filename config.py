@@ -1,8 +1,5 @@
-import os
 import datetime
-import pathlib
-from src.models import db
-
+from api.models import db
 
 SECRET_KEY = 'development key'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../database/site.db'

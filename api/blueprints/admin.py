@@ -1,9 +1,8 @@
 from functools import wraps
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from itsdangerous import json
 from sqlalchemy import exc
-from src.models import FacilityType, Roles, db
+from api.models import FacilityType, Roles, db
 
 admin_bp = Blueprint(name="admin", import_name=__name__, url_prefix="/admin")
 

@@ -1,13 +1,12 @@
-from src import *
-from src.models import Users, db
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, jsonify, session, request
+from api.models import Users, db
+from api import lm
+
 
 
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
-
-
 
 @lm.user_loader
 def load_user(user_id):
@@ -22,10 +21,10 @@ def unauthorized():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
-        form_data = dict(request.form)
-        new_username = form_data.get('username')
-        new_password = form_data.get('password')
-        new_email = form_data.get('email')
+        data = dict(request.json)
+        new_username = data.get('username')
+        new_password = data.get('password')
+        new_email = data.get('email')
 
         try:
             user_exists = Users.query.filter_by(name=new_username).first()
@@ -57,9 +56,9 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        form_data = dict(request.form)
-        checking_username = form_data.get('username')
-        checking_password = form_data.get('password')
+        data = dict(request.json)
+        checking_username = data.get('username')
+        checking_password = data.get('password')
 
         try:
             checking_user = db.session.query(Users).\

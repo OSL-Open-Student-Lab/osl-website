@@ -1,24 +1,20 @@
-from src import app
-from src.models import db
-from src.blueprints import api
-
-from flask_session import Session
+from api import app
+from api.db import setup_db
+from api.blueprints import api
 from flask_swagger_ui import get_swaggerui_blueprint
 
-def create_app(testing=True):
-    db.init_app(app)
-    Session(app)
 
-    with app.app_context():
-        db.create_all()
+def create_app():
+
+    try:
+        setup_db()
+    except Exception as err:
+        print(f"[ERROR]: Unable to setup database -> {err}")
     
     app.register_blueprint(api.api_bp)
-    swagger_bp = get_swaggerui_blueprint('/apidocs', '/static/swagger.json')
+    swagger_bp = get_swaggerui_blueprint(
+        '/api/v1/apidocs', 
+        '/static/swagger.json')
     app.register_blueprint(swagger_bp)
 
     return app
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
-

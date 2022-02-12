@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from sqlalchemy import exc
-from src.models import db, FacilityBooking
+from api.models import db, FacilityBooking
 
 
 query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
