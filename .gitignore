@@ -4,3 +4,5 @@
 env/
 database/
 задачи
+key.pem
+cert.pem
