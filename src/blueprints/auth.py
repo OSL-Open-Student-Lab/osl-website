@@ -8,6 +8,7 @@ from flask import Blueprint, jsonify, session, request
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
 
 
+
 @lm.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
