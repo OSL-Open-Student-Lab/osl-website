@@ -17,3 +17,8 @@ def create_app(testing=True):
     app.register_blueprint(swagger_bp)
 
     return app
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run(debug=True)
+
