@@ -73,7 +73,7 @@ def get_device_list():
             db.session.add(new_facility_type)
             db.session.commit()
         except Exception as err:
-            print(err)
+            print("[ERROR]: ", err)
             return jsonify(error_message='Unable to write data to the database', status=500)
 
         return jsonify(message='New role was created successfully', status=200)
