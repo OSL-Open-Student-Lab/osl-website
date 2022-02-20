@@ -4,5 +4,10 @@
 env/
 database/
 задачи
+<<<<<<< HEAD
 key.pem
 cert.pem
+=======
+cert.pem
+key.pem
+>>>>>>> dev

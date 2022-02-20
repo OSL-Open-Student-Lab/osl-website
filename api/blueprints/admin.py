@@ -1,9 +1,8 @@
 from functools import wraps
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from itsdangerous import json
 from sqlalchemy import exc
-from src.models import FacilityType, Roles, db
+from api.models import FacilityType, Roles, db
 
 admin_bp = Blueprint(name="admin", import_name=__name__, url_prefix="/admin")
 
@@ -73,7 +72,7 @@ def get_device_list():
             db.session.add(new_facility_type)
             db.session.commit()
         except Exception as err:
-            print(err)
+            print("[ERROR]: ", err)
             return jsonify(error_message='Unable to write data to the database', status=500)
 
         return jsonify(message='New role was created successfully', status=200)
