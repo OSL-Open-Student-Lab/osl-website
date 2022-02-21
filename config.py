@@ -1,8 +1,9 @@
 import datetime
 from api.models import db
+from os import getenv
 
-SECRET_KEY = 'development key'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///../database/site.db'
+SECRET_KEY = getenv('OSL_SECRET_KEY')
+SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URI')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SESSION_TYPE = 'sqlalchemy'
 SESSION_SQLALCHEMY = db

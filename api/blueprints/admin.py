@@ -24,7 +24,7 @@ def admin_required(f):
 
 
 
-@admin_bp.route("/add_user_role", methods=["POST"])
+@admin_bp.route("/add_user_role", methods=["POST"]) # localhost:8000/api/v1/admin/add_user_role
 @login_required
 @admin_required
 def add_user_role():
