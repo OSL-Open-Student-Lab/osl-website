@@ -1,1 +1,1 @@
-web: gunicorn "setup:create_app(testing=False)"
+web: gunicorn "setup:create_app()"
