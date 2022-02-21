@@ -1,3 +1,4 @@
+# ignoring dev files
 **/__pycache__/
 venv/
 env/
