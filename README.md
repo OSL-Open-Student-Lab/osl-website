@@ -9,5 +9,5 @@
   
   pip install -r requirements.txt # you can use python venv
 
-  gunicorn setup:create_app()
+  gunicorn "setup:create_app()"
 ```
