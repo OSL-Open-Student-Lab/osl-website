@@ -1,7 +1,7 @@
 # OSL Website API
 
 ### Run application locally 
-'''bash
+```bash
 
   git clone https://github.com/timaracov/osl.git
   
@@ -10,4 +10,4 @@
   pip install -r requirements.txt # you can use python venv
 
   gunicorn setup:create_app()
-'''
+```
