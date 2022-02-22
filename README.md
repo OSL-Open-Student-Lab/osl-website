@@ -1,9 +1,11 @@
 # OSL Website API
 
-### Run local flask app
+### Run application locally 
 
   -git clone https://github.com/timaracov/osl.git
-
-  -pip install -r requirements.txt
+  
+  -cd osl
+  
+  -pip install -r requirements.txt # you can use python venv
 
   -gunicorn setup:create_app()
