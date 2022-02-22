@@ -11,3 +11,6 @@
 
   gunicorn "setup:create_app()"
 ```
+## Authors
+
+- [@timaracov](https://www.github.com/timaracov)
