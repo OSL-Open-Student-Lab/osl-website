@@ -1,6 +1,6 @@
 # OSL Website API
 
-### Run application locally 
+## Run application locally 
 ```bash
 
   git clone https://github.com/timaracov/osl.git
