@@ -20,13 +20,13 @@ def queries():
             to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
             facility_id = data['facility_id']
         except Exception as err:
-            return jsonify(error_message=f"Can't get data: {err}", status=500)
+            return jsonify(error_message=f"Can't get data: {err}")
 
 
         booking_timedelta = to_date - from_date
 
         if booking_timedelta.days > 0 or booking_timedelta.seconds >= 28800:
-            return jsonify(error_message='Booking time is too long', status=400)
+            return jsonify(error_message='Booking time is too long')
 
         try:
             new_facility = FacilityBooking(
@@ -38,9 +38,9 @@ def queries():
             db.session.commit()
         except exc.SQLAlchemyError as err:
             print("SQLAlchemyError-----------> ", err)
-            return jsonify(error_message=f'Unable to write data to the database', status=500)
+            return jsonify(error_message=f'Unable to write data to the database')
 
-        return jsonify(message='Booking was successfully added', status=200)
+        return jsonify(message='Booking was successfully added')
     
     if request.method == 'GET':
         print('QUERIES GET METHOD')
@@ -58,5 +58,5 @@ def queries():
                 "user_id":el.user_id,
                 "facility_id":el.facility_id
             }
-        return jsonify(message='Queries were succefully loaded', data=all_positions, status=200)
+        return jsonify(message='Queries were succefully loaded', data=all_positions)
 

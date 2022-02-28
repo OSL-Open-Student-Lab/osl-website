@@ -38,9 +38,9 @@ def add_user_role():
         try:
             checking_role = db.session.query(Roles).filter_by(name=role).all()[0]
             if role == str(checking_role.name):
-                return jsonify(error_message="Role with this name already exists", status=400)
+                return jsonify(error_message="Role with this name already exists")
         except exc.SQLAlchemyError as err:
-            return jsonify(error_message=f'Unable to write data to the database', status=500)
+            return jsonify(error_message=f'Unable to write data to the database')
 
         try:
             new_role = Roles(
