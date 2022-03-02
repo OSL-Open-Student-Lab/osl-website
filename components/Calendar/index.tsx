@@ -4,43 +4,49 @@ import dayjs, { Dayjs } from 'dayjs'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import classNames from 'classnames'
 
-import '../../packages/dayjsConfig'
+import 'packages/dayjsConfig'
 
-import { usePrev } from '../../packages/hooks/usePrev'
+import { usePrev } from 'packages/hooks/usePrev'
+import { useEffect } from 'react'
 
 export enum PageValue {
   month = 1,
   year = 2,
   decade = 3
 }
+
 export enum PageLevel {
   month = 'month',
   year = 'year',
   decade = 'decade'
 }
+
 export type PageType = keyof typeof PageValue
 
 interface CalendarProps {
   minDate?: Dayjs
   maxDate?: Dayjs
   initialDate?: Dayjs
-  selectedDate?: Dayjs
-  onSelectDate?: (newSelectedDate: Dayjs) => void
-  disabledDays?: string[]
-  disabledFormat?: string
+  initialSelectedDate?: Dayjs
+  onSelectDate?: (newSelectedDate: Dayjs | null) => void
+  disabledDays?: Dayjs[]
 }
-
-export function Calendar(props: CalendarProps) {
+// ! DD-MM-YYYY HH:mm
+export function Calendar({
+  initialDate,
+  onSelectDate,
+  initialSelectedDate
+}: CalendarProps) {
   const [pageType, setPageType] = useState<PageType>('month')
   const prevPageType = usePrev(pageType)
-  const [date, setDate] = useState<Dayjs>(
-    dayjs(props.initialDate).startOf('month')
-  )
+  const [date, setDate] = useState<Dayjs>(dayjs(initialDate).startOf('month'))
   const prevDate = usePrev(date)
-  const [selectedDate, setSelectedDate] = useState<Dayjs>()
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
+    initialSelectedDate ?? null
+  )
 
-  const pageLayoutRef = useRef<any>(null)
-  const pageWrapperRef = useRef<any>(null)
+  const pageLayoutRef = useRef<HTMLDivElement>(null)
+  const pageWrapperRef = useRef<HTMLDivElement>(null)
   const pageLayoutAnimType =
     PageValue[prevPageType] < PageValue[pageType] ? 'up' : 'down'
 
@@ -62,7 +68,11 @@ export function Calendar(props: CalendarProps) {
         : null,
     [pageType, date]
   )
-
+  useEffect(() => {
+    if (onSelectDate) {
+      onSelectDate(selectedDate)
+    }
+  }, [selectedDate, onSelectDate])
   function prevHandler() {
     switch (pageType) {
       case 'month':
@@ -112,31 +122,18 @@ export function Calendar(props: CalendarProps) {
   }
 
   return (
-    <ButtonGroup className="calendar rounded border border-primary">
+    <ButtonGroup className="calendar rounded rounded-3 border border-primary">
       <ButtonGroup vertical className={'w-100'}>
-        <ButtonGroup>
-          <Button style={{ flexGrow: 1 }} onClick={prevHandler}>
-            {'<'}
-          </Button>
-          <Button style={{ flexGrow: 5 }} onClick={switchPageType}>
-            {formattedDate}
-          </Button>
-          <Button style={{ flexGrow: 1 }} onClick={nextHandler}>
-            {'>'}
-          </Button>
-        </ButtonGroup>
-
+        <Controls
+          {...{ prevHandler, nextHandler, switchPageType, formattedDate }}
+        />
         <div
           className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
           <SwitchTransition mode="out-in">
             <CSSTransition
               key={pageType}
-              addEndListener={(done: any) => {
-                pageLayoutRef.current.addEventListener(
-                  'transitionend',
-                  done,
-                  null
-                )
+              addEndListener={(done) => {
+                pageLayoutRef.current?.addEventListener('transitionend', done)
               }}
               in={true}
               nodeRef={pageLayoutRef}>
@@ -148,11 +145,10 @@ export function Calendar(props: CalendarProps) {
                 <SwitchTransition mode="out-in">
                   <CSSTransition
                     key={date.toISOString()}
-                    addEndListener={(done: any) => {
-                      pageWrapperRef.current.addEventListener(
+                    addEndListener={(done) => {
+                      pageWrapperRef.current?.addEventListener(
                         'transitionend',
-                        done,
-                        null
+                        done
                       )
                     }}
                     nodeRef={pageWrapperRef}
@@ -210,6 +206,33 @@ export function Calendar(props: CalendarProps) {
     </ButtonGroup>
   )
 }
+interface ControlsProps {
+  prevHandler: () => void
+  switchPageType: () => void
+  formattedDate: string | null
+  nextHandler: () => void
+}
+
+function Controls({
+  prevHandler,
+  switchPageType,
+  nextHandler,
+  formattedDate
+}: ControlsProps): JSX.Element {
+  return (
+    <ButtonGroup>
+      <Button style={{ flexGrow: 1 }} onClick={prevHandler}>
+        {'<'}
+      </Button>
+      <Button style={{ flexGrow: 5 }} onClick={switchPageType}>
+        {formattedDate}
+      </Button>
+      <Button style={{ flexGrow: 1 }} onClick={nextHandler}>
+        {'>'}
+      </Button>
+    </ButtonGroup>
+  )
+}
 
 function WeekDays() {
   return (
@@ -238,7 +261,7 @@ function WeekDays() {
 interface PageProps {
   initialDate: Dayjs
   onSelect?: (selectedDate: Dayjs) => void
-  selectedDate?: Dayjs
+  selectedDate?: Dayjs | null
   minDate?: Dayjs
   maxDate?: Dayjs
 }
@@ -257,7 +280,7 @@ function MonthPage({
         .map((week: Dayjs, weekIndex: number) => {
           const currentWeekStart = week.add(weekIndex, 'week')
           return (
-            <ButtonGroup key={weekIndex}>
+            <ButtonGroup key={weekIndex} className="h-100">
               {Array(7)
                 .fill(currentWeekStart)
                 .map((day: Dayjs, dayIndex: number) => {
@@ -274,7 +297,7 @@ function MonthPage({
                     initialDate,
                     'month'
                   )
-                  let buttonVariant: string = ''
+                  let buttonVariant: string
                   switch (true) {
                     case isSelected:
                       buttonVariant = 'success'
@@ -320,7 +343,7 @@ function YearPage({
       {Array(6)
         .fill(initialDate.startOf('year'))
         .map((monthPair: Dayjs, monthPairIndex: number) => (
-          <ButtonGroup key={monthPairIndex}>
+          <ButtonGroup key={monthPairIndex} className="h-100">
             {Array(2)
               .fill(monthPair)
               .map((month: Dayjs, monthIndex: number) => {
@@ -339,7 +362,7 @@ function YearPage({
                 )
                 const isToday = currentMonth.isSame(dayjs().startOf('month'))
 
-                let buttonVariant: string = ''
+                let buttonVariant: string
                 switch (true) {
                   case !isAllowed:
                     buttonVariant = 'outline-secondary'
@@ -386,7 +409,7 @@ function DecadePage({
       {Array(5)
         .fill(startDate)
         .map((yearPair, yearPairIndex) => (
-          <ButtonGroup key={yearPairIndex}>
+          <ButtonGroup key={yearPairIndex} className="h-100">
             {Array(2)
               .fill(yearPair)
               .map((year: Dayjs, yearIndex: number) => {
@@ -404,7 +427,7 @@ function DecadePage({
                 )
                 const isToday = currentYear.isSame(dayjs().startOf('year'))
 
-                let buttonVariant: string = ''
+                let buttonVariant: string
                 switch (true) {
                   case !isAllowed:
                     buttonVariant = 'outline-secondary'
