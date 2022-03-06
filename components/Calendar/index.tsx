@@ -3,11 +3,10 @@ import { ButtonGroup, Button } from 'react-bootstrap'
 import dayjs, { Dayjs } from 'dayjs'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import classNames from 'classnames'
-
 import 'packages/dayjsConfig'
 
 import { usePrev } from 'packages/hooks/usePrev'
-import { useEffect } from 'react'
+import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
 
 export enum PageValue {
   month = 1,
@@ -24,10 +23,10 @@ export enum PageLevel {
 export type PageType = keyof typeof PageValue
 
 interface CalendarProps {
-  minDate?: Dayjs
-  maxDate?: Dayjs
-  initialDate?: Dayjs
-  initialSelectedDate?: Dayjs
+  minDate?: string
+  maxDate?: string
+  initialDate?: string
+  initialSelectedDate?: string
   onSelectDate?: (newSelectedDate: Dayjs | null) => void
   disabledDays?: Dayjs[]
 }
@@ -35,18 +34,27 @@ interface CalendarProps {
 export function Calendar({
   initialDate,
   onSelectDate,
-  initialSelectedDate
+  initialSelectedDate,
+  minDate,
+  maxDate,
+  disabledDays
 }: CalendarProps) {
+  const processedInitialDate = initialDate
+    ? dayjs(initialDate, 'DD.MM.YYYY')
+    : dayjs()
   const [pageType, setPageType] = useState<PageType>('month')
   const prevPageType = usePrev(pageType)
-  const [date, setDate] = useState<Dayjs>(dayjs(initialDate).startOf('month'))
+  const [date, setDate] = useState<Dayjs>(processedInitialDate.startOf('month'))
   const prevDate = usePrev(date)
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
-    initialSelectedDate ?? null
+    initialSelectedDate ? dayjs(initialSelectedDate) : null
   )
+  const processedMaxDate = maxDate ? dayjs(maxDate) : null
+  const processedMinDate = minDate ? dayjs(minDate) : null
 
   const pageLayoutRef = useRef<HTMLDivElement>(null)
   const pageWrapperRef = useRef<HTMLDivElement>(null)
+
   const pageLayoutAnimType =
     PageValue[prevPageType] < PageValue[pageType] ? 'up' : 'down'
 
@@ -68,21 +76,32 @@ export function Calendar({
         : null,
     [pageType, date]
   )
-  useEffect(() => {
+
+  useDidMountEffect(() => {
     if (onSelectDate) {
       onSelectDate(selectedDate)
     }
   }, [selectedDate, onSelectDate])
+
   function prevHandler() {
+    const newMonth = date.subtract(1, 'month')
+    const newYear = date.subtract(1, 'year')
+    const newDecade = date.subtract(10, 'year')
     switch (pageType) {
       case 'month':
-        setDate(date.subtract(1, 'month'))
+        if (newMonth.isSameOrAfter(minDate, 'month')) {
+          setDate(newMonth)
+        }
         break
       case 'year':
-        setDate(date.subtract(1, 'year'))
+        if (newYear.isSameOrAfter(minDate, 'month')) {
+          setDate(newYear)
+        }
         break
       case 'decade':
-        setDate(date.subtract(10, 'year'))
+        if (newDecade.isSameOrAfter(minDate, 'month')) {
+          setDate(newDecade)
+        }
         break
     }
   }

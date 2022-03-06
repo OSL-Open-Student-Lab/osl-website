@@ -10,7 +10,7 @@ export function BasicLayout({ children }: BasicLayoutProps): JSX.Element {
   return (
     <>
       <Header />
-      <Container fluid>{children}</Container>
+      {children}
       <Footer />
     </>
   )

@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react'
-
+import React, { useState } from 'react'
+import useSwr from 'swr'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
@@ -39,6 +39,11 @@ export function Header() {
               <Nav.Item>
                 <Link href={'/qwe'} passHref>
                   <Nav.Link>qwe</Nav.Link>
+                </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link href={'/auth/signin'} passHref>
+                  <Button>qwe</Button>
                 </Link>
               </Nav.Item>
             </Nav>

@@ -6,7 +6,7 @@ const runtimeCaching=require('next-pwa/cache')
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    
+    apiAuthRoute:'/api/auth'
   },
   i18n: {
     locales:['ru','en'],

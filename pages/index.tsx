@@ -15,7 +15,12 @@ const Home: NextPage = () =>
   {
     return (
       <BasicLayout>
-        <Calendar />
+        <Calendar
+          initialDate="22.01.2001"
+          onSelectDate={(newDate) => {
+            console.log(newDate)
+          }}
+        />
       </BasicLayout>
     )
   }
