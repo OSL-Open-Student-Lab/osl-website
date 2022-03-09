@@ -3,7 +3,7 @@ import type {
   // NextPageContext
 } from 'next'
 
-import { BasicLayout } from 'components/BaseLayout'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 // import { useRouter } from 'next/router'
 // export async function getServerSideProps(context: NextPageContext) {
 //   return {

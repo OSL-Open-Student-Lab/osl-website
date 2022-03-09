@@ -2,10 +2,10 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Container, Form, FloatingLabel, Button } from 'react-bootstrap'
 import * as Yup from 'yup'
-import { BasicLayout } from 'components/BaseLayout/index'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import Link from 'next/link'
 
-const LogInSchema = Yup.object({
+const SignUpSchema = Yup.object({
   username: Yup.string()
     .required('Это обязательное поле')
     .trim()
@@ -16,22 +16,26 @@ const LogInSchema = Yup.object({
     .min(8, 'Длина пароля не должна быть не менее 8 символов'),
   confirm: Yup.string()
     .required('Это обязательное поле')
-    .oneOf([Yup.ref('username'), null], 'Пароли должны совпадать')
+    .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать')
 })
 
-type LogInData = Yup.InferType<typeof LogInSchema>
+type SignUpData = Yup.InferType<typeof SignUpSchema>
 
-export default function SignUp() {
+export default function SignUpForm() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isValid, dirtyFields }
-  } = useForm<LogInData>({
+    formState: { errors, isValid, dirtyFields },
+    setError
+  } = useForm<SignUpData>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     shouldFocusError: true,
-    resolver: yupResolver(LogInSchema)
+    resolver: yupResolver(SignUpSchema)
   })
+  function auth(_data: SignUpData) {
+    return false
+  }
   return (
     <BasicLayout>
       <Container fluid>
@@ -58,7 +62,7 @@ export default function SignUp() {
                 {...register('password')}
                 type="password"
                 placeholder="password"
-                // id="password"
+                id="password"
                 isInvalid={!!errors.password}
                 isValid={dirtyFields.password && !errors.password}
               />
@@ -73,16 +77,16 @@ export default function SignUp() {
                 {...register('confirm')}
                 placeholder="confirm password"
                 type="password"
-                // id="confirm_password"
-                isInvalid={!!errors.password}
-                isValid={dirtyFields.password && !errors.password}
+                id="confirm_password"
+                isInvalid={!!errors.confirm}
+                isValid={dirtyFields.confirm && !errors.confirm}
               />
               <Form.Text className="text-danger">
                 {errors.confirm?.message}
               </Form.Text>
             </FloatingLabel>
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <Button
               type="submit"
               size="lg"
@@ -92,7 +96,8 @@ export default function SignUp() {
               Отправить
             </Button>
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="d-flex align-items-center">
+            <span className="text-dark">Уже есть аккаунт?</span>
             <Link href="/auth/signin" passHref>
               <Button variant="link">Войти</Button>
             </Link>
