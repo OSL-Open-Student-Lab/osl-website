@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import dayjs, { Dayjs } from 'dayjs'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
@@ -7,6 +7,7 @@ import 'packages/dayjsConfig'
 
 import { usePrev } from 'packages/hooks/usePrev'
 import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
+import { HoursPage } from './hours'
 
 export enum PageValue {
   month = 1,
@@ -38,10 +39,11 @@ export function Calendar({
   minDate,
   maxDate,
   disabledDays
-}: CalendarProps) {
+}: CalendarProps): JSX.Element {
   const processedInitialDate = initialDate
     ? dayjs(initialDate, 'DD.MM.YYYY')
     : dayjs()
+  const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState([])
   const [pageType, setPageType] = useState<PageType>('month')
   const prevPageType = usePrev(pageType)
   const [date, setDate] = useState<Dayjs>(processedInitialDate.startOf('month'))
@@ -68,12 +70,12 @@ export function Calendar({
       pageType === PageLevel.month
         ? date.format('MMMM YYYY')
         : pageType === PageLevel.year
-        ? date.format('YYYY')
-        : pageType === PageLevel.decade
-        ? `${date.year(Math.floor(date.year() / 10) * 10).format('YYYY')}-${date
-            .year(Math.ceil(date.year() / 10) * 10 - 1)
-            .format('YYYY')}`
-        : null,
+          ? date.format('YYYY')
+          : pageType === PageLevel.decade
+            ? `${date.year(Math.floor(date.year() / 10) * 10).format('YYYY')}-${date
+              .year(Math.ceil(date.year() / 10) * 10 - 1)
+              .format('YYYY')}`
+            : null,
     [pageType, date]
   )
 
@@ -83,6 +85,13 @@ export function Calendar({
     }
   }, [selectedDate, onSelectDate])
 
+  useEffect(() => {
+    const min = Math.ceil(0);
+    const max = Math.floor(2);
+    const randVal = Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+    setOccupiedHoursesMassive(Array(12).fill(randVal));
+    console.log(occupiedHoursesMassive);
+  }, [selectedDate])
   function prevHandler() {
     const newMonth = date.subtract(1, 'month')
     const newYear = date.subtract(1, 'year')
@@ -141,88 +150,98 @@ export function Calendar({
   }
 
   return (
-    <ButtonGroup className="calendar rounded rounded-3 border border-primary">
-      <ButtonGroup vertical className={'w-100'}>
-        <Controls
-          {...{ prevHandler, nextHandler, switchPageType, formattedDate }}
-        />
-        <div
-          className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
-          <SwitchTransition mode="out-in">
-            <CSSTransition
-              key={pageType}
-              addEndListener={(done) => {
-                pageLayoutRef.current?.addEventListener('transitionend', done)
-              }}
-              in={true}
-              nodeRef={pageLayoutRef}>
-              <ButtonGroup
-                vertical
-                ref={pageLayoutRef}
-                className={`w-100 h-100 page page-layout`}>
-                {pageType === PageLevel.month ? <WeekDays /> : null}
-                <SwitchTransition mode="out-in">
-                  <CSSTransition
-                    key={date.toISOString()}
-                    addEndListener={(done) => {
-                      pageWrapperRef.current?.addEventListener(
-                        'transitionend',
-                        done
-                      )
-                    }}
-                    nodeRef={pageWrapperRef}
-                    in={true}>
-                    <ButtonGroup
-                      ref={pageWrapperRef}
-                      vertical
-                      className={`w-100 h-100 page page-wrapper`}>
-                      {pageType === PageLevel.month ? (
-                        <>
-                          <MonthPage
-                            initialDate={date}
-                            selectedDate={selectedDate}
-                            onSelect={(newSelectedDate: Dayjs) =>
-                              setSelectedDate(newSelectedDate)
-                            }
-                          />
-                        </>
-                      ) : null}
-                      {pageType === PageLevel.year ? (
-                        <>
-                          <YearPage
-                            initialDate={date}
-                            selectedDate={selectedDate}
-                            onSelect={(newSelectedDate: Dayjs) => {
-                              setPageType('month')
-                              setDate(newSelectedDate)
-                            }}
-                          />
-                        </>
-                      ) : null}
-                      {pageType === PageLevel.decade ? (
-                        <>
-                          <DecadePage
-                            initialDate={date}
-                            selectedDate={selectedDate}
-                            onSelect={(newSelectedDate: Dayjs) => {
-                              setPageType('year')
-                              setDate(newSelectedDate)
-                            }}
-                          />
-                        </>
-                      ) : null}
-                    </ButtonGroup>
-                  </CSSTransition>
-                </SwitchTransition>
-              </ButtonGroup>
-            </CSSTransition>
-          </SwitchTransition>
-        </div>
-        <ButtonGroup className={'w-100'}>
-          <Button onClick={todayClickHandler}>Сегодня</Button>
+    <div className='calendar-container'>
+      <ButtonGroup className="calendar rounded rounded-3 border border-primary">
+        <ButtonGroup vertical className={'w-100'}>
+          <Controls
+            {...{ prevHandler, nextHandler, switchPageType, formattedDate }}
+          />
+          <div
+            className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
+            <SwitchTransition mode="out-in">
+              <CSSTransition
+                key={pageType}
+                addEndListener={(done) => {
+                  pageLayoutRef.current?.addEventListener('transitionend', done)
+                }}
+                in={true}
+                nodeRef={pageLayoutRef}>
+                <ButtonGroup
+                  vertical
+                  ref={pageLayoutRef}
+                  className={`w-100 h-100 page page-layout`}>
+                  {pageType === PageLevel.month ? <WeekDays /> : null}
+                  <SwitchTransition mode="out-in">
+                    <CSSTransition
+                      key={date.toISOString()}
+                      addEndListener={(done) => {
+                        pageWrapperRef.current?.addEventListener(
+                          'transitionend',
+                          done
+                        )
+                      }}
+                      nodeRef={pageWrapperRef}
+                      in={true}>
+                      <ButtonGroup
+                        ref={pageWrapperRef}
+                        vertical
+                        className={`w-100 h-100 page page-wrapper`}>
+                        {pageType === PageLevel.month ? (
+                          <>
+                            <MonthPage
+                              initialDate={date}
+                              selectedDate={selectedDate}
+                              onSelect={(newSelectedDate: Dayjs) =>
+                                setSelectedDate(newSelectedDate)
+                              }
+                            />
+                          </>
+                        ) : null}
+                        {pageType === PageLevel.year ? (
+                          <>
+                            <YearPage
+                              initialDate={date}
+                              selectedDate={selectedDate}
+                              onSelect={(newSelectedDate: Dayjs) => {
+                                setPageType('month')
+                                setDate(newSelectedDate)
+                              }}
+                            />
+                          </>
+                        ) : null}
+                        {pageType === PageLevel.decade ? (
+                          <>
+                            <DecadePage
+                              initialDate={date}
+                              selectedDate={selectedDate}
+                              onSelect={(newSelectedDate: Dayjs) => {
+                                setPageType('year')
+                                setDate(newSelectedDate)
+                              }}
+                            />
+                          </>
+                        ) : null}
+                      </ButtonGroup>
+                    </CSSTransition>
+                  </SwitchTransition>
+                </ButtonGroup>
+              </CSSTransition>
+            </SwitchTransition>
+          </div>
+          <ButtonGroup className={'w-100'}>
+            <Button onClick={todayClickHandler}>Сегодня</Button>
+          </ButtonGroup>
         </ButtonGroup>
       </ButtonGroup>
-    </ButtonGroup>
+      <CSSTransition
+        in={!!selectedDate}
+        timeout={300}
+        classNames="hour-page"
+        unmountOnExit
+      >
+        <HoursPage occupiedHourses={occupiedHoursesMassive} />
+      </CSSTransition>
+    </div>
   )
 }
 interface ControlsProps {
@@ -291,7 +310,7 @@ function MonthPage({
   selectedDate,
   minDate,
   maxDate
-}: PageProps) {
+}: PageProps): JSX.Element {
   return (
     <>
       {Array(6)
@@ -307,7 +326,7 @@ function MonthPage({
                   const isAllowed =
                     minDate && maxDate
                       ? currentDay.isSameOrAfter(minDate?.startOf('day')) &&
-                        currentDay.isSameOrBefore(maxDate?.startOf('day'))
+                      currentDay.isSameOrBefore(maxDate?.startOf('day'))
                       : true
                   const isSelected = currentDay.isSame(selectedDate)
                   const isToday = currentDay.isToday()
@@ -373,7 +392,7 @@ function YearPage({
                 const isAllowed =
                   minDate && maxDate
                     ? currentMonth.isSameOrAfter(minDate?.startOf('month')) &&
-                      currentMonth.isSameOrBefore(maxDate?.endOf('month'))
+                    currentMonth.isSameOrBefore(maxDate?.endOf('month'))
                     : true
 
                 const isSelected = currentMonth.isSame(
@@ -439,7 +458,7 @@ function DecadePage({
                 const isAllowed =
                   minDate && maxDate
                     ? year.isSameOrAfter(minDate?.startOf('year')) &&
-                      year.isSameOrBefore(maxDate?.endOf('year'))
+                    year.isSameOrBefore(maxDate?.endOf('year'))
                     : true
                 const isSelected = currentYear.isSame(
                   selectedDate?.startOf('year')
