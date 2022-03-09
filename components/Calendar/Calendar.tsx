@@ -13,6 +13,7 @@ import { WeekDays } from './CalenarWeekDays'
 import { MonthPage } from './CalenarMonthPage'
 import { YearPage } from './CalendarYearPage'
 import { DecadePage } from './CalendarDecadePage'
+import { HoursPage } from './hours'
 export interface CalendarProps {
   minDate?: string
   maxDate?: string
@@ -65,6 +66,15 @@ export function Calendar({
     }
   }, [selectedDate, onSelectDate])
 
+  const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState([])
+  useEffect(() => {
+    const min = Math.ceil(0);
+    const max = Math.floor(2);
+    const randVal = Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+    setOccupiedHoursesMassive(Array(12).fill(randVal));
+    console.log(occupiedHoursesMassive);
+  }, [selectedDate])
+
   function todayClickHandler() {
     setPageLevelType('month')
     setDate(dayjs().startOf('month'))
@@ -108,64 +118,76 @@ export function Calendar({
     )
   }
   return (
-    <ButtonGroup className="calendar rounded rounded-3 border border-primary">
-      <ButtonGroup vertical className={'w-100'}>
-        <Controls
-          pageTypeSetter={setPageLevelType}
-          dateSetter={setDate}
-          currentPageType={pageType}
-          currentDate={date}
-          minDate={processedMinDate}
-          maxDate={processedMaxDate}
-        />
-        <div
-          className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
-          <SwitchTransition mode="out-in">
-            <CSSTransition
-              key={pageType}
-              addEndListener={(done) => {
-                pageLayoutRef.current?.addEventListener('transitionend', done)
-              }}
-              in={true}
-              nodeRef={pageLayoutRef}>
-              <ButtonGroup
-                vertical
-                ref={pageLayoutRef}
-                className={`w-100 h-100 page page-layout`}>
-                {pageType === PageLevelName.month ? <WeekDays /> : null}
-                <SwitchTransition mode="out-in">
-                  <CSSTransition
-                    key={date.toISOString()}
-                    addEndListener={(done) => {
-                      pageWrapperRef.current?.addEventListener(
-                        'transitionend',
-                        done
-                      )
-                    }}
-                    nodeRef={pageWrapperRef}
-                    in={true}>
-                    <ButtonGroup
-                      ref={pageWrapperRef}
-                      vertical
-                      className={`w-100 h-100 page page-wrapper`}>
-                      {currnetPage[pageType]}
-                    </ButtonGroup>
-                  </CSSTransition>
-                </SwitchTransition>
-              </ButtonGroup>
-            </CSSTransition>
-          </SwitchTransition>
-        </div>
-        {dayjs().isSameOrAfter(dayjs(processedMinDate)) &&
-        dayjs().isSameOrBefore(dayjs(processedMaxDate)) &&
-        !(disabledDays
-          ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
-          : false) ? (
-          <ButtonGroup className={'w-100'}>
-            <Button onClick={todayClickHandler}>Сегодня</Button>
-          </ButtonGroup>
-        ) : null}
+    <div className='d-flex align-items-center'>
+      <ButtonGroup className="calendar rounded rounded-3 border border-primary">
+        <ButtonGroup vertical className={'w-100'}>
+          <Controls
+            pageTypeSetter={setPageLevelType}
+            dateSetter={setDate}
+            currentPageType={pageType}
+            currentDate={date}
+            minDate={processedMinDate}
+            maxDate={processedMaxDate}
+          />
+          <div
+            className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
+            <SwitchTransition mode="out-in">
+              <CSSTransition
+                key={pageType}
+                addEndListener={(done) => {
+                  pageLayoutRef.current?.addEventListener('transitionend', done)
+                }}
+                in={true}
+                nodeRef={pageLayoutRef}>
+                <ButtonGroup
+                  vertical
+                  ref={pageLayoutRef}
+                  className={`w-100 h-100 page page-layout`}>
+                  {pageType === PageLevelName.month ? <WeekDays /> : null}
+                  <SwitchTransition mode="out-in">
+                    <CSSTransition
+                      key={date.toISOString()}
+                      addEndListener={(done) => {
+                        pageWrapperRef.current?.addEventListener(
+                          'transitionend',
+                          done
+                        )
+                      }}
+                      nodeRef={pageWrapperRef}
+                      in={true}>
+                      <ButtonGroup
+                        ref={pageWrapperRef}
+                        vertical
+                        className={`w-100 h-100 page page-wrapper`}>
+                        {currnetPage[pageType]}
+                      </ButtonGroup>
+                    </CSSTransition>
+                  </SwitchTransition>
+                </ButtonGroup>
+              </CSSTransition>
+
+            </SwitchTransition>
+          </div>
+
+          {dayjs().isSameOrAfter(dayjs(processedMinDate)) &&
+            dayjs().isSameOrBefore(dayjs(processedMaxDate)) &&
+            !(disabledDays
+              ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
+              : false) ? (
+            <ButtonGroup className={'w-100'}>
+              <Button onClick={todayClickHandler}>Сегодня</Button>
+            </ButtonGroup>
+          ) : null}
+        </ButtonGroup>
       </ButtonGroup>
-    </ButtonGroup>
+      <CSSTransition
+        in={!!selectedDate}
+        timeout={300}
+        classNames="hour-page"
+        unmountOnExit
+      >
+        <HoursPage occupiedHourses={occupiedHoursesMassive} />
+      </CSSTransition>
+    </div>
   )
 }
