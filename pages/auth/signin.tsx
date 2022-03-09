@@ -2,24 +2,24 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Container, Form, FloatingLabel, Button, Alert } from 'react-bootstrap'
 import * as Yup from 'yup'
-import { BasicLayout } from 'components/BaseLayout/index'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import Link from 'next/link'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-const LogInSchema = Yup.object({
+const SignInSchema = Yup.object({
   username: Yup.string()
     .required('Это обязательное поле')
     .trim()
     .min(6, 'Логин должен быть не менее 6 символов')
     .max(12, 'Логин не должен превышать 12 символов'),
   password: Yup.string()
-    .required('Это обязательное поле')
+    .required('')
     .min(8, 'Длина пароля не должна быть не менее 8 символов'),
   rememberMe: Yup.boolean()
 })
 
-type LogInData = Yup.InferType<typeof LogInSchema>
+type SignInData = Yup.InferType<typeof SignInSchema>
 
 export default function SignIn() {
   const router = useRouter()
@@ -28,14 +28,14 @@ export default function SignIn() {
     register,
     formState: { errors },
     setError
-  } = useForm<LogInData>({
+  } = useForm<SignInData>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     shouldFocusError: true,
-    resolver: yupResolver(LogInSchema)
+    resolver: yupResolver(SignInSchema)
   })
 
-  async function auth(data: LogInData) {
+  async function auth(data: SignInData) {
     if (process.env.apiAuthRoute) {
       const response = await axios
         .post(process.env.apiAuthRoute, data)
@@ -94,12 +94,13 @@ export default function SignIn() {
               label="Запомнить меня"
             />
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <Button type="submit" size="lg" className="w-100">
               Отправить
             </Button>
           </Form.Group>
-          <Form.Group>
+          <Form.Group className="d-flex align-items-center">
+            <span className="text-dark">Ещё нет аккаунта?</span>
             <Link href="/auth/signup" passHref>
               <Button variant="link">Регистрация</Button>
             </Link>

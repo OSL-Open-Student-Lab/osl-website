@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import useSwr from 'swr'
+// import useSwr from 'swr'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
@@ -21,7 +21,14 @@ export function Header() {
         <Container fluid>
           <Link href="/" passHref>
             <Navbar.Brand className="d-flex align-items-center gap-1">
-              <Image src="/favicon.ico" width={30} height={30} alt="logo" />
+              <Image
+                src="/favicon.ico"
+                width={30}
+                height={30}
+                alt="logo"
+                // placeholder="blur"
+                // blurDataURL="holder.js/30x30"
+              />
               OSL
             </Navbar.Brand>
           </Link>

@@ -1,8 +1,8 @@
-import type {
-  NextPage
-  // NextPageContext
-} from 'next'
+import { NextPage } from 'next'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
+import { Calendar } from '../components/Calendar/Calendar'
 
+<<<<<<< HEAD
 import { BasicLayout } from 'components/BaseLayout'
 import { Calendar } from '../components/Calendar/index'
 import { HoursPage } from 'components/Calendar/hours'
@@ -18,6 +18,13 @@ const Home: NextPage = () =>
     <BasicLayout>
       <Calendar
         initialDate="22.01.2001"
+=======
+const Home: NextPage = () => {
+  return (
+    <BasicLayout>
+      <Calendar
+        initialDate="01.01.2022"
+>>>>>>> af5f023b90ac32593ae5ff01c5b258ff6df5be62
         onSelectDate={(newDate) => {
           console.log(newDate)
         }}
