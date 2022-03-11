@@ -87,7 +87,7 @@ def logout():
 def is_auth():
     authorized = current_user.is_authenticated
     if authorized:
-        return 200
-    return 401
+        return jsonify(), 200
+    return jsonify(), 401
 
 
