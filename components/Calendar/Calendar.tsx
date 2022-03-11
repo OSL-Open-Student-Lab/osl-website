@@ -66,13 +66,15 @@ export function Calendar({
     }
   }, [selectedDate, onSelectDate])
 
-  const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState([])
+  const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState<
+    number[]
+  >([])
   useEffect(() => {
-    const min = Math.ceil(0);
-    const max = Math.floor(2);
-    const randVal = Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
-    setOccupiedHoursesMassive(Array(12).fill(randVal));
-    console.log(occupiedHoursesMassive);
+    const min = Math.ceil(0)
+    const max = Math.floor(2)
+    const randVal = Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
+    setOccupiedHoursesMassive(Array(12).fill(randVal))
+    console.log(occupiedHoursesMassive)
   }, [selectedDate])
 
   function todayClickHandler() {
@@ -118,7 +120,7 @@ export function Calendar({
     )
   }
   return (
-    <div className='d-flex align-items-center'>
+    <div className="d-flex align-items-center">
       <ButtonGroup className="calendar rounded rounded-3 border border-primary">
         <ButtonGroup vertical className={'w-100'}>
           <Controls
@@ -165,15 +167,14 @@ export function Calendar({
                   </SwitchTransition>
                 </ButtonGroup>
               </CSSTransition>
-
             </SwitchTransition>
           </div>
 
           {dayjs().isSameOrAfter(dayjs(processedMinDate)) &&
-            dayjs().isSameOrBefore(dayjs(processedMaxDate)) &&
-            !(disabledDays
-              ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
-              : false) ? (
+          dayjs().isSameOrBefore(dayjs(processedMaxDate)) &&
+          !(disabledDays
+            ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
+            : false) ? (
             <ButtonGroup className={'w-100'}>
               <Button onClick={todayClickHandler}>Сегодня</Button>
             </ButtonGroup>
@@ -184,8 +185,7 @@ export function Calendar({
         in={!!selectedDate}
         timeout={300}
         classNames="hour-page"
-        unmountOnExit
-      >
+        unmountOnExit>
         <HoursPage occupiedHourses={occupiedHoursesMassive} />
       </CSSTransition>
     </div>
