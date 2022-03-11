@@ -13,13 +13,11 @@ def admin_required(f):
         try:
             cur_user_role_id = current_user.role_id
             cur_user_role = db.session.query(Roles).filter_by(id=cur_user_role_id).all()[0]
-            print(cur_user_role, cur_user_role.name)
             if cur_user_role.name.lower() == 'admin':
                 return f(*args, **kwargs)
-            return jsonify(error_message="You don't have permission for this action") 
+            return jsonify(error_message="You don't have permission for this action"), 403
         except Exception as err:
-            print(err)
-            return jsonify(error_message="Something goes wrong")
+            return jsonify(error_message="Something goes wrong"), 500
     return wrapper
 
 
@@ -38,9 +36,9 @@ def add_user_role():
         try:
             checking_role = db.session.query(Roles).filter_by(name=role).all()[0]
             if role == str(checking_role.name):
-                return jsonify(error_message="Role with this name already exists")
+                return jsonify(error_message="Role with this name already exists"), 400
         except exc.SQLAlchemyError as err:
-            return jsonify(error_message=f'Unable to write data to the database')
+            return jsonify(error_message=f'Unable to write data to the database'), 400
 
         try:
             new_role = Roles(

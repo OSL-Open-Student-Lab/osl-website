@@ -15,7 +15,7 @@ def load_user(user_id):
 
 @lm.unauthorized_handler
 def unauthorized():
-    return jsonify(error_message='user unauthorized', status=403)
+    return jsonify(error_message='user unauthorized'), 403
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -29,13 +29,13 @@ def register():
             user_exists = Users.query.filter_by(name=new_username).first()
             email_exists = Users.query.filter_by(email=new_email).first()
         except:
-            return jsonify(error_message='Unable to load data from the database')
+            return jsonify(error_message='Unable to load data from the database'), 500
 
         if user_exists is not None:
-            return jsonify(error_message='User with this name already exists')
+            return jsonify(error_message='User with this name already exists'), 400
 
         if email_exists is not None:
-            return jsonify(error_message='User with this email already exists')
+            return jsonify(error_message='User with this email already exists'), 400
 
         new_user = Users(
             name=new_username,
@@ -47,9 +47,9 @@ def register():
             db.session.add(new_user)
             db.session.commit()
         except:
-            return jsonify(error_message='Unable to write data to the database')
+            return jsonify(error_message='Unable to write data to the database'), 500
 
-        return jsonify(message='User created successfully')
+        return jsonify(message='User created successfully'), 200
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -62,15 +62,15 @@ def login():
             checking_user = db.session.query(Users).\
                             filter_by(name=checking_username).first()
             if not checking_user:
-                return jsonify(error_message='User not found')
+                return jsonify(error_message='User not found'), 400
         except:
-            return jsonify(error_message='Unable load data from the database') 
+            return jsonify(error_message='Unable load data from the database'), 500 
         else:
             db_password = checking_user.password
 
         if check_password_hash(db_password, checking_password):
             login_user(checking_user, remember=True)
-            return jsonify(message='User logged in successfully')
+            return jsonify(message='User logged in successfully'), 200
 
 
 
@@ -79,9 +79,13 @@ def login():
 def logout():
     logout_user()
     print(session)
-    return jsonify(message='Logged out successfully') 
-
+    return jsonify(message='Logged out successfully'), 200
 
 @auth_bp.route('/current', methods=['GET'])
 def is_auth():
-    return jsonify(authorized=current_user.is_authenticated)
+    authorized = current_user.is_authenticated
+    if authorized:
+        return 200
+    return 401
+
+
