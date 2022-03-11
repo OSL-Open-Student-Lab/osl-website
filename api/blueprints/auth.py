@@ -68,10 +68,12 @@ def login():
         else:
             db_password = checking_user.password
 
-        if check_password_hash(db_password, checking_password):
+        if not check_password_hash(db_password, checking_password):
+            return jsonify(error_message='Passwords do not match'), 400
+        else:
             login_user(checking_user, remember=True)
             return jsonify(message='User logged in successfully'), 200
-
+        
 
 
 @auth_bp.route('/logout', methods=['GET'])
