@@ -11,6 +11,4 @@ PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=7)
 REMEMBER_COOKIE_DURATION=datetime.timedelta(days=7)
 REMEMBER_COOKIE_HTTPONLY=True
 STATIC_FOLDER = 'static'
-CORS_ALLOW_HEADERS=[
-        "Access-Control-Allow-Credentials"
-]
+CORS_ALLOW_HEADERS="*"
