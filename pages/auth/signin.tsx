@@ -4,25 +4,39 @@ import { Container, Form, FloatingLabel, Button, Alert } from 'react-bootstrap'
 import * as Yup from 'yup'
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import Link from 'next/link'
-import axios from 'axios'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import useSWR from 'swr'
 
 const SignInSchema = Yup.object({
-  username: Yup.string()
-    .required('Это обязательное поле')
-    .trim()
-    .min(6, 'Логин должен быть не менее 6 символов')
-    .max(12, 'Логин не должен превышать 12 символов'),
-  password: Yup.string()
-    .required('')
-    .min(8, 'Длина пароля не должна быть не менее 8 символов'),
+  username: Yup.string().required('Это обязательное поле').trim(),
+  // .min(6, 'Логин должен быть не менее 6 символов')
+  // .max(12, 'Логин не должен превышать 12 символов'),
+  password: Yup.string().required(''),
+  // .min(8, 'Длина пароля не должна быть не менее 8 символов'),
   rememberMe: Yup.boolean()
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
-
+fetch('https://osl-apiv1.herokuapp.com/api/v1/auth/register', {
+  method: 'POST',
+  credentials: 'include',
+  body: JSON.stringify({
+    username: 'qwe124',
+    password: 'qwe124',
+    email: 'qwe1@qwe.qwe'
+  })
+})
 export default function SignIn() {
   const router = useRouter()
+  async function authFetcher(authUrl: string) {
+    const response = await axios.get(authUrl, {
+      withCredentials: true
+    })
+    return response
+  }
+  const { data, error } = useSWR(process.env.apiAuthRoute, authFetcher)
+  console.log(data)
   const {
     handleSubmit,
     register,
@@ -35,24 +49,23 @@ export default function SignIn() {
     resolver: yupResolver(SignInSchema)
   })
 
-  async function auth(data: SignInData) {
-    if (process.env.apiAuthRoute) {
-      const response = await axios
-        .post(process.env.apiAuthRoute, data)
-        .then(() => true)
+  async function loginFetcher(data: SignInData) {
+    if (process.env.apiLoginRoute) {
+      // const response = await axios
+      //   .post(process.env.apiLoginRoute, data, {
+      //     withCredentials: true,
+      //     method: 'POST'
+      //   })
+      //   .then(() => true)
+      //   .catch(() => false)
+      const response = await fetch(process.env.apiLoginRoute, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data)
+      })
+        .then((response) => response.status === 200)
         .catch(() => false)
-      if (response === true) {
-        router.push('/')
-      } else {
-        setError(
-          'username',
-          {
-            message: 'Неверный логин или пароль',
-            type: 'authError'
-          },
-          { shouldFocus: true }
-        )
-      }
+      console.log(response)
     }
   }
 
@@ -60,7 +73,7 @@ export default function SignIn() {
     <BasicLayout>
       <Container fluid>
         <Form
-          onSubmit={handleSubmit(auth)}
+          onSubmit={handleSubmit(loginFetcher)}
           className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12">
           <Form.Group>
             {errors.username?.type === 'authError' && (

@@ -6,7 +6,8 @@ const runtimeCaching=require('next-pwa/cache')
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    apiAuthRoute:'/api/auth'
+    apiLoginRoute: 'https://osl-apiv1.herokuapp.com/api/v1/auth/login',
+    apiAuthRoute:'https://osl-apiv1.herokuapp.com/api/v1/auth/current'
   },
   i18n: {
     locales:['ru','en'],
@@ -19,7 +20,7 @@ const nextConfig = {
     register:true,
     runtimeCaching,
     disable: process.env.NODE_ENV === 'development',
-    fallbacks:{image:'/favicon.ico'}
+    fallbacks:{image:'/favicon.ico'},
   },
   distDir: 'build',
   images: {
@@ -27,4 +28,5 @@ const nextConfig = {
   }
 }
 
-module.exports = withPWA(nextConfig)
+// module.exports = withPWA(nextConfig)
+module.exports = nextConfig
