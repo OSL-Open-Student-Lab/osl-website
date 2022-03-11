@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, session, request
 from api.models import Users, db
 from api import lm
 
+from json import loads
 
 
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
@@ -20,7 +21,8 @@ def unauthorized():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
-        data = dict(request.json)
+        data = loads(request.data.decode(encoding='utf-8'))
+        #data = dict(request.json)
         new_username = data.get('username')
         new_password = data.get('password')
         new_email = data.get('email')
@@ -54,8 +56,8 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        print(request.get_json())
-        data = dict(request.data)
+        data = loads(request.data.decode(encoding='utf-8'))
+        # data = dict(request.json)
         checking_username = data.get('username')
         checking_password = data.get('password')
 
