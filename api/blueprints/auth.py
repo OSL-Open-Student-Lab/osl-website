@@ -95,4 +95,19 @@ def is_auth():
         return jsonify(), 200
     return jsonify(), 401
 
+@auth_bp.route('/username_exists', methods=['GET'])
+def username_exists():
+    username = loads(request.data.decode(encoding='utf-8'))
+    checking_username = db.Users.filter_by(username).all()
+    if checking_username:
+        return jsonify(error_message='User with this name already exists'), 400
+    return "", 200
+
+@auth_bp.route('/email_exists', methods=['GET'])
+def email_exists():
+    email = loads(request.data.decode(encoding='utf-8'))
+    checking_email = db.Users.filter_by(email).all()
+    if checking_email:
+        return jsonify(error_message='User with this email already exists'), 400
+    return "", 200
 
