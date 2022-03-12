@@ -97,7 +97,7 @@ def is_auth():
 @auth_bp.route('/username_exists', methods=['POST'])
 def username_exists():
     username = loads(request.data.decode(encoding='utf-8')).get('username')
-    checking_username = Users.filter_by(username).all()
+    checking_username = Users.query.filter_by(username).all()
     if checking_username:
         return jsonify(error_message='User with this name already exists'), 400
     return "", 200
@@ -105,7 +105,7 @@ def username_exists():
 @auth_bp.route('/email_exists', methods=['POST'])
 def email_exists():
     email = loads(request.data.decode(encoding='utf-8')).get('email')
-    checking_email = Users.filter_by(email).all()
+    checking_email = Users.query.filter_by(email).all()
     if checking_email:
         return jsonify(error_message='User with this email already exists'), 400
     return "", 200
