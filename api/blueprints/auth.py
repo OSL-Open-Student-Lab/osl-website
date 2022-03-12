@@ -51,7 +51,7 @@ def register():
         except:
             return jsonify(error_message='Unable to write data to the database'), 500
     
-        login_user(new_user, remember=True, force=True)
+        login_user(new_user, remember=True)
         return jsonify(message='User created successfully'), 200
 
 @auth_bp.route('/login', methods=['POST'])
