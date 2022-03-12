@@ -61,6 +61,7 @@ def login():
         # data = dict(request.json)
         checking_username = data.get('username')
         checking_password = data.get('password')
+        remember_me = data.get('remember_me')
 
         try:
             checking_user = db.session.query(Users).\
@@ -75,7 +76,7 @@ def login():
         if not check_password_hash(db_password, checking_password):
             return jsonify(error_message='Passwords do not match'), 400
         else:
-            login_user(checking_user, remember=True)
+            login_user(checking_user, remember=remember_me)
             return jsonify(message='User logged in successfully'), 200
         
 
