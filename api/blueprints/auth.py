@@ -13,7 +13,6 @@ auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
-
 @lm.unauthorized_handler
 def unauthorized():
     return jsonify(error_message='user unauthorized'), 403
@@ -95,7 +94,7 @@ def is_auth():
         return jsonify(), 200
     return jsonify(), 401
 
-@auth_bp.route('/username_exists', methods=['GET'])
+@auth_bp.route('/username_exists', methods=['POST'])
 def username_exists():
     username = loads(request.data.decode(encoding='utf-8'))
     checking_username = db.Users.filter_by(username).all()
@@ -103,7 +102,7 @@ def username_exists():
         return jsonify(error_message='User with this name already exists'), 400
     return "", 200
 
-@auth_bp.route('/email_exists', methods=['GET'])
+@auth_bp.route('/email_exists', methods=['POST'])
 def email_exists():
     email = loads(request.data.decode(encoding='utf-8'))
     checking_email = db.Users.filter_by(email).all()
