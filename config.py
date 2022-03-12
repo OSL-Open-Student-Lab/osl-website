@@ -3,6 +3,7 @@ from api.models import db
 from os import getenv
 
 SERVER_NAME = "osl-apiv1.herokuapp.com"
+SESSION_COOKIE_DOMAIN = "osl-apiv1.herokuapp.com"
 SECRET_KEY = getenv('OSL_SECRET_KEY')
 STATIC_FOLDER = 'static'
 SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL').replace('postgres', 'postgresql')
