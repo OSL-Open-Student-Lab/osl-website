@@ -75,7 +75,7 @@ def login():
         if not check_password_hash(db_password, checking_password):
             return jsonify(error_message='Passwords do not match'), 400
         else:
-            login_user(checking_user, remember=True)
+            login_user(checking_user, remember=True, force=True)
             return jsonify(message='User logged in successfully'), 200
         
 
