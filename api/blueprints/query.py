@@ -1,21 +1,24 @@
 import datetime
 
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy import exc
 from api.models import db, FacilityBooking
 
+from json import loads
 
 query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
 
 
 @query_bp.route('', methods=['POST', 'GET'])
 @login_required
-def queries():
+def queries(user_id):
     if request.method == 'POST':
         try:
-            data = request.get_json('user_id')
-            user_id = data['user_id']
+            # data = request.get_json('user_id')
+            data = loads(request.data.decode(encoding='utf-8'))
+            #user_id = data['user_id']
+            print(user_id)
             from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
             to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
             facility_id = data['facility_id']
@@ -50,6 +53,7 @@ def queries():
         
         for i, el in enumerate(all_positions):
             all_positions[i] = {
+                "facility_booking_id":el.id,
                 "from_time":el.from_time,
                 "to_time":el.to_time,
                 "user_id":el.user_id,
