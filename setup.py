@@ -11,7 +11,7 @@ def create_app():
     except Exception as err:
         print(f"[ERROR]: Unable to setup database -> {err}")
 
-    CORS(app, supports_credentials=True, allow_headers="*", methods="*")
+    CORS(app, supports_credentials=True, allow_headers="*")
 
     app.register_blueprint(api.api_bp)
     swagger_bp = get_swaggerui_blueprint(
