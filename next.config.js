@@ -14,14 +14,14 @@ const nextConfig = {
     defaultLocale: 'ru',
     localeDetection: true
   },
-  pwa: {
-    dest: 'public',
-    skipWaiting: true,
-    register:true,
-    runtimeCaching,
-    disable: process.env.NODE_ENV === 'development',
-    fallbacks:{image:'/favicon.ico'},
-  },
+  // pwa: {
+  //   dest: 'public',
+  //   skipWaiting: true,
+  //   register:true,
+  //   runtimeCaching,
+  //   disable: process.env.NODE_ENV === 'development',
+  //   fallbacks:{image:'/favicon.ico'},
+  // },
   distDir: 'build',
   images: {
     disableStaticImages:true

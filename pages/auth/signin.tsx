@@ -18,21 +18,24 @@ const SignInSchema = Yup.object({
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
-fetch('https://osl-apiv1.herokuapp.com/api/v1/auth/register', {
-  method: 'POST',
-  credentials: 'include',
-  body: JSON.stringify({
-    username: 'qwe124',
-    password: 'qwe124',
-    email: 'qwe1@qwe.qwe'
-  })
-})
+// fetch('https://osl-apiv1.herokuapp.com/api/v1/auth/register', {
+//   method: 'POST',
+//   credentials: 'include',
+//   body: JSON.stringify({
+//     username: 'qwe124',
+//     password: 'qwe124',
+//     email: 'qwe1@qwe.qwe'
+//   })
+// })
 export default function SignIn() {
   const router = useRouter()
   async function authFetcher(authUrl: string) {
-    const response = await axios.get(authUrl, {
-      withCredentials: true
-    })
+    const response = await axios
+      .get(authUrl, {
+        withCredentials: true
+      })
+      .then(() => true)
+      .catch(() => false)
     return response
   }
   const { data, error } = useSWR(process.env.apiAuthRoute, authFetcher)
@@ -51,20 +54,19 @@ export default function SignIn() {
 
   async function loginFetcher(data: SignInData) {
     if (process.env.apiLoginRoute) {
-      // const response = await axios
-      //   .post(process.env.apiLoginRoute, data, {
-      //     withCredentials: true,
-      //     method: 'POST'
-      //   })
-      //   .then(() => true)
-      //   .catch(() => false)
-      const response = await fetch(process.env.apiLoginRoute, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(data)
-      })
-        .then((response) => response.status === 200)
+      const response = await axios
+        .post(process.env.apiLoginRoute, data, {
+          withCredentials: true
+        })
+        .then(() => true)
         .catch(() => false)
+      // const response = await fetch(process.env.apiLoginRoute, {
+      //   method: 'POST',
+      //   credentials: 'omit',
+      //   body: JSON.stringify(data)
+      // })
+      //   .then((response) => response.status === 200)
+      //   .catch(() => false)
       console.log(response)
     }
   }
