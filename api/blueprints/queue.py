@@ -79,7 +79,9 @@ def get_bookings_by_params(facility_id, date):
         for el in FacilityBooking.query.filter_by(facility_id=facility_id):
             el_date_dt = convert_string_to_time(el.from_time)
             facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
-            if el_date_dt > facility_date_dt:
+            print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
+            print(el_date_dt, facility_date_dt)
+            if el_date_dt > facility_date_dt and el_date_dt < (facility_date_dt + datetime.timedelta(days=1)):
                 all_positions.append({
                     "facility_booking_id":el.id,
                     "from_time":el.from_time,
