@@ -93,7 +93,7 @@ def get_bookings_by_params(facility_id, date):
                         "facility_id":el.facility_id
                     })
             return jsonify(all_positions), 200
-    except ValueError as verr:
+    except exc.SQLAlchemyError as verr:
         print(verr)
         return jsonify(error_message='Invalid time format'), 400
     except Exception as err:
