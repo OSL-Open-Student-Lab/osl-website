@@ -72,4 +72,4 @@ def queries():
         return jsonify(all_positions), 200
 
 def convert_string_to_time(st):
-    return datetime.datetime.strptime(st, "%d-%m-%Y1 %H:%M")
+    return datetime.datetime.strptime(st, "%d-%m-%Y %H:%M")
