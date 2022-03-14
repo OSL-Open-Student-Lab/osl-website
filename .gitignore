@@ -1,0 +1,17 @@
+# ignoring dev files
+**/__pycache__/
+venv/
+env/
+database/
+задачи
+<<<<<<< HEAD
+key.pem
+cert.pem
+<<<<<<< HEAD
+key.pem
+=======
+=======
+cert.pem
+key.pem
+>>>>>>> dev
+>>>>>>> master
