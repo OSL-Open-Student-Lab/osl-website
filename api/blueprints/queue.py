@@ -52,8 +52,11 @@ def queries():
     
     if request.method == 'GET':
         try:
-            all_positions = db.session.query(FacilityBooking).\
-                filter(convert_string_to_time(FacilityBooking.from_time)>datetime.datetime.now()).all()
+            all_positions = []
+            for el in db.session.query(FacilityBooking):
+                from_time_dt = convert_string_to_time(el.from_time)
+                if from_time_dt > datetime.datetime.now():
+                    all_positions.append(el)
         except exc.SQLAlchemyError as err:
             print(err)
             return jsonify(error_message='Unable to get data from the database'), 500
