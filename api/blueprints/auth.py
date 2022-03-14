@@ -21,7 +21,6 @@ def unauthorized():
 def register():
     if request.method == 'POST':
         data = loads(request.data.decode(encoding='utf-8'))
-        #data = dict(request.json)
         new_username = data.get('username')
         new_password = data.get('password')
         new_email = data.get('email')
@@ -57,7 +56,6 @@ def register():
 def login():
     if request.method == 'POST':
         data = loads(request.data.decode(encoding='utf-8'))
-        # data = dict(request.json)
         checking_username = data.get('username')
         checking_password = data.get('password')
         # remember_me = data.get('remember_me')
@@ -84,7 +82,6 @@ def login():
 @login_required
 def logout():
     logout_user()
-    print(session)
     return jsonify(message='Logged out successfully'), 200
 
 @auth_bp.route('/current', methods=['GET'])

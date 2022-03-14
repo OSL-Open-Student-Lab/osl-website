@@ -12,13 +12,11 @@ queue_bp = Blueprint(name='queue', import_name=__name__, url_prefix='/queue')
 
 @queue_bp.route('', methods=['POST', 'GET'])
 @login_required
-def queries(user_id):
+def queries():
     if request.method == 'POST':
         try:
-            # data = request.get_json('user_id')
             data = loads(request.data.decode(encoding='utf-8'))
-            #user_id = data['user_id']
-            print(user_id)
+            user_id = current_user.get_id()
             from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
             to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
             facility_id = data['facility_id']

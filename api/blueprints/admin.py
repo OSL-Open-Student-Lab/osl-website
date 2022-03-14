@@ -4,6 +4,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import exc
 from api.models import FacilityType, Roles, db
 
+from json import loads
+
 admin_bp = Blueprint(name="admin", import_name=__name__, url_prefix="/admin")
 
 
@@ -27,11 +29,14 @@ def admin_required(f):
 @admin_required
 def add_user_role():
     if request.method == 'POST':
-        data = request.json
-        role = data['role']
-        booking = data['booking']
-        news = data['news']
-        admin = data['admin']
+        try:
+            data = loads(request.data.decode(encoding='utf-8'))
+            role = data['role']
+            booking = data['booking']
+            news = data['news']
+            admin = data['admin']
+        except Exception as err:
+            return jsonify(error_message=f"Unable to get data"), 500
 
         try:
             checking_role = db.session.query(Roles).filter_by(name=role).all()[0]
@@ -62,8 +67,11 @@ def add_user_role():
 @admin_required
 def get_device_list():
     if request.method == 'POST':
-        data = request.json
-        type = data['type']
+        try:
+            data = loads(request.data.decode(encoding='utf-8'))
+            type = data['type']
+        except Exception as err:
+            return jsonify(error_message=f"Unable to get data"), 500
 
         try:
             new_facility_type = FacilityType(type=type)
