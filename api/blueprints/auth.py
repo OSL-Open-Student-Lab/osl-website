@@ -1,6 +1,6 @@
 from flask_login import current_user, login_required, login_user, logout_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, jsonify, session, request
+from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import Users, db
 from api import lm
 
@@ -11,7 +11,7 @@ auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
 
 @lm.user_loader
 def load_user(user_id):
-    return Users.queue.get(int(user_id))
+    return Users.query.get(int(user_id))
 
 @lm.unauthorized_handler
 def unauthorized():
@@ -20,14 +20,19 @@ def unauthorized():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
-        data = loads(request.data.decode(encoding='utf-8'))
-        new_username = data.get('username')
-        new_password = data.get('password')
-        new_email = data.get('email')
+        if not request.args:
+            data = loads(request.data.decode(encoding='utf-8'))
+            new_username = data.get('username')
+            new_password = data.get('password')
+            new_email = data.get('email')
+        else:
+            new_username = request.args.get('username')
+            new_password = request.args.get('password')
+            new_email = request.args.get('email')
 
         try:
-            user_exists = Users.queue.filter_by(name=new_username).first()
-            email_exists = Users.queue.filter_by(email=new_email).first()
+            user_exists = Users.query.filter_by(name=new_username).first()
+            email_exists = Users.query.filter_by(email=new_email).first()
         except:
             return jsonify(error_message='Unable to load data from the database'), 500
 
@@ -55,17 +60,21 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        data = loads(request.data.decode(encoding='utf-8'))
-        checking_username = data.get('username')
-        checking_password = data.get('password')
-        # remember_me = data.get('remember_me')
+        if not request.args:
+            data = loads(request.data.decode(encoding='utf-8'))
+            checking_username = data.get('username')
+            checking_password = data.get('password')
+        else:
+            checking_username = request.args.get('username')
+            checking_password = request.args.get('password')
 
         try:
-            checking_user = db.session.queue(Users).\
+            checking_user = db.session.query(Users).\
                             filter_by(name=checking_username).first()
             if not checking_user:
                 return jsonify(error_message='User not found'), 400
-        except:
+        except Exception as err:
+            print(err)
             return jsonify(error_message='Unable load data from the database'), 500 
         else:
             db_password = checking_user.password
@@ -94,7 +103,7 @@ def is_auth():
 @auth_bp.route('/username_exists', methods=['POST'])
 def username_exists():
     username = loads(request.data.decode(encoding='utf-8')).get('username')
-    checking_username = Users.queue.filter_by(name=username).all()
+    checking_username = Users.query.filter_by(name=username).all()
     if checking_username:
         return jsonify(error_message='User with this name already exists'), 400
     return "", 200
@@ -102,7 +111,7 @@ def username_exists():
 @auth_bp.route('/email_exists', methods=['POST'])
 def email_exists():
     email = loads(request.data.decode(encoding='utf-8')).get('email')
-    checking_email = Users.queue.filter_by(email=email).all()
+    checking_email = Users.query.filter_by(email=email).all()
     if checking_email:
         return jsonify(error_message='User with this email already exists'), 400
     return "", 200

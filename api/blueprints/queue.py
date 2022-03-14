@@ -15,11 +15,18 @@ queue_bp = Blueprint(name='queue', import_name=__name__, url_prefix='/queue')
 def queries():
     if request.method == 'POST':
         try:
-            data = loads(request.data.decode(encoding='utf-8'))
-            user_id = current_user.get_id()
-            from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
-            to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
-            facility_id = data['facility_id']
+            if not request.args:
+                data = loads(request.data.decode(encoding='utf-8'))
+                user_id = current_user.get_id()
+                from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
+                to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
+                facility_id = data['facility_id']
+            else:
+                user_id = current_user.get_id()
+                from_date = datetime.datetime.strptime(request.args.get('from_date'), r'%d-%m-%Y %H:%M:%S')
+                to_date = datetime.datetime.strptime(request.args.get('to_date'), r'%d-%m-%Y %H:%M:%S')
+                facility_id = request.args.get('facility_id')
+                
         except Exception as err:
             return jsonify(error_message=f"Unable to get data"), 500
 
@@ -44,7 +51,7 @@ def queries():
     
     if request.method == 'GET':
         try:
-            all_positions = db.session.queue(FacilityBooking).\
+            all_positions = db.session.query(FacilityBooking).\
                 filter(FacilityBooking.from_time>datetime.datetime.now()).all()
         except exc.SQLAlchemyError as e:
             return jsonify(error_message='Unable to get data from the database'), 500
@@ -57,5 +64,5 @@ def queries():
                 "user_id":el.user_id,
                 "facility_id":el.facility_id
             }
-        return jsonify(all_positions), 200
+        return jsonify(data=all_positions), 200
 

@@ -1,8 +1,6 @@
 from flask import Blueprint, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 from api.blueprints import admin, auth, queue
-from api.models import db
-
 
 api_bp = Blueprint(name="home", import_name=__name__, url_prefix="/api/v1/")
 

@@ -30,11 +30,18 @@ def admin_required(f):
 def add_user_role():
     if request.method == 'POST':
         try:
-            data = loads(request.data.decode(encoding='utf-8'))
-            role = data['role']
-            booking = data['booking']
-            news = data['news']
-            admin = data['admin']
+            if not request.args:
+                data = loads(request.data.decode(encoding='utf-8'))
+                role = data['role']
+                booking = data['booking']
+                news = data['news']
+                admin = data['admin']
+            else:
+                role = request.args.get('role')
+                booking = request.args.get('booking')
+                news = request.args.get('news')
+                admin = request.args.get('admin')
+
         except Exception as err:
             return jsonify(error_message=f"Unable to get data"), 500
 
@@ -56,7 +63,6 @@ def add_user_role():
             db.session.add(new_role)
             db.session.commit()
         except exc.SQLAlchemyError as err:
-            print(err)
             return jsonify(error_message='Unable to write data to the database', status=500)
 
         return jsonify(message='New role was created successfully', status=200)
@@ -68,8 +74,11 @@ def add_user_role():
 def get_device_list():
     if request.method == 'POST':
         try:
-            data = loads(request.data.decode(encoding='utf-8'))
-            type = data['type']
+            if not request.args:
+                data = loads(request.data.decode(encoding='utf-8'))
+                type = data['type']
+            else:
+                type = request.args.get('type')
         except Exception as err:
             return jsonify(error_message=f"Unable to get data"), 500
 
@@ -78,7 +87,6 @@ def get_device_list():
             db.session.add(new_facility_type)
             db.session.commit()
         except Exception as err:
-            print("[ERROR]: ", err)
             return jsonify(error_message='Unable to write data to the database', status=500)
 
         return jsonify(message='New role was created successfully', status=200)
