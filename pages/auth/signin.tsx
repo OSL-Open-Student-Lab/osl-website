@@ -6,7 +6,8 @@ import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import useSWR from 'swr'
+
+import { useAuth } from 'packages/hooks/useAuth'
 
 const SignInSchema = Yup.object({
   username: Yup.string().required('Это обязательное поле').trim(),
@@ -18,28 +19,9 @@ const SignInSchema = Yup.object({
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
-// fetch('https://osl-apiv1.herokuapp.com/api/v1/auth/register', {
-//   method: 'POST',
-//   credentials: 'include',
-//   body: JSON.stringify({
-//     username: 'qwe124',
-//     password: 'qwe124',
-//     email: 'qwe1@qwe.qwe'
-//   })
-// })
+
 export default function SignIn() {
   const router = useRouter()
-  async function authFetcher(authUrl: string) {
-    const response = await axios
-      .get(authUrl, {
-        withCredentials: true
-      })
-      .then(() => true)
-      .catch(() => false)
-    return response
-  }
-  const { data, error } = useSWR(process.env.apiAuthRoute, authFetcher)
-  console.log(data)
   const {
     handleSubmit,
     register,
@@ -52,22 +34,21 @@ export default function SignIn() {
     resolver: yupResolver(SignInSchema)
   })
 
-  async function loginFetcher(data: SignInData) {
+  useAuth(() => router.push('/'))
+
+  async function signinFetcher(data: SignInData) {
     if (process.env.apiLoginRoute) {
-      const response = await axios
+      await axios
         .post(process.env.apiLoginRoute, data, {
           withCredentials: true
         })
         .then(() => true)
-        .catch(() => false)
-      // const response = await fetch(process.env.apiLoginRoute, {
-      //   method: 'POST',
-      //   credentials: 'omit',
-      //   body: JSON.stringify(data)
-      // })
-      //   .then((response) => response.status === 200)
-      //   .catch(() => false)
-      console.log(response)
+        .catch(() =>
+          setError('username', {
+            type: 'authError',
+            message: 'Неверный логин или пароль'
+          })
+        )
     }
   }
 
@@ -75,7 +56,7 @@ export default function SignIn() {
     <BasicLayout>
       <Container fluid>
         <Form
-          onSubmit={handleSubmit(loginFetcher)}
+          onSubmit={handleSubmit(signinFetcher)}
           className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12">
           <Form.Group>
             {errors.username?.type === 'authError' && (

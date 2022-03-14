@@ -21,14 +21,7 @@ export function Header() {
         <Container fluid>
           <Link href="/" passHref>
             <Navbar.Brand className="d-flex align-items-center gap-1">
-              <Image
-                src="/favicon.ico"
-                width={30}
-                height={30}
-                alt="logo"
-                // placeholder="blur"
-                // blurDataURL="holder.js/30x30"
-              />
+              <Image src="/favicon.ico" width={30} height={30} alt="logo" />
               OSL
             </Navbar.Brand>
           </Link>
@@ -37,20 +30,16 @@ export function Header() {
             <Nav
               activeKey={router.asPath}
               onSelect={() => setExpanded(false)}
-              className={'align-items-end'}>
+              className={'align-items-center'}>
               <Nav.Item>
                 <Link href={'/'} passHref>
-                  <Nav.Link>qwe</Nav.Link>
+                  <Nav.Link>Домашняя</Nav.Link>
                 </Link>
               </Nav.Item>
-              <Nav.Item>
-                <Link href={'/qwe'} passHref>
-                  <Nav.Link>qwe</Nav.Link>
-                </Link>
-              </Nav.Item>
+
               <Nav.Item>
                 <Link href={'/auth/signin'} passHref>
-                  <Button>qwe</Button>
+                  <Button variant="danger">Войти</Button>
                 </Link>
               </Nav.Item>
             </Nav>

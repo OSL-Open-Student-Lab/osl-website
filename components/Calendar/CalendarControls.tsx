@@ -98,13 +98,13 @@ export function Controls({
 
   return (
     <ButtonGroup>
-      <Button style={{ flexGrow: 1 }} onClick={prevHandler}>
+      <Button variant="danger" style={{ flexGrow: 1 }} onClick={prevHandler}>
         {'<'}
       </Button>
-      <Button style={{ flexGrow: 5 }} onClick={switchPageType}>
+      <Button variant="danger" style={{ flexGrow: 5 }} onClick={switchPageType}>
         {formattedDate}
       </Button>
-      <Button style={{ flexGrow: 1 }} onClick={nextHandler}>
+      <Button variant="danger" style={{ flexGrow: 1 }} onClick={nextHandler}>
         {'>'}
       </Button>
     </ButtonGroup>

@@ -13,7 +13,7 @@ import { WeekDays } from './CalenarWeekDays'
 import { MonthPage } from './CalenarMonthPage'
 import { YearPage } from './CalendarYearPage'
 import { DecadePage } from './CalendarDecadePage'
-import { HoursPage } from './hours'
+// import { HoursPage } from './hours'
 export interface CalendarProps {
   minDate?: string
   maxDate?: string
@@ -120,8 +120,8 @@ export function Calendar({
     )
   }
   return (
-    <div className="d-flex align-items-center">
-      <ButtonGroup className="calendar rounded rounded-3 border border-primary">
+    <ButtonGroup className="d-flex align-items-center">
+      <ButtonGroup className="calendar rounded rounded-3 border border-danger">
         <ButtonGroup vertical className={'w-100'}>
           <Controls
             pageTypeSetter={setPageLevelType}
@@ -176,18 +176,20 @@ export function Calendar({
             ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
             : false) ? (
             <ButtonGroup className={'w-100'}>
-              <Button onClick={todayClickHandler}>Сегодня</Button>
+              <Button variant="danger" onClick={todayClickHandler}>
+                Сегодня
+              </Button>
             </ButtonGroup>
           ) : null}
         </ButtonGroup>
       </ButtonGroup>
-      <CSSTransition
+      {/* <CSSTransition
         in={!!selectedDate}
         timeout={300}
         classNames="hour-page"
         unmountOnExit>
         <HoursPage occupiedHourses={occupiedHoursesMassive} />
-      </CSSTransition>
-    </div>
+      </CSSTransition> */}
+    </ButtonGroup>
   )
 }
