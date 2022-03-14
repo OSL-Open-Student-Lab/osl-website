@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import exc
-from api.models import db, Facilities
+from api.models import db, Facilities, FacilityBooking
 
 from json import loads
 
@@ -76,10 +76,10 @@ def get_bookings_by_params(facility_id, date):
     try:
         print(facility_id, date)
         all_positions = []
-        if Facilities.query.filter_by(facility_id=facility_id):
+        if not FacilityBooking.query.filter_by(facility_id=facility_id).all():
             return jsonify(error_message='No such facility id'), 400
         else:    
-            for el in Facilities.query.filter_by(facility_id=facility_id):
+            for el in FacilityBooking.query.filter_by(facility_id=facility_id).all():
                 el_date_dt = convert_string_to_time(el.from_time)
                 facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
                 print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
@@ -93,11 +93,9 @@ def get_bookings_by_params(facility_id, date):
                         "facility_id":el.facility_id
                     })
             return jsonify(all_positions), 200
-    except exc.SQLAlchemyError as verr:
-        print(verr)
+    except ValueError:
         return jsonify(error_message='Invalid time format'), 400
-    except Exception as err:
-        print(err)
+    except:
         return jsonify(error_message='Unable to load bookings from database'), 500
         
 
