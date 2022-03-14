@@ -1,0 +1,183 @@
+{
+  "openapi": "3.0.18",
+  "swagger": "3.36.0",
+  "info": {
+    "description": "OSL api for student lab website",
+    "version": "1.0.0",
+    "title": "OSL Website API",
+    "contact": {
+      "email": "neyenburgz@mail.ru",
+	  "url": "https://github.com/timaracov"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth requests"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "New user's email address",
+            "required": true
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "description": "New user's name",
+            "required": true
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "New user's password",
+            "required": true
+          }
+        ],
+        "responses": {
+          "Unable to write data to the database": {
+            "status": 500
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth requests"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "User's name",
+            "required": true
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User's password",
+            "required": true
+          }
+        ],
+        "responses": {
+          "Unable load data from the database": {
+            "status": 501
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": [
+          "Auth requests"
+        ]
+      }
+    },
+    "/auth/current": {
+      "get": {
+        "tags": [
+          "Auth requests"
+        ]
+      }
+    },
+    "/admin/add_user_role": {
+      "post": {
+        "tags": [
+          "Admin panel requests"
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Add new user's role",
+            "required": true
+          },
+          {
+            "name": "booking",
+            "in": "query",
+            "description": "Add new role for booking list",
+            "required": true
+          },
+          {
+            "name": "news",
+            "in": "query",
+            "description": "Add new new's role",
+            "required": true
+          },
+          {
+            "name": "admin",
+            "in": "query",
+            "description": "Add new admin role for user",
+            "required": true
+          }
+        ]
+      }
+    },
+    "admin/add_facility": {
+      "post": {
+        "tags": [
+          "Admin panel requests"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Add new facility's type",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/queries": {
+      "post": {
+        "tags": [
+          "Qeury requests"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "Requests the user's ID",
+            "required": true
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Requests the booking first date",
+            "required": true
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "description": "Requests the booking end date",
+            "required": true
+          },
+          {
+            "name": "facility_id",
+            "in": "query",
+            "description": "Requests the facility's ID",
+            "required": true
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Qeury requests"
+        ],
+        "description":"Get list of bookings"
+      }
+    }
+  }
+}
