@@ -9,9 +9,7 @@ def setup_db():
     with app.app_context():
         db.create_all()
         any_roles = Roles.query.filter_by(id=1).all()
-        if any_roles:
-            return
-        else:
+        if not any_roles:
             admin_role = Roles(
               name="admin",
               booking_access=True,
