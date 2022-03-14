@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import exc
-from api.models import db, FacilityBooking
+from api.models import db, Facilities
 
 from json import loads
 
@@ -76,10 +76,10 @@ def get_bookings_by_params(facility_id, date):
     try:
         print(facility_id, date)
         all_positions = []
-        if FacilityBooking.query.filter_by(facility_id=facility_id):
+        if Facilities.query.filter_by(facility_id=facility_id):
             return jsonify(error_message='No such facility id'), 400
         else:    
-            for el in FacilityBooking.query.filter_by(facility_id=facility_id):
+            for el in Facilities.query.filter_by(facility_id=facility_id):
                 el_date_dt = convert_string_to_time(el.from_time)
                 facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
                 print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
