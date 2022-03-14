@@ -78,8 +78,7 @@ def get_bookings_by_params(facility_id, date):
         all_positions = []
         for el in FacilityBooking.query.filter_by(facility_id=facility_id):
             el_date_dt = convert_string_to_time(el.from_time)
-            facility_date_dt = convert_string_to_time(date)
-            print(el_date_dt, facility_date_dt)
+            facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
             if el_date_dt > facility_date_dt:
                 all_positions.append({
                     "facility_booking_id":el.id,
