@@ -76,20 +76,26 @@ def get_bookings_by_params(facility_id, date):
     try:
         print(facility_id, date)
         all_positions = []
-        for el in FacilityBooking.query.filter_by(facility_id=facility_id):
-            el_date_dt = convert_string_to_time(el.from_time)
-            facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
-            print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
-            print(el_date_dt, facility_date_dt)
-            if el_date_dt > facility_date_dt and el_date_dt < (facility_date_dt + datetime.timedelta(days=1)):
-                all_positions.append({
-                    "facility_booking_id":el.id,
-                    "from_time":el.from_time,
-                    "to_time":el.to_time,
-                    "user_id":el.user_id,
-                    "facility_id":el.facility_id
-                })
-        return jsonify(all_positions), 200
+        if FacilityBooking.query.filter_by(facility_id=facility_id):
+            return jsonify(error_message='No such facility id'), 400
+        else:    
+            for el in FacilityBooking.query.filter_by(facility_id=facility_id):
+                el_date_dt = convert_string_to_time(el.from_time)
+                facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
+                print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
+                print(el_date_dt, facility_date_dt)
+                if el_date_dt > facility_date_dt and el_date_dt < (facility_date_dt + datetime.timedelta(days=1)):
+                    all_positions.append({
+                        "facility_booking_id":el.id,
+                        "from_time":el.from_time,
+                        "to_time":el.to_time,
+                        "user_id":el.user_id,
+                        "facility_id":el.facility_id
+                    })
+            return jsonify(all_positions), 200
+    except ValueError as verr:
+        print(verr)
+        return jsonify(error_message='Invalid time format'), 400
     except Exception as err:
         print(err)
         return jsonify(error_message='Unable to load bookings from database'), 500
