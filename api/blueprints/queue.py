@@ -28,10 +28,10 @@ def queries():
                 facility_id = request.args.get('facility_id')
                 
         except Exception as err:
-            return jsonify(error_message=f"Unable to get data"), 500
+            return jsonify(error_message=f"Unable to get data"), 400
 
 
-        booking_timedelta = to_date - from_date
+        booking_timedelta = convert_string_to_time(to_date) - convert_string_to_time(from_date)
 
         if booking_timedelta.days > 0 or booking_timedelta.seconds >= 28800:
             return jsonify(error_message='Booking time is too long'), 400
