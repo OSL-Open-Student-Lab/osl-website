@@ -11,6 +11,8 @@ class Users(UserMixin, db.Model):
     name = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('Roles.id'), nullable=False)
+    # saved_articles = db.relationship("ArticleCard", back_populates="user")
+
 
 
 class UserAudit(db.Model):
@@ -56,3 +58,14 @@ class FacilityType(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(), unique=True)
 
+class ArticleCard(db.Model):
+    __tablename__ = 'ArticleModel'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    header = db.Column(db.String(250), nullable=False)
+    text = db.Column(db.Text(), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
+    data = db.Column(db.String(50), nullable=False)
+    likes = db.Column(db.Integer, nullable=True)
+    saves = db.Column(db.Integer, nullable=True)
+    # savers = db.Column(db.)
