@@ -7,10 +7,10 @@ from api.models import db, FacilityBooking
 
 from json import loads
 
-query_bp = Blueprint(name='query', import_name=__name__, url_prefix='/queries')
+queue_bp = Blueprint(name='queue', import_name=__name__, url_prefix='/queue')
 
 
-@query_bp.route('', methods=['POST', 'GET'])
+@queue_bp.route('', methods=['POST', 'GET'])
 @login_required
 def queries(user_id):
     if request.method == 'POST':
@@ -46,7 +46,7 @@ def queries(user_id):
     
     if request.method == 'GET':
         try:
-            all_positions = db.session.query(FacilityBooking).\
+            all_positions = db.session.queue(FacilityBooking).\
                 filter(FacilityBooking.from_time>datetime.datetime.now()).all()
         except exc.SQLAlchemyError as e:
             return jsonify(error_message='Unable to get data from the database'), 500
