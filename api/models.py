@@ -38,8 +38,8 @@ class FacilityBooking(db.Model):
     __tablename__ = 'FacilityBooking'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    from_time = db.Column(db.DateTime)
-    to_time = db.Column(db.DateTime)
+    from_time = db.Column(db.String(), nullable=False)
+    to_time = db.Column(db.String(), nullable=False)
     facility_id = db.Column(db.Integer, db.ForeignKey('Facilities.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
 

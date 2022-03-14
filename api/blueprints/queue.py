@@ -18,13 +18,13 @@ def queries():
             if not request.args:
                 data = loads(request.data.decode(encoding='utf-8'))
                 user_id = current_user.get_id()
-                from_date = datetime.datetime.strptime(data['from_date'], r'%d-%m-%Y %H:%M:%S')
-                to_date = datetime.datetime.strptime(data['to_date'], r'%d-%m-%Y %H:%M:%S')
+                from_date = data['from_date']
+                to_date = data['to_date']
                 facility_id = data['facility_id']
             else:
                 user_id = current_user.get_id()
-                from_date = datetime.datetime.strptime(request.args.get('from_date'), r'%d-%m-%Y %H:%M:%S')
-                to_date = datetime.datetime.strptime(request.args.get('to_date'), r'%d-%m-%Y %H:%M:%S')
+                from_date = request.args.get('from_data')
+                to_date = request.args.get('to_date')
                 facility_id = request.args.get('facility_id')
                 
         except Exception as err:
@@ -45,6 +45,7 @@ def queries():
             db.session.add(new_facility)
             db.session.commit()
         except exc.SQLAlchemyError as err:
+            print(err)
             return jsonify(error_message=f'Unable to write data to the database'), 500
 
         return jsonify(message='Booking was successfully added'), 200
@@ -52,8 +53,9 @@ def queries():
     if request.method == 'GET':
         try:
             all_positions = db.session.query(FacilityBooking).\
-                filter(FacilityBooking.from_time>datetime.datetime.now()).all()
-        except exc.SQLAlchemyError as e:
+                filter(convert_string_to_time(FacilityBooking.from_time)>datetime.datetime.now()).all()
+        except exc.SQLAlchemyError as err:
+            print(err)
             return jsonify(error_message='Unable to get data from the database'), 500
         
         for i, el in enumerate(all_positions):
@@ -66,3 +68,5 @@ def queries():
             }
         return jsonify(all_positions), 200
 
+def convert_string_to_time(st):
+    return datetime.datetime.strptime(st, "DD-MM-YYYY HH:mm")
