@@ -71,5 +71,29 @@ def queries():
             }
         return jsonify(all_positions), 200
 
+@queue_bp.route('/<int:facility_id>/<string:date>', methods=['GET'])
+def get_bookings_by_params(facility_id, date):
+    try:
+        print(facility_id, date)
+        all_positions = []
+        for el in FacilityBooking.query.filter_by(facility_id=facility_id):
+            el_date_dt = convert_string_to_time(el.from_time)
+            facility_date_dt = convert_string_to_time(date)
+            print(el_date_dt, facility_date_dt)
+            if el_date_dt > facility_date_dt:
+                all_positions.append({
+                    "facility_booking_id":el.id,
+                    "from_time":el.from_time,
+                    "to_time":el.to_time,
+                    "user_id":el.user_id,
+                    "facility_id":el.facility_id
+                })
+        return jsonify(all_positions), 200
+    except Exception as err:
+        print(err)
+        return jsonify(error_message='Unable to load bookings from database'), 500
+        
+
+
 def convert_string_to_time(st):
     return datetime.datetime.strptime(st, "%d-%m-%Y %H:%M")
