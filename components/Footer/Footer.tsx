@@ -7,7 +7,9 @@ export function Footer() {
       <div className="text-center my-3">
         © {dayjs().year()} Copyright:&nbsp;
         <Link href="https://github.com/TheBaconStyle" passHref>
-          <Button variant="link">🥓TheBaconStyle🥓</Button>
+          <Button variant="link" className="text-decoration-none">
+            🥓
+          </Button>
         </Link>
       </div>
     </footer>

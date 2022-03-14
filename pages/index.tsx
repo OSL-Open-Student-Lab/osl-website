@@ -1,9 +1,11 @@
 import { Container } from 'react-bootstrap'
 import { CarouselSection } from 'components/CarouselSection/CarouselSection'
 import { CardSection } from 'components/CardSection/CardSection'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
+
 export default function HomePage() {
   return (
-    <>
+    <BasicLayout>
       <CarouselSection />
       <Container fluid>
         <h1 className="text-center display-4 mt-5">
@@ -20,6 +22,6 @@ export default function HomePage() {
         </p>
       </Container>
       <CardSection />
-    </>
+    </BasicLayout>
   )
 }

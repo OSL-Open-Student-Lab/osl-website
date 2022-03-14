@@ -35,18 +35,19 @@ export function CardSection() {
     }
   ]
   return (
-    <Container
-      fluid
-      className="d-flex flex-wrap my-5 justify-content-around gap-xl-2 gap-lg-5">
+    <Container fluid className="row justify-content-center">
       {cardArr.map((item, index) => {
         return (
-          <Card key={index} className="bs-card">
-            <Image
-              alt={item.title}
-              src={item.pic}
-              width={'100%'}
-              height={500}
-            />
+          <Card key={index} className="bs-card col-lg-4">
+            <div className="card-img">
+              <Image
+                alt={item.title}
+                src={item.pic}
+                height={1600}
+                width={900}
+                layout="intrinsic"
+              />
+            </div>
             <Card.Body>
               <Card.Title>{item.title}</Card.Title>
               <Card.Text>{item.text}</Card.Text>

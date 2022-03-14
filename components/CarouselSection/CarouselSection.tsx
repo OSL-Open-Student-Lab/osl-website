@@ -28,13 +28,11 @@ export function CarouselSection() {
   return (
     <Carousel className="d-block w-100">
       {carouselArr.map((item, index) => (
-        <Carousel.Item
-          key={index}
-          className="carousel-pic"
-          style={{ maxHeight: '500px' }}>
+        <Carousel.Item key={index} style={{ maxHeight: '500px' }}>
           <Image
-            width={'100%'}
-            height={500}
+            layout="responsive"
+            width={1600}
+            height={900}
             src={item.pic}
             alt={`${item.header} pic`}
           />

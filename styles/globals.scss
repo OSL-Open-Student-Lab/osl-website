@@ -4,5 +4,17 @@ body {
   overflow: auto;
   height: 100%;
 }
+.bs-card {
+  transition: 0.1s ease-in-out;
+  &:hover {
+    transform: translate(-5%, -5%) scale(1.05);
+    z-index: 1;
+  }
+  .card-img {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
 @import './calendar/calendar.scss';
 @import './calendar/hours.scss';
