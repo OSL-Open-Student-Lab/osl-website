@@ -1,4 +1,4 @@
-import { Card, Container } from 'react-bootstrap'
+import { Card, Container, Row, Col } from 'react-bootstrap'
 import Image from 'next/image'
 const pic = '/pic.png'
 export function CardSection() {
@@ -35,26 +35,31 @@ export function CardSection() {
     }
   ]
   return (
-    <Container fluid className="row justify-content-center">
-      {cardArr.map((item, index) => {
-        return (
-          <Card key={index} className="bs-card col-lg-4">
-            <div className="card-img">
-              <Image
-                alt={item.title}
-                src={item.pic}
-                height={1600}
-                width={900}
-                layout="intrinsic"
-              />
-            </div>
-            <Card.Body>
-              <Card.Title>{item.title}</Card.Title>
-              <Card.Text>{item.text}</Card.Text>
-            </Card.Body>
-          </Card>
-        )
-      })}
+    <Container fluid className="justify-content-center">
+      <Row>
+        {cardArr.map((item, index) => {
+          return (
+            <Col key={index} md={4} className='mb-4'>
+              <Card className="bs-card">
+                <div className="card-img" style={{ maxHeight: 250, overflow: 'hidden' }}>
+                  <Image
+                    alt={item.title}
+                    src={item.pic}
+                    height={900}
+                    width={1600}
+                    layout="intrinsic"
+                  />
+                </div>
+                <Card.Body>
+                  <Card.Title>{item.title}</Card.Title>
+                  <Card.Text>{item.text}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          )
+        })}
+      </Row>
+
     </Container>
   )
 }

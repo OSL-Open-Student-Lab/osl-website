@@ -11,9 +11,9 @@ export function Header() {
   return (
     <header>
       <Navbar
+        style={{ background: '#fff' }}
         expand="lg"
         className="shadow"
-        sticky="top"
         fixed="top"
         collapseOnSelect
         expanded={expanded}
