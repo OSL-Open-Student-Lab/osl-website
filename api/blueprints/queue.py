@@ -64,5 +64,5 @@ def queries():
                 "user_id":el.user_id,
                 "facility_id":el.facility_id
             }
-        return jsonify(data=all_positions), 200
+        return jsonify(all_positions), 200
 
