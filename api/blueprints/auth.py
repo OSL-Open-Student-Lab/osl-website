@@ -1,5 +1,5 @@
 from flask_login import current_user, login_required, login_user, logout_user
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import Users, db
 from api import lm

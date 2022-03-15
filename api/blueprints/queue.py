@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import exc
-from api.models import db, Facilities, FacilityBooking
+from api.models import db, FacilityBooking
 
 from json import loads
 
@@ -45,7 +45,6 @@ def queries():
             db.session.add(new_facility)
             db.session.commit()
         except exc.SQLAlchemyError as err:
-            print(err)
             return jsonify(error_message=f'Unable to write data to the database'), 500
 
         return jsonify(message='Booking was successfully added'), 200
@@ -58,7 +57,6 @@ def queries():
                 if from_time_dt > datetime.datetime.now():
                     all_positions.append(el)
         except exc.SQLAlchemyError as err:
-            print(err)
             return jsonify(error_message='Unable to get data from the database'), 500
         
         for i, el in enumerate(all_positions):
@@ -74,7 +72,6 @@ def queries():
 @queue_bp.route('/<int:facility_id>/<string:date>', methods=['GET'])
 def get_bookings_by_params(facility_id, date):
     try:
-        print(facility_id, date)
         all_positions = []
         if not FacilityBooking.query.filter_by(facility_id=facility_id).all():
             return jsonify(error_message='No such facility id'), 400
@@ -82,8 +79,6 @@ def get_bookings_by_params(facility_id, date):
             for el in FacilityBooking.query.filter_by(facility_id=facility_id).all():
                 el_date_dt = convert_string_to_time(el.from_time)
                 facility_date_dt = datetime.datetime.strptime(date, '%d-%m-%Y')
-                print(el_date_dt, el_date_dt.strftime('%d-%m-%Y'))
-                print(el_date_dt, facility_date_dt)
                 if el_date_dt > facility_date_dt and el_date_dt < (facility_date_dt + datetime.timedelta(days=1)):
                     all_positions.append({
                         "facility_booking_id":el.id,
