@@ -24,7 +24,7 @@ export default function Facilities() {
         <Card.Body>
           <Card.Title>Принтер Epson</Card.Title>
           <Link passHref href={'/queues/1'}>
-            <Button variant="primary">Забронировать</Button>
+            <Button variant="danger">Забронировать</Button>
           </Link>
         </Card.Body>
       </Card>

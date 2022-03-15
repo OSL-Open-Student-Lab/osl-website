@@ -2,6 +2,10 @@ import { Container } from 'react-bootstrap'
 import { CarouselSection } from 'components/CarouselSection/CarouselSection'
 import { CardSection } from 'components/CardSection/CardSection'
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
+import ProjectSection from 'components/ProjectSections/ProjectSection'
+import OurAchievementsSection from 'components/OurAchievementsSection/OurAchievementsSection'
+import OurPartners from 'components/OurPartners/OurPartners'
+import "react-multi-carousel/lib/styles.css";
 
 export default function HomePage() {
   return (
@@ -22,6 +26,9 @@ export default function HomePage() {
         </p>
       </Container>
       <CardSection />
+      <ProjectSection />
+      <OurAchievementsSection />
+      <OurPartners />
     </BasicLayout>
   )
 }

@@ -9,7 +9,7 @@ export function BasicLayout({ children }: BasicLayoutProps): JSX.Element {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main style={{ marginTop: 56 }}>{children}</main>
       <Footer />
     </>
   )
