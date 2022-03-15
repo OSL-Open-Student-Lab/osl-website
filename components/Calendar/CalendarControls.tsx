@@ -42,12 +42,18 @@ export function Controls({
     const newDecade = currentDate.subtract(10, 'year')
     switch (currentPageType) {
       case PageLevelName.month:
-        if (!minDate || newMonth.startOf('month').isSameOrAfter(minDate)) {
+        if (
+          !minDate ||
+          newMonth.startOf('month').isSameOrAfter(minDate, 'month')
+        ) {
           dateSetter(newMonth)
         }
         break
       case PageLevelName.year:
-        if (!minDate || newYear.startOf('year').isSameOrAfter(minDate)) {
+        if (
+          !minDate ||
+          newYear.startOf('year').isSameOrAfter(minDate, 'year')
+        ) {
           dateSetter(newYear)
         }
         break

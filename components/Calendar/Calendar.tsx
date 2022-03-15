@@ -59,23 +59,22 @@ export function Calendar({
     () => (prevDate.isBefore(date) ? 'next' : 'prev'),
     [prevDate, date]
   )
-
   useDidMountEffect(() => {
     if (onSelectDate) {
       onSelectDate(selectedDate?.format('DD.MM.YYYY'))
     }
-  }, [selectedDate, onSelectDate])
-
-  const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState<
-    number[]
-  >([])
-  useEffect(() => {
-    const min = Math.ceil(0)
-    const max = Math.floor(2)
-    const randVal = Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
-    setOccupiedHoursesMassive(Array(12).fill(randVal))
-    console.log(occupiedHoursesMassive)
   }, [selectedDate])
+
+  // const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState<
+  //   number[]
+  // >([])
+  // useEffect(() => {
+  //   const min = Math.ceil(0)
+  //   const max = Math.floor(2)
+  //   const randVal = Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
+  //   setOccupiedHoursesMassive(Array(12).fill(randVal))
+  //   console.log(occupiedHoursesMassive)
+  // }, [selectedDate])
 
   function todayClickHandler() {
     setPageLevelType('month')
@@ -120,7 +119,7 @@ export function Calendar({
     )
   }
   return (
-    <ButtonGroup className="d-flex align-items-center">
+    <ButtonGroup className="d-inline-flex align-items-center">
       <ButtonGroup className="calendar rounded rounded-3 border border-danger">
         <ButtonGroup vertical className={'w-100'}>
           <Controls

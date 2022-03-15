@@ -7,7 +7,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
-import { useAuth } from 'packages/hooks/useAuth'
+import { useAuth } from 'packages/hooks/useAuthAPI'
+import useSWR from 'swr'
+import { useEffect } from 'react'
 
 const SignInSchema = Yup.object({
   username: Yup.string().required('Это обязательное поле').trim(),
@@ -22,6 +24,7 @@ type SignInData = Yup.InferType<typeof SignInSchema>
 
 export default function SignIn() {
   const router = useRouter()
+
   const {
     handleSubmit,
     register,
@@ -33,8 +36,10 @@ export default function SignIn() {
     shouldFocusError: true,
     resolver: yupResolver(SignInSchema)
   })
-
-  useAuth(() => router.push('/'))
+  const { logged } = useAuth()
+  useEffect(() => {
+    if (logged) router.push('/')
+  }, [logged, router])
 
   async function signinFetcher(data: SignInData) {
     if (process.env.apiLoginRoute) {
@@ -42,7 +47,7 @@ export default function SignIn() {
         .post(process.env.apiLoginRoute, data, {
           withCredentials: true
         })
-        .then(() => true)
+        .then(() => router.push('/'))
         .catch(() =>
           setError('username', {
             type: 'authError',
@@ -91,7 +96,7 @@ export default function SignIn() {
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Button type="submit" size="lg" className="w-100">
+            <Button variant="danger" type="submit" size="lg" className="w-100">
               Отправить
             </Button>
           </Form.Group>

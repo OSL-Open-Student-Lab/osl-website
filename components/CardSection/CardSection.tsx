@@ -43,9 +43,9 @@ export function CardSection() {
               <Image
                 alt={item.title}
                 src={item.pic}
-                height={1600}
-                width={900}
-                layout="intrinsic"
+                height={900}
+                width={1600}
+                layout="responsive"
               />
             </div>
             <Card.Body>

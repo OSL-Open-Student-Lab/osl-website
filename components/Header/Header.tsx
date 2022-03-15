@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-// import useSwr from 'swr'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 
+import { useAuth } from 'packages/hooks/useAuthAPI'
+
 export function Header() {
   const [expanded, setExpanded] = useState<boolean>(false)
   const router = useRouter()
+  const { logged, logOut } = useAuth()
+
   return (
     <header>
       <Navbar
@@ -36,12 +39,29 @@ export function Header() {
                   <Nav.Link>Домашняя</Nav.Link>
                 </Link>
               </Nav.Item>
-
-              <Nav.Item>
-                <Link href={'/auth/signin'} passHref>
-                  <Button variant="danger">Войти</Button>
-                </Link>
-              </Nav.Item>
+              {logged && (
+                <Nav.Item>
+                  <Link href={'/facilities'} passHref>
+                    <Nav.Link>Оборудование</Nav.Link>
+                  </Link>
+                </Nav.Item>
+              )}
+              {!logged &&
+                router.pathname !== '/auth/signin' &&
+                router.pathname !== '/auth/signup' && (
+                  <Nav.Item>
+                    <Link href={'/auth/signin'} passHref>
+                      <Button variant="danger">Войти</Button>
+                    </Link>
+                  </Nav.Item>
+                )}
+              {logged && (
+                <Nav.Item>
+                  <Button variant="danger" onClick={logOut}>
+                    Выйти
+                  </Button>
+                </Nav.Item>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

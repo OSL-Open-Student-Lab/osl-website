@@ -5,9 +5,10 @@ import * as Yup from 'yup'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
+import { useEffect } from 'react'
 
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
-import { useAuth } from 'packages/hooks/useAuth'
+import { useAuth } from 'packages/hooks/useAuthAPI'
 
 const SignUpSchema = Yup.object({
   email: Yup.string().email().trim().required('Это обязательное поле'),
@@ -37,7 +38,10 @@ export default function SignUpForm() {
     shouldFocusError: true,
     resolver: yupResolver(SignUpSchema)
   })
-  useAuth(() => router.push('/'))
+  const { logged } = useAuth()
+  useEffect(() => {
+    if (logged) router.push('/')
+  }, [logged, router])
   async function signupFetcher(data: SignUpData) {
     let isEmailValid = false
     let isUsernameValid = false
@@ -68,7 +72,7 @@ export default function SignUpForm() {
         .post(process.env.apiRegRoute, data, {
           withCredentials: true
         })
-        .then(() => true)
+        .then(() => router.push('/'))
         .catch(() => false)
     }
   }
@@ -137,8 +141,8 @@ export default function SignUpForm() {
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Button type="submit" size="lg" className="w-100">
-              Отправить
+            <Button variant="danger" type="submit" size="lg" className="w-100">
+              Регистрация
             </Button>
           </Form.Group>
           <Form.Group className="d-flex align-items-center">
