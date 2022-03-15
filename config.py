@@ -1,12 +1,11 @@
 import datetime
 from api.models import db
-from os import getenv
 
-SECRET_KEY='dev'#getenv('OSL_SECRET_KEY')
+SECRET_KEY='dev'
 
 STATIC_FOLDER='static'
 
-SQLALCHEMY_DATABASE_URI='sqlite:///../database/osl.db' #getenv('DATABASE_URL').replace('postgres', 'postgresql')
+SQLALCHEMY_DATABASE_URI='sqlite:///../database/osl.db'
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 
 SESSION_SQLALCHEMY=db
