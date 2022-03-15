@@ -1,20 +1,23 @@
-# OSL Website API
-
-## Run application locally 
+# OSL Website API v.0.1
+## Run application locally(For frontend devs)
 ```bash
 
-  $ git clone https://github.com/timaracov/osl.git
+	$ git clone https://github.com/timaracov/osl.git
   
-  $ cd osl
+	$ cd osl
   
-  $ pip install -r requirements.txt # you can use python venv
+	$ python3 -m venv env
 
-  $ gunicorn "setup:create_app()"
+	$ . env/bin/activate
+
+	$ pip install -r requirements.txt
+
+	$ export FLASK_APP=setup
+
+	$ export FLASK_ENV=development
+
+	$ flask run
 ```
 
-## Deploy on Heroku
-To deploy app on heroku please use the offcial guide for python deployment https://devcenter.heroku.com/articles/getting-started-with-python
-
-## Authors
-
-- [@timaracov](https://www.github.com/timaracov)
+## Authors:
++ [timaracov](github.com/timaracov)
