@@ -20,3 +20,5 @@ def create_app():
     app.register_blueprint(swagger_bp)
 
     return app
+
+create_app().run(debug=True)

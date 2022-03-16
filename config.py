@@ -1,7 +1,7 @@
 import datetime
 from api.models import db
 
-SECRET_KEY='dev'
+SECRET_KEY=b'[\x15C\xa7\x9f\x8b\xa0\xac)\xb5p\xc2\xc5\xd4\xc3\xb5\xbf\xf5&\xa6\xbfK\xdc\x91'
 
 STATIC_FOLDER='static'
 
