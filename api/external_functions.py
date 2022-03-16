@@ -1,5 +1,4 @@
 from validate_email import validate_email
-import re
 
 def _validate_login_request_data(data):
     if len(data) > 3:
@@ -61,9 +60,47 @@ def _validate_register_request_data(data):
         return invalid_passwd
 
 
-def _validate_query_request_data(data):
-    pass
+def _validate_queue_request_data(data):
+    import datetime
 
+    if len(data) > 3:
+        return 'Too many fields in request body'
+
+    from_date = data.get('from_date') 
+    to_date = data.get('to_date') 
+    facility_id = data.get('facility_id')
+
+    if not from_date:
+        return 'From date field is empty'
+    if not to_date:
+        return 'To date field is empty'
+    if not facility_id:
+        return 'Facility id field is empty'
+
+    try:
+        validating_from_date = bool(datetime.datetime.strptime(from_date, "%d-%m-%Y %H:%M"))
+        validating_to_date = bool(datetime.datetime.strptime(to_date, "%d-%m-%Y %H:%M"))
+    except ValueError:
+        validating_from_date = validating_to_date = False
+
+    if not validating_from_date:
+        return 'Invalid format of from_date field'
+    if not validating_to_date:
+        return 'Invalid format of to_date field'
+
+def _str_to_time(st):
+    import datetime
+    return datetime.datetime.strptime(st, "%d-%m-%Y %H:%M")
+
+
+def _validate_time(strtime):
+    import datetime
+    try:
+        invalid_time = bool(datetime.datetime.strptime(strtime, '%d-%m-%Y'))
+    except ValueError:
+        invalid_time = False
+    if not invalid_time:
+        return 'Invalid time format'
 
 def __validate_password(password):
     if len(password) < 8:
