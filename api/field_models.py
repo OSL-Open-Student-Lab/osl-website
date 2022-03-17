@@ -78,6 +78,12 @@ class QueueField(BaseModel):
     facility_id: int
     from_date: str
     to_date: str
+    
+    @validator('facility_id')
+    def valid_id(cls, id):
+        if id < 0:
+            raise ValueError('Id must be >= 0')
+        return id
 
     @validator('from_date', 'to_date')
     def check_format(cls, dts):
