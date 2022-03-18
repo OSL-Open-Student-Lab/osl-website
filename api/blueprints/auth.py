@@ -1,7 +1,7 @@
 from flask import Blueprint, json, jsonify, request
 from flask_login import current_user, login_required, login_user, logout_user
 
-from api import lm
+from api import lm, app
 from api.external_functions import _convert_error as conv_err
 from api.models import Users, db
 from api.field_models import*

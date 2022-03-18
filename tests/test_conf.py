@@ -1,15 +1,18 @@
+import pytest
+
 from api import app
 from api.db import setup_db
 from api.blueprints import api
-from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
+from falsk_swagger_ui import get_swaggerui_blueprint
 
-def create_app():
+@pytest.fixture()
+def app():
+    app.config.update({
+        'TESTING':True
+    })
 
-    try:
-        setup_db(app)
-    except Exception as err:
-        print(f"[ERROR]: Unable to setup database -> {err}")
+    setup_db(app)
 
     CORS(app, supports_credentials=True, allow_headers="*")
 
@@ -19,6 +22,16 @@ def create_app():
         '/static/swagger.json')
     app.register_blueprint(swagger_bp)
 
-    return app
+    yield app
 
-create_app().run(debug=True)
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+
+@pytest.fixture()
+def runner(app):
+    return app.test_cli_runner()
+
+
+

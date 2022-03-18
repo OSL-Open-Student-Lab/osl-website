@@ -16,7 +16,7 @@ from json import loads
 queue_bp = Blueprint(name='queue', import_name=__name__, url_prefix='/queue')
 
 
-@queue_bp.route('', methods=['POST', 'GET'])
+@queue_bp.route('', methods=['POST', 'GET', 'DELETE'])
 @login_required
 def queries():
     try:
@@ -80,7 +80,24 @@ def queries():
                 print(type(error), error)
                 return jsonify('unable to fetch data from the database'), 500
             return jsonify(all_positions), 200
-    
+        
+        if request.method == 'DELETE':
+            facility_booking_id = request.args.get('facility_booking_id')
+            
+            try:
+                booking = FacilityBooking.query.filter_by(id=facility_booking_id)
+                if booking:
+                    if booking.user_id == current_user.get_id():
+                        booking.delete()
+                        return jsonify('booking was deleted successfully'), 200
+                    else:
+                        return jsonify('permission denied'), 403
+                else:
+                    return jsonify('no bookings with such id'), 400
+            except Exception as error:
+                print(type(error), error)
+                return jsonify('unable to fetch data from the database'), 500
+                
     except Exception as error:
         print(type(error), error)
         return jsonify('something goes wrong'), 500

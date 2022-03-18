@@ -82,7 +82,7 @@ class QueueField(BaseModel):
     @validator('facility_id')
     def valid_id(cls, id):
         if id < 0:
-            raise ValueError('Id must be >= 0')
+            raise ValueError('Id must be greater then 0')
         return id
 
     @validator('from_date', 'to_date')
