@@ -5,7 +5,7 @@ SECRET_KEY=b'[\x15C\xa7\x9f\x8b\xa0\xac)\xb5p\xc2\xc5\xd4\xc3\xb5\xbf\xf5&\xa6\x
 
 STATIC_FOLDER='static'
 
-SQLALCHEMY_DATABASE_URI='sqlite:///../database/osl.db'
+SQLALCHEMY_DATABASE_URI='postgresql://timaracov:devpas@localhost:5432/osl'#'sqlite:///../database/osl.db'
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 
 SESSION_SQLALCHEMY=db
