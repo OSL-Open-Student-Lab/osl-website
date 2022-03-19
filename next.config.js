@@ -11,7 +11,7 @@ const nextConfig = {
     apiRegRoute: 'http://localhost:5000/api/v1/auth/register',
     apiUsernameCheckRoute: 'http://localhost:5000/api/v1/auth/username_exists',
     apiEmailCheckRoute: 'http://localhost:5000/api/v1/auth/email_exists',
-    
+    apiBasePath:'http://localhost:5000/api/v1/'
   },
   i18n: {
     locales:['ru','en'],
@@ -33,4 +33,3 @@ const nextConfig = {
 }
 
 module.exports = withPWA(nextConfig)
-// module.exports = nextConfig

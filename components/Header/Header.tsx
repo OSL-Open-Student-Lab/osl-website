@@ -3,14 +3,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
 import { useRouter } from 'next/router'
+import {} from '@consta/uikit'
 
-import { useAuth } from 'packages/hooks/useAuthAPI'
+import { useAuth } from 'packages/auth'
 
 export function Header() {
   const [expanded, setExpanded] = useState<boolean>(false)
   const router = useRouter()
-  const { logged, logOut } = useAuth()
-
+  const { authData, signOut } = useAuth()
   return (
     <header>
       <Navbar
@@ -20,7 +20,8 @@ export function Header() {
         fixed="top"
         collapseOnSelect
         expanded={expanded}
-        onToggle={(expVal) => setExpanded(expVal)}>
+        onToggle={(expVal) => setExpanded(expVal)}
+      >
         <Container fluid>
           <Link href="/" passHref>
             <Navbar.Brand className="d-flex align-items-center gap-1">
@@ -29,39 +30,41 @@ export function Header() {
             </Navbar.Brand>
           </Link>
           <Navbar.Toggle />
-          <Navbar.Collapse className={'justify-content-end'}>
+          <Navbar.Collapse className="justify-content-end">
             <Nav
               activeKey={router.asPath}
               onSelect={() => setExpanded(false)}
-              className={'align-items-center'}>
+              className="align-items-center"
+            >
               <Nav.Item>
-                <Link href={'/'} passHref>
+                <Link href="/" passHref>
                   <Nav.Link>Домашняя</Nav.Link>
                 </Link>
               </Nav.Item>
-              {logged && (
+              {authData?.logged && (
                 <Nav.Item>
-                  <Link href={'/facilities'} passHref>
+                  <Link href="/facilities" passHref>
                     <Nav.Link>Оборудование</Nav.Link>
                   </Link>
                 </Nav.Item>
               )}
-              {!logged &&
+              {!authData?.logged &&
                 router.pathname !== '/auth/signin' &&
                 router.pathname !== '/auth/signup' && (
                   <Nav.Item>
-                    <Link href={'/auth/signin'} passHref>
+                    <Link href="/auth/signin" passHref>
                       <Button variant="danger">Войти</Button>
                     </Link>
                   </Nav.Item>
                 )}
-              {logged && (
+              {authData?.logged && (
                 <Nav.Item>
-                  <Button variant="danger" onClick={logOut}>
+                  <Button variant="danger" onClick={signOut}>
                     Выйти
                   </Button>
                 </Nav.Item>
               )}
+              <Nav.Item></Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Container>

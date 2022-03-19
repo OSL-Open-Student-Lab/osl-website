@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 export function WeekDays(): JSX.Element {
   return (
-    <ButtonGroup className={'w-100'}>
+    <ButtonGroup className="w-100">
       {Array(7)
         .fill(dayjs().startOf('week'))
         .map((weekDay: Dayjs, index) => {
@@ -18,7 +18,8 @@ export function WeekDays(): JSX.Element {
               variant="link"
               className={classNames('text-decoration-none', {
                 'text-danger': isWeekEnd
-              })}>
+              })}
+            >
               {currentWeekDay.format('dd').toUpperCase()}
             </Button>
           )

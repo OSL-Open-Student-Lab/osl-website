@@ -1,30 +1,32 @@
 import { Carousel } from 'react-bootstrap'
 import Image from 'next/image'
+
 const pic = '/pic.png'
 
+const carouselArr = [
+  {
+    pic,
+    header: 'First slide label',
+    text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
+  },
+  {
+    pic,
+    header: 'Second slide label',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  },
+  {
+    pic,
+    header: 'Third slide label',
+    text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
+  },
+  {
+    pic,
+    header: 'Fourth slide label',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  }
+]
+
 export function CarouselSection() {
-  const carouselArr = [
-    {
-      pic,
-      header: 'First slide label',
-      text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
-    },
-    {
-      pic,
-      header: 'Second slide label',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-    },
-    {
-      pic,
-      header: 'Third slide label',
-      text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
-    },
-    {
-      pic,
-      header: 'Fourth slide label',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-    }
-  ]
   return (
     <Carousel className="d-block w-100">
       {carouselArr.map((item, index) => (

@@ -2,6 +2,7 @@ import React from 'react'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import dayjs, { Dayjs } from 'dayjs'
 import { PageProps } from './CalendarTypes'
+
 export function DecadePage({
   initialDate,
   onSelect,
@@ -25,11 +26,10 @@ export function DecadePage({
                   2 * yearPairIndex + yearIndex,
                   'year'
                 )
-                const isAllowed =
-                  (minDate
-                    ? minDate.startOf('year').isSameOrBefore(currentYear)
-                    : true) &&
-                  (maxDate
+                const isAllowed = (minDate
+                  ? minDate.startOf('year').isSameOrBefore(currentYear)
+                  : true)
+                  && (maxDate
                     ? maxDate.endOf('year').isSameOrAfter(currentYear)
                     : true)
                 const isSelected = currentYear.isSame(
@@ -57,8 +57,9 @@ export function DecadePage({
                     key={2 * yearPairIndex + yearIndex}
                     variant={buttonVariant}
                     disabled={!isAllowed}
-                    className={'w-100 border-0 rounded-0'}
-                    onClick={() => onSelect && onSelect(currentYear)}>
+                    className="w-100 border-0 rounded-0"
+                    onClick={() => onSelect && onSelect(currentYear)}
+                  >
                     {currentYear.format('YYYY')}
                   </Button>
                 )

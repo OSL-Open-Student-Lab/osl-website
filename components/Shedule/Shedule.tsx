@@ -8,7 +8,7 @@ interface SheduleProps {
   bookedHours?: Array<[number, number]>
   date: Dayjs
   onSelectHours?: () => void
-  facilityID: number
+  facilityID: string | string[] | undefined
 }
 
 export function Shedule({
@@ -36,7 +36,6 @@ export function Shedule({
       if (!selectedHourEnd) {
         return setSelectedHourEnd(hour)
       }
-      return
     }
   }
   const allowedHours = Array(24)
@@ -67,24 +66,26 @@ export function Shedule({
   }
   return (
     <div className="d-inline w-50">
-      <div>{`Выбранное время от ${selectedHourStart ?? '__'}:00 до ${
-        selectedHourEnd ?? '__'
-      }:00`}</div>
+      <div>
+        {`Выбранное время от ${selectedHourStart ?? '__'}:00 до ${
+          selectedHourEnd ?? '__'
+        }:00`}
+      </div>
 
       {(!selectedHourStart || !selectedHourEnd) && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)' }}>
           {allowedHours.map((hour) => {
-            const checked =
-              selectedHourStart &&
-              selectedHourEnd &&
-              selectedHourStart <= hour &&
-              selectedHourEnd >= hour
+            const checked = selectedHourStart
+              && selectedHourEnd
+              && selectedHourStart <= hour
+              && selectedHourEnd >= hour
             return (
               <Button
                 key={hour}
                 onClick={selectHandler(hour)}
                 variant={checked ? 'danger' : 'outline-danger'}
-                className="rounded-0 px-3">
+                className="rounded-0 px-3"
+              >
                 {hour}
               </Button>
             )
@@ -98,7 +99,8 @@ export function Shedule({
             onClick={() => {
               setSelectedHourStart(undefined)
               setSelectedHourEnd(undefined)
-            }}>
+            }}
+          >
             Сброс
           </Button>
         )}

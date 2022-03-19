@@ -1,60 +1,53 @@
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Container, Form, FloatingLabel, Button, Alert } from 'react-bootstrap'
-import * as Yup from 'yup'
-import { BasicLayout } from 'components/BaseLayout/BaseLayout'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import axios from 'axios'
+import * as Yup from 'yup'
 
-import { useAuth } from 'packages/hooks/useAuthAPI'
-import useSWR from 'swr'
-import { useEffect } from 'react'
+import { BasicLayout } from 'components/BaseLayout/BaseLayout'
+import { useAuth } from 'packages/auth'
+import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
 
 const SignInSchema = Yup.object({
-  username: Yup.string().required('Это обязательное поле').trim(),
-  // .min(6, 'Логин должен быть не менее 6 символов')
-  // .max(12, 'Логин не должен превышать 12 символов'),
-  password: Yup.string().required(''),
-  // .min(8, 'Длина пароля не должна быть не менее 8 символов'),
+  username: Yup.string()
+    .required('Это обязательное поле')
+    .trim()
+    .min(6, 'Логин должен быть не менее 6 символов')
+    .max(12, 'Логин не должен превышать 12 символов'),
+  password: Yup.string()
+    .required('')
+    .min(8, 'Длина пароля не должна быть не менее 8 символов'),
   rememberMe: Yup.boolean()
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
 
 export default function SignIn() {
-  const router = useRouter()
-
+  const { signIn, authData } = useAuth()
   const {
     handleSubmit,
     register,
     formState: { errors },
-    setError
+    setError,
+    clearErrors
   } = useForm<SignInData>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     shouldFocusError: true,
     resolver: yupResolver(SignInSchema)
   })
-  const { logged } = useAuth()
-  useEffect(() => {
-    if (logged) router.push('/')
-  }, [logged, router])
-
-  async function signinFetcher(data: SignInData) {
-    if (process.env.apiLoginRoute) {
-      await axios
-        .post(process.env.apiLoginRoute, data, {
-          withCredentials: true
-        })
-        .then(() => router.push('/'))
-        .catch(() =>
-          setError('username', {
-            type: 'authError',
-            message: 'Неверный логин или пароль'
-          })
-        )
+  useDidMountEffect(() => {
+    clearErrors('username')
+    if (!authData?.logged) {
+      setError(
+        'username',
+        { type: 'authError', message: authData?.message },
+        { shouldFocus: true }
+      )
     }
+  }, [authData])
+  async function signinFetcher({ username, password }: SignInData) {
+    return signIn(username, password)
   }
 
   return (
@@ -62,7 +55,8 @@ export default function SignIn() {
       <Container fluid>
         <Form
           onSubmit={handleSubmit(signinFetcher)}
-          className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12">
+          className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12"
+        >
           <Form.Group>
             {errors.username?.type === 'authError' && (
               <Alert variant="danger">{errors.username?.message}</Alert>

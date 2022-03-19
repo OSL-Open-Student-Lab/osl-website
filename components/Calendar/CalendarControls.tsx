@@ -43,16 +43,16 @@ export function Controls({
     switch (currentPageType) {
       case PageLevelName.month:
         if (
-          !minDate ||
-          newMonth.startOf('month').isSameOrAfter(minDate, 'month')
+          !minDate
+          || newMonth.startOf('month').isSameOrAfter(minDate, 'month')
         ) {
           dateSetter(newMonth)
         }
         break
       case PageLevelName.year:
         if (
-          !minDate ||
-          newYear.startOf('year').isSameOrAfter(minDate, 'year')
+          !minDate
+          || newYear.startOf('year').isSameOrAfter(minDate, 'year')
         ) {
           dateSetter(newYear)
         }

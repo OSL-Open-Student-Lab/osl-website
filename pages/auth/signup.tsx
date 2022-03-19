@@ -5,18 +5,21 @@ import * as Yup from 'yup'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { useEffect } from 'react'
 
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
-import { useAuth } from 'packages/hooks/useAuthAPI'
+import { useAuth } from 'packages/auth'
 
 const SignUpSchema = Yup.object({
   email: Yup.string().email().trim().required('Это обязательное поле'),
-  username: Yup.string().required('Это обязательное поле').trim(),
-  // .min(6, 'Логин должен быть не менее 6 символов')
-  // .max(12, 'Логин не должен превышать 12 символов'),
-  password: Yup.string().required('Это обязательное поле').trim(),
-  // .min(8, 'Длина пароля не должна быть не менее 8 символов'),
+  username: Yup.string()
+    .required('Это обязательное поле')
+    .trim()
+    .min(6, 'Логин должен быть не менее 6 символов')
+    .max(12, 'Логин не должен превышать 12 символов'),
+  password: Yup.string()
+    .required('Это обязательное поле')
+    .trim()
+    .min(8, 'Длина пароля не должна быть не менее 8 символов'),
   confirm: Yup.string()
     .trim()
     .required('Это обязательное поле')
@@ -27,6 +30,7 @@ type SignUpData = Yup.InferType<typeof SignUpSchema>
 
 export default function SignUpForm() {
   const router = useRouter()
+  const { signUp, authData } = useAuth()
   const {
     handleSubmit,
     register,
@@ -38,50 +42,16 @@ export default function SignUpForm() {
     shouldFocusError: true,
     resolver: yupResolver(SignUpSchema)
   })
-  const { logged } = useAuth()
-  useEffect(() => {
-    if (logged) router.push('/')
-  }, [logged, router])
-  async function signupFetcher(data: SignUpData) {
-    let isEmailValid = false
-    let isUsernameValid = false
-    if (process.env.apiEmailCheckRoute) {
-      const email = data.email
-      await axios
-        .post(process.env.apiEmailCheckRoute, { email })
-        .then(() => (isEmailValid = true))
-        .catch(() =>
-          setError('email', {
-            message: 'На этот email уже зарегистрирован аккаунт'
-          })
-        )
-    }
-    if (process.env.apiUsernameCheckRoute) {
-      const username = data.username
-      await axios
-        .post(process.env.apiUsernameCheckRoute, { username })
-        .then(() => (isUsernameValid = true))
-        .catch(() =>
-          setError('username', {
-            message: 'Пользоатель с таким логином уже существует'
-          })
-        )
-    }
-    if (process.env.apiRegRoute && isEmailValid && isUsernameValid) {
-      axios
-        .post(process.env.apiRegRoute, data, {
-          withCredentials: true
-        })
-        .then(() => router.push('/'))
-        .catch(() => false)
-    }
+  async function signupFetcher({ email, password, username }: SignUpData) {
+    return signUp(email, username, password)
   }
   return (
     <BasicLayout>
       <Container fluid>
         <Form
           onSubmit={handleSubmit(signupFetcher)}
-          className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12">
+          className="my-5 mx-auto col-xxl-4 col-xl-6 col-lg-8 col-md-10 col-sm-12"
+        >
           <Form.Group className="mb-3">
             <FloatingLabel label="Email">
               <Form.Control

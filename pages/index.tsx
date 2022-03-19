@@ -5,7 +5,7 @@ import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import ProjectSection from 'components/ProjectSections/ProjectSection'
 import OurAchievementsSection from 'components/OurAchievementsSection/OurAchievementsSection'
 import OurPartners from 'components/OurPartners/OurPartners'
-import "react-multi-carousel/lib/styles.css";
+import 'react-multi-carousel/lib/styles.css';
 
 export default function HomePage() {
   return (

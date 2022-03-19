@@ -4,9 +4,9 @@ import dayjs, { Dayjs } from 'dayjs'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import 'packages/dayjsConfig'
 
-import { PageLevelName, PageLevelValue, PageLevelType } from './CalendarTypes'
 import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
 import { usePrev } from 'packages/hooks/usePrev'
+import { PageLevelName, PageLevelValue, PageLevelType } from './CalendarTypes'
 
 import { Controls } from './CalendarControls'
 import { WeekDays } from './CalenarWeekDays'
@@ -52,8 +52,7 @@ export function Calendar({
   const pageLayoutRef = useRef<HTMLDivElement>(null)
   const pageWrapperRef = useRef<HTMLDivElement>(null)
 
-  const pageLayoutAnimType =
-    PageLevelValue[prevPageLevelType] < PageLevelValue[pageType] ? 'up' : 'down'
+  const pageLayoutAnimType = PageLevelValue[prevPageLevelType] < PageLevelValue[pageType] ? 'up' : 'down'
 
   const pageWrapperAnimType = useMemo(
     () => (prevDate.isBefore(date) ? 'next' : 'prev'),
@@ -121,7 +120,7 @@ export function Calendar({
   return (
     <ButtonGroup className="d-inline-flex align-items-center">
       <ButtonGroup className="calendar rounded rounded-3 border border-danger">
-        <ButtonGroup vertical className={'w-100'}>
+        <ButtonGroup vertical className="w-100">
           <Controls
             pageTypeSetter={setPageLevelType}
             dateSetter={setDate}
@@ -131,19 +130,22 @@ export function Calendar({
             maxDate={processedMaxDate}
           />
           <div
-            className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}>
+            className={`h-100 w-100 ${pageLayoutAnimType} ${pageWrapperAnimType} calendar-layout-wrapper`}
+          >
             <SwitchTransition mode="out-in">
               <CSSTransition
                 key={pageType}
                 addEndListener={(done) => {
                   pageLayoutRef.current?.addEventListener('transitionend', done)
                 }}
-                in={true}
-                nodeRef={pageLayoutRef}>
+                in
+                nodeRef={pageLayoutRef}
+              >
                 <ButtonGroup
                   vertical
                   ref={pageLayoutRef}
-                  className={`w-100 h-100 page page-layout`}>
+                  className="w-100 h-100 page page-layout"
+                >
                   {pageType === PageLevelName.month ? <WeekDays /> : null}
                   <SwitchTransition mode="out-in">
                     <CSSTransition
@@ -155,11 +157,13 @@ export function Calendar({
                         )
                       }}
                       nodeRef={pageWrapperRef}
-                      in={true}>
+                      in
+                    >
                       <ButtonGroup
                         ref={pageWrapperRef}
                         vertical
-                        className={`w-100 h-100 page page-wrapper`}>
+                        className="w-100 h-100 page page-wrapper"
+                      >
                         {currnetPage[pageType]}
                       </ButtonGroup>
                     </CSSTransition>
@@ -169,17 +173,17 @@ export function Calendar({
             </SwitchTransition>
           </div>
 
-          {dayjs().isSameOrAfter(dayjs(processedMinDate)) &&
-          dayjs().isSameOrBefore(dayjs(processedMaxDate)) &&
-          !(disabledDays
+          {dayjs().isSameOrAfter(dayjs(processedMinDate))
+          && dayjs().isSameOrBefore(dayjs(processedMaxDate))
+          && !(disabledDays
             ? disabledDays.includes(dayjs().format('DD.MM.YYYY'))
             : false) ? (
-            <ButtonGroup className={'w-100'}>
-              <Button variant="danger" onClick={todayClickHandler}>
-                Сегодня
-              </Button>
-            </ButtonGroup>
-          ) : null}
+              <ButtonGroup className="w-100">
+                <Button variant="danger" onClick={todayClickHandler}>
+                  Сегодня
+                </Button>
+              </ButtonGroup>
+            ) : null}
         </ButtonGroup>
       </ButtonGroup>
       {/* <CSSTransition

@@ -10,6 +10,7 @@ import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import { Calendar } from 'components/Calendar/Calendar'
 import { Shedule } from 'components/Shedule/Shedule'
 import { useAuth } from 'packages/hooks/useAuthAPI'
+
 interface QueueSendingData {
   from_date?: string
   to_date?: string
@@ -19,7 +20,7 @@ interface QueueSendingData {
 const Home: NextPage = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs())
   const router = useRouter()
-  useAuth(() => router.push('/'))
+  // useAuth(() => router.push('/'))
 
   return (
     <BasicLayout>
@@ -30,7 +31,7 @@ const Home: NextPage = () => {
             setSelectedDate(dayjs(newDate, 'DD.MM.YYYY'))
           }}
         />
-        <div className="mx-2"></div>
+        <div className="mx-2" />
         <Shedule
           date={selectedDate}
           onSelectHours={() => false}
