@@ -15,5 +15,5 @@ SESSION_COOKIE_HTTPONLY=True
 SESSION_COOKIE_SECURE=False
 SESSION_COOKIE_NAME='osl-apiv1-session'
 
-PERMANENT_SESSION_LIFETIME=datetime.timedelta(days=90)
-REMEMBER_COOKIE_DURATION=datetime.timedelta(days=1)
+PERMANENT_SESSION_LIFETIME=datetime.timedelta(hours=12)
+REMEMBER_COOKIE_DURATION=datetime.timedelta(days=90)
