@@ -41,9 +41,7 @@ def register():
                 password2=data.get('password2'))
             print(reguser.dict())
         except ValidationError as error:
-            print(error)
-            field = str(error).split()[5] + ': '
-            return jsonify(field+' '.join(str(error).split()[6:-1])), 400
+            return jsonify(conv_err(error)), 400
         
         try:
             user_exists = Users.query.filter_by(name=reguser.username).first()
