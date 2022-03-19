@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import {} from '@consta/uikit'
+// import {} from '@consta/uikit'
 
 import { useAuth } from 'packages/auth'
 
@@ -64,7 +64,6 @@ export function Header() {
                   </Button>
                 </Nav.Item>
               )}
-              <Nav.Item></Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Container>
