@@ -92,54 +92,6 @@
         ]
       }
     },
-    "/admin/add_user_role": {
-      "post": {
-        "tags": [
-          "Admin panel requests"
-        ],
-        "parameters": [
-          {
-            "name": "role",
-            "in": "query",
-            "description": "Add new user's role",
-            "required": true
-          },
-          {
-            "name": "booking",
-            "in": "query",
-            "description": "Add new role for booking list",
-            "required": true
-          },
-          {
-            "name": "news",
-            "in": "query",
-            "description": "Add new new's role",
-            "required": true
-          },
-          {
-            "name": "admin",
-            "in": "query",
-            "description": "Add new admin role for user",
-            "required": true
-          }
-        ]
-      }
-    },
-    "admin/add_facility": {
-      "post": {
-        "tags": [
-          "Admin panel requests"
-        ],
-        "parameters": [
-          {
-            "name": "type",
-            "in": "query",
-            "description": "Add new facility's type",
-            "required": true
-          }
-        ]
-      }
-    },
     "/queries": {
       "post": {
         "tags": [
