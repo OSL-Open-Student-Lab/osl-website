@@ -9,6 +9,7 @@ def _convert_error(err):
         result.append(f'{err_list[i]}: {" ".join(err_list[i+1].split()[:-1])}')
     return result
 
+
 def _validate_time(strtime):
     import datetime
     try:
@@ -17,6 +18,7 @@ def _validate_time(strtime):
         invalid_time = False
     if not invalid_time:
         return 'Invalid date format'
+
 
 def _str_to_time(st):
     import datetime
