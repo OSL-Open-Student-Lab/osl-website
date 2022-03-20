@@ -77,7 +77,7 @@ def login():
     if request.method == 'POST':
         try:
             data = loads(request.data.decode(encoding='utf-8')) \
-            if not request.args else dict(request.args)
+                if not request.args else dict(request.args)
 
             try:
                 loguser = LoginUserField(
