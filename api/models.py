@@ -3,9 +3,10 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+
 class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
-    
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(), nullable=False)
@@ -19,7 +20,10 @@ class UserAudit(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     action = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
-    booking_id = db.Column(db.Integer, db.ForeignKey('FacilityBooking.id'), nullable=False)
+    booking_id = db.Column(
+        db.Integer,
+        db.ForeignKey('FacilityBooking.id'),
+        nullable=False)
 
 
 class Roles(db.Model):
@@ -38,7 +42,10 @@ class FacilityBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     from_time = db.Column(db.String(), nullable=False)
     to_time = db.Column(db.String(), nullable=False)
-    facility_id = db.Column(db.Integer, db.ForeignKey('Facilities.id'), nullable=False)
+    facility_id = db.Column(
+        db.Integer,
+        db.ForeignKey('Facilities.id'),
+        nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
 
 
@@ -47,7 +54,10 @@ class Facilities(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String())
-    facility_type_id = db.Column(db.Integer, db.ForeignKey('FacilityType.id'), nullable=False)
+    facility_type_id = db.Column(
+        db.Integer,
+        db.ForeignKey('FacilityType.id'),
+        nullable=False)
 
 
 class FacilityType(db.Model):
@@ -55,6 +65,7 @@ class FacilityType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(), unique=True)
+
 
 class ArticleCard(db.Model):
     __tablename__ = 'ArticleCard'
@@ -66,4 +77,3 @@ class ArticleCard(db.Model):
     data = db.Column(db.String(50), nullable=False)
     likes = db.Column(db.Integer, nullable=True)
     saves = db.Column(db.Integer, nullable=True)
-
