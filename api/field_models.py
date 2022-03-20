@@ -22,7 +22,7 @@ class RegisterUserField(BaseModel):
         if not validate_email(em):
             raise ValueError('Wrong email format')
         return em
-    
+
     @validator('password1')
     def check_password_format(cls, password):
         if len(password) < 8:
@@ -78,7 +78,7 @@ class QueueField(BaseModel):
     facility_id: int
     from_date: str
     to_date: str
-    
+
     @validator('facility_id')
     def valid_id(cls, id):
         if id < 0:
@@ -95,5 +95,3 @@ class QueueField(BaseModel):
         if not valid:
             raise ValueError('Invalid date format(must be %d-%m-%Y %H:%M)')
         return dts
-    
-
