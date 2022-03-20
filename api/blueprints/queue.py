@@ -22,7 +22,7 @@ def queries():
     try:
         if request.method == 'POST':
             data = loads(request.data.decode(encoding='utf-8')) \
-            if not request.args else dict(request.args)
+                if not request.args else dict(request.args)
 
             try: 
                 queue = QueueField(
