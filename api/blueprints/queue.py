@@ -21,10 +21,8 @@ queue_bp = Blueprint(name='queue', import_name=__name__, url_prefix='/queue')
 def queries():
     try:
         if request.method == 'POST':
-            if not request.args:
-                data = loads(request.data.decode(encoding='utf-8'))
-            else:
-                data = dict(request.args)
+            data = loads(request.data.decode(encoding='utf-8')) \
+            if not request.args else dict(request.args)
 
             try: 
                 queue = QueueField(
