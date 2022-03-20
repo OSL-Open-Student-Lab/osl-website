@@ -1,6 +1,7 @@
 from flask_session import Session
 from api.models import db, Roles
 
+
 def setup_db(app):
     db.init_app(app)
     Session(app)
@@ -30,6 +31,5 @@ def setup_db(app):
             db.session.add(admin_role)
             db.session.add(user_role)
             db.session.add(author_role)
-            
-            db.session.commit()
 
+            db.session.commit()
