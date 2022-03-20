@@ -76,10 +76,8 @@ def register():
 def login():
     if request.method == 'POST':
         try:
-            if not request.args:
-                data = loads(request.data.decode(encoding='utf-8'))
-            else:
-                data = dict(request.args)
+            data = loads(request.data.decode(encoding='utf-8')) \
+            if not request.args else dict(request.args)
 
             try:
                 loguser = LoginUserField(
