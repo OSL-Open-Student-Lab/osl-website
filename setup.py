@@ -1,8 +1,10 @@
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
+
 from api import app
 from api.db import setup_db
 from api.blueprints import api
-from flask_swagger_ui import get_swaggerui_blueprint
-from flask_cors import CORS
+
 
 def create_app():
 
