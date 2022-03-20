@@ -15,6 +15,7 @@ from json import loads
 
 auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix='/auth',)
 
+
 @lm.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
@@ -28,11 +29,9 @@ def unauthorized():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
-        if not request.args:
-            data = loads(request.data.decode(encoding='utf-8'))
-        else:
-            data = dict(request.args)
-        
+        data = loads(request.data.decode(encoding='utf-8')) \
+            if not request.args else dict(request.args)
+
         try:
             reguser = RegisterUserField(
                 username=data.get('username'),
@@ -42,7 +41,7 @@ def register():
             print(reguser.dict())
         except ValidationError as error:
             return jsonify(conv_err(error)), 400
-        
+
         try:
             user_exists = Users.query.filter_by(name=reguser.username).first()
             email_exists = Users.query.filter_by(email=reguser.email).first()
@@ -68,7 +67,7 @@ def register():
         except SQLAlchemyError as error:
             print(type(error), error)
             return jsonify('unable to write data to the database'), 500
-    
+
         login_user(new_user, remember=True)
         return jsonify('user created successfully'), 200
 
@@ -84,9 +83,9 @@ def login():
 
             try:
                 loguser = LoginUserField(
-                    username = data.get('username'),
-                    password = data.get('password'),
-                    rememberme = data.get('rememberme'))
+                    username=data.get('username'),
+                    password=data.get('password'),
+                    rememberme=data.get('rememberme'))
             except ValidationError as error:
                 return jsonify(conv_err(error)), 400
 
@@ -97,17 +96,19 @@ def login():
                     return jsonify('user not found'), 400
             except SQLAlchemyError as error:
                 print(type(error), error)
-                return jsonify('unable fetch data from the database'), 500 
+                return jsonify('unable fetch data from the database'), 500
             else:
                 db_password = checking_user.password
 
             if not check_password_hash(db_password, loguser.password):
                 return jsonify('passwords do not match'), 400
             else:
-                login_user(checking_user, remember=loguser.rememberme, force=True)
+                login_user(checking_user,
+                           remember=loguser.rememberme,
+                           force=True)
                 return jsonify('user logged in successfully'), 200
-        
-        except Exception as error:            
+
+        except Exception as error:
             print(type(error), error)
             return jsonify('something goes wrong'), 500
 
@@ -154,9 +155,7 @@ def email_exists():
     except SQLAlchemyError as error:
         print(type(error), error)
         return jsonify('unable to fetch data from the database'), 500
-    
+
     if checking_email:
         return jsonify('user with this email already exists'), 400
     return "", 200
-
-
