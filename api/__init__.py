@@ -7,4 +7,3 @@ app.config.from_pyfile('../config.py')
 lm = LoginManager()
 lm.session_protection = 'strong'
 lm.init_app(app)
-
