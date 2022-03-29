@@ -1,9 +1,13 @@
+from json import loads
+from functools import wraps
+
 from flask import Blueprint, jsonify, request
+from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import ValidationError
-from json import loads
 
-from api.models import FacilityType, Facilities, db
+from api import lm
+from api.models import FacilityType, Facilities, Roles, Users, db
 from api.external_functions import _convert_error as conv_err
 from api.field_models import FacilityField, FacilityTypeField 
 
@@ -13,7 +17,32 @@ facility_bp = Blueprint(
         url_prefix='/facilities')
 
 
+@lm.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
+
+@lm.unauthorized_handler
+def unauthorized():
+    return jsonify(error_message='user unauthorized'), 403
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            cur_user_role_id = current_user.role_id
+            cur_user_role = db.session.query(Roles).filter_by(id=cur_user_role_id).all()[0]
+            if cur_user_role.name.lower() == 'admin':
+                return f(*args, **kwargs)
+            return jsonify(error_message="You don't have permission for this action"), 403
+        except Exception as err:
+            return jsonify(error_message="Something goes wrong"), 500
+    return wrapper
+
 @facility_bp.route('/add_type', methods=['POST'])
+@login_required
+@admin_required
 def add_type():
     if request.method == 'POST':
         try:
@@ -41,6 +70,8 @@ def add_type():
 
 
 @facility_bp.route('/add_equipment', methods=['POST'])
+@login_required
+@admin_required
 def add_equipment():
     if request.method == 'POST':
         try:
