@@ -1,5 +1,5 @@
 from flask import Blueprint, send_from_directory
-from api.blueprints import auth, queue
+from api.blueprints import auth, queue, facilities
 
 api_bp = Blueprint(name="home", import_name=__name__, url_prefix="/api/v1/")
 
@@ -10,3 +10,5 @@ async def get_static(path):
 
 api_bp.register_blueprint(auth.auth_bp)
 api_bp.register_blueprint(queue.queue_bp)
+api_bp.register_blueprint(facilities.facility_bp)
+
