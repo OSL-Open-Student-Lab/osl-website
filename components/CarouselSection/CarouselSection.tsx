@@ -28,7 +28,7 @@ const carouselArr = [
 
 export function CarouselSection() {
   return (
-    <Carousel className="d-block w-100">
+    <Carousel className="d-block w-100" interval={3000}>
       {carouselArr.map((item, index) => (
         <Carousel.Item key={index} style={{ maxHeight: '500px' }}>
           <Image

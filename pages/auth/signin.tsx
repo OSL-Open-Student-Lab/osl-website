@@ -13,11 +13,11 @@ const SignInSchema = Yup.object({
     .required('Это обязательное поле')
     .trim()
     .min(6, 'Логин должен быть не менее 6 символов')
-    .max(12, 'Логин не должен превышать 12 символов'),
+    .max(16, 'Логин не должен превышать 12 символов'),
   password: Yup.string()
     .required('')
     .min(8, 'Длина пароля не должна быть не менее 8 символов'),
-  rememberMe: Yup.boolean()
+  rememberMe: Yup.boolean().required()
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
@@ -34,11 +34,14 @@ export default function SignIn() {
     mode: 'onChange',
     reValidateMode: 'onChange',
     shouldFocusError: true,
+    defaultValues: {
+      rememberMe: false
+    },
     resolver: yupResolver(SignInSchema)
   })
   useDidMountEffect(() => {
     clearErrors('username')
-    if (!authData?.logged) {
+    if (!authData?.logged && authData?.message) {
       setError(
         'username',
         { type: 'authError', message: authData?.message },
@@ -46,8 +49,8 @@ export default function SignIn() {
       )
     }
   }, [authData])
-  async function signinFetcher({ username, password }: SignInData) {
-    return signIn(username, password)
+  async function signinFetcher({ username, password, rememberMe }: SignInData) {
+    return signIn(username, password, rememberMe)
   }
 
   return (
@@ -70,6 +73,9 @@ export default function SignIn() {
                 placeholder="username"
               />
             </FloatingLabel>
+            <Form.Text className="text-danger">
+              {errors.username?.message}
+            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3">
             <FloatingLabel label="Пароль">

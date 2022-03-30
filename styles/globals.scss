@@ -1,9 +1,52 @@
+@import './default-consts.scss';
+
+//fonts =========>
+@import './fonts/main.scss';
+//=========>
+
 #__next,
 html,
 body {
   overflow: auto;
   height: 100%;
+  position: relative;
 }
+
+html {
+  font-size: 8px;
+}
+
+.main {
+  padding-top: 8rem;
+}
+
+section,
+header,
+footer {
+  font-family: 'PT Root UI';
+  line-height: 135%;
+}
+
+a {
+  color: $dark;
+  font-family: 'Noah';
+  text-decoration: none;
+  &:hover {
+    color: $red;
+  }
+}
+
+.section {
+  padding: 8rem 0;
+  &__title {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 36px;
+    margin-bottom: 4rem;
+  }
+}
+
 .bs-card {
   transition: 0.1s ease-in-out;
   &:hover {
@@ -16,6 +59,16 @@ body {
     box-sizing: border-box;
   }
 }
-@import "./calendar/calendar.scss";
-@import "./calendar/hours.scss";
-@import "./project-section/project-section.scss";
+
+//publicComponents =========>
+@import './public/header.scss';
+@import './public/buttons.scss';
+//=========>
+
+//componentsStyles =========>
+@import './calendar/calendar.scss';
+@import './calendar/hours.scss';
+@import './home/main-section.scss';
+@import './home/facilities-section.scss';
+@import './home/project-section.scss';
+//=========>

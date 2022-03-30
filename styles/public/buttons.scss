@@ -1,0 +1,50 @@
+.icon-button {
+	display: flex;
+	align-items: center;
+	font-family: "PT Root UI";
+	font-style: normal;
+	font-weight: 600;
+	text-transform: uppercase;
+	border-radius: 4px;
+	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+	border: none;
+	outline: none;
+	&_primary {
+		color: $white;
+		background: $red;
+		svg {
+			fill: $white;
+		}
+	}
+	&_secondary {
+		color: $dark;
+		background: $white;
+		svg {
+			fill: $dark;
+		}
+	}
+	&_medium {
+		height: 44px;
+		padding: 12px 24px;
+		font-size: 14px;
+		line-height: 20px;
+		span {
+			margin-left: 12px;
+		}
+	}
+	&_small {
+		height: 32px;
+		padding: 8px 16px;
+		font-size: 12px;
+		line-height: 16px;
+		span {
+			margin-left: 8px;
+		}
+	}
+	&_medium,
+	&_small {
+		img {
+			height: 100%;
+		}
+	}
+}

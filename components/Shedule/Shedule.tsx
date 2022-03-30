@@ -1,115 +1,51 @@
-import axios from 'axios'
-import { Dayjs } from 'dayjs'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
+import { ToggleButton, Row, Col } from 'react-bootstrap'
 
 interface SheduleProps {
-  bookedHours?: Array<[number, number]>
-  date: Dayjs
+  disabledHours?: Array<[number, number]>
+  selectedHours?: Array<[number, number]>
   onSelectHours?: () => void
-  facilityID: string | string[] | undefined
 }
 
 export function Shedule({
-  date,
-  bookedHours,
-  onSelectHours,
-  facilityID
+  disabledHours,
+  selectedHours,
+  onSelectHours
 }: SheduleProps): JSX.Element {
-  const router = useRouter()
-  const formattedDate = date.format('DD-MM-YYYY')
-  const [selectedHourStart, setSelectedHourStart] = useState<
-    number | undefined
-  >()
-  const [selectedHourEnd, setSelectedHourEnd] = useState<number | undefined>()
-  useEffect(() => {
-    setSelectedHourStart(undefined)
-    setSelectedHourEnd(undefined)
-  }, [date])
-
-  function selectHandler(hour: number) {
-    return function () {
-      if (!selectedHourStart) {
-        return setSelectedHourStart(hour)
-      }
-      if (!selectedHourEnd) {
-        return setSelectedHourEnd(hour)
-      }
-    }
-  }
-  const allowedHours = Array(24)
-    .fill(null)
-    .map((_hour, index) => index + 1)
-    .filter((hour) => {
-      if (bookedHours) {
-        for (const book of bookedHours) {
-          if (book[0] <= hour && hour < book[1]) return false
-        }
-      }
-      if (hour <= selectedHourStart! || hour >= selectedHourEnd!) return false
-      return true
-    })
-  async function queueFetcher() {
-    await axios
-      .post(
-        'http://localhost:5000/api/v1/queue',
-        {
-          facility_id: facilityID,
-          from_date: `${formattedDate} ${selectedHourStart}:00`,
-          to_date: `${formattedDate} ${selectedHourEnd}:00`
-        },
-        { withCredentials: true }
-      )
-      .then(() => router.push('/facilities'))
-      .catch(() => false)
-  }
   return (
-    <div className="d-inline w-50">
-      <div>
-        {`Выбранное время от ${selectedHourStart ?? '__'}:00 до ${
-          selectedHourEnd ?? '__'
-        }:00`}
-      </div>
-
-      {(!selectedHourStart || !selectedHourEnd) && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)' }}>
-          {allowedHours.map((hour) => {
-            const checked = selectedHourStart
-              && selectedHourEnd
-              && selectedHourStart <= hour
-              && selectedHourEnd >= hour
-            return (
-              <Button
-                key={hour}
-                onClick={selectHandler(hour)}
-                variant={checked ? 'danger' : 'outline-danger'}
-                className="rounded-0 px-3"
-              >
-                {hour}
-              </Button>
-            )
-          })}
-        </div>
-      )}
-      <div>
-        {(selectedHourStart || selectedHourEnd) && (
-          <Button
-            variant="danger"
-            onClick={() => {
-              setSelectedHourStart(undefined)
-              setSelectedHourEnd(undefined)
-            }}
-          >
-            Сброс
-          </Button>
-        )}
-        {selectedHourStart && selectedHourEnd && (
-          <Button className="ms-5" onClick={queueFetcher}>
-            Отправить
-          </Button>
-        )}
-      </div>
-    </div>
+    <Col className="d-inline-flex flex-wrap w-100 h-100 shedule">
+      {Array(4)
+        .fill(null)
+        .map((_itemH, indexH) => (
+          <>
+            {Array(6)
+              .fill(null)
+              .map((_itemL, indexL) => {
+                const hour = indexH * 6 + indexL + 1
+                const isDisabled = disabledHours
+                  ? disabledHours.reduce((disabled, hours) => {
+                      if (!disabled) {
+                        return hours[0] <= hour && hour < hours[1]
+                      }
+                      return disabled
+                    }, false)
+                  : false
+                return (
+                  <Col key={indexL}>
+                    <ToggleButton
+                      variant="danger"
+                      type="checkbox"
+                      className="shadow-0 w-100 border-0 m-3"
+                      disabled={isDisabled}
+                      checked={false}
+                      value={hour}
+                    >
+                      {`${hour}${hour < 24 ? `-${hour + 1}` : ``}`}
+                    </ToggleButton>
+                  </Col>
+                )
+              })}
+          </>
+        ))}
+    </Col>
   )
 }

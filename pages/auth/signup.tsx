@@ -3,8 +3,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Container, Form, FloatingLabel, Button } from 'react-bootstrap'
 import * as Yup from 'yup'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import axios from 'axios'
 
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import { useAuth } from 'packages/auth'
@@ -29,13 +27,11 @@ const SignUpSchema = Yup.object({
 type SignUpData = Yup.InferType<typeof SignUpSchema>
 
 export default function SignUpForm() {
-  const router = useRouter()
-  const { signUp, authData } = useAuth()
+  const { signUp } = useAuth()
   const {
     handleSubmit,
     register,
-    formState: { errors, dirtyFields },
-    setError
+    formState: { errors, dirtyFields }
   } = useForm<SignUpData>({
     mode: 'onChange',
     reValidateMode: 'onChange',

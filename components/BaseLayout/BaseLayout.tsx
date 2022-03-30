@@ -1,16 +1,15 @@
-import { ReactNode } from 'react'
+import { BaseProps } from 'packages/customTypes'
 
-import { Header } from 'components/Header/Header'
-import { Footer } from 'components/Footer/Footer'
+import { Header } from '../public/Header'
+import { Footer } from '../public/Footer'
 
-interface BasicLayoutProps {
-  children?: ReactNode
-}
-export function BasicLayout({ children }: BasicLayoutProps): JSX.Element {
+export function BasicLayout({ children }: BaseProps): JSX.Element {
   return (
     <>
       <Header />
-      <main style={{ marginTop: 56 }}>{children}</main>
+
+      <main className="main">{children}</main>
+
       <Footer />
     </>
   )

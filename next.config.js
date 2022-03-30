@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
 const withPWA=require('next-pwa')
 const runtimeCaching=require('next-pwa/cache')
@@ -6,12 +5,13 @@ const runtimeCaching=require('next-pwa/cache')
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    apiLoginRoute: 'http://localhost:5000/api/v1/auth/login',
-    apiAuthRoute: 'http://localhost:5000/api/v1/auth/current',
-    apiRegRoute: 'http://localhost:5000/api/v1/auth/register',
-    apiUsernameCheckRoute: 'http://localhost:5000/api/v1/auth/username_exists',
-    apiEmailCheckRoute: 'http://localhost:5000/api/v1/auth/email_exists',
-    apiBasePath:'http://localhost:5000/api/v1/'
+    signUpPath:'/auth/register',
+    signInPath: 'auth/login',
+    signOutPath:'/auth/logout',
+    authCheckPath: '/auth/current',
+    checkEmailPath: '/auth/email_exists',
+    checkUsernamePath:'/auth/username_exists',
+    apiBasePath:process.env.NODE_ENV==='production'? 'http://localhost:5000/api/v1/' : '/api'
   },
   i18n: {
     locales:['ru','en'],
@@ -24,7 +24,7 @@ const nextConfig = {
     register:true,
     runtimeCaching,
     disable: process.env.NODE_ENV === 'development',
-    fallbacks:{image:'/favicon.ico'},
+    fallbacks:{image:'/favicon.svg'},
   },
   distDir: 'build',
   images: {
