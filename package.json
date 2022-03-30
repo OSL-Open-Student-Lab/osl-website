@@ -2,11 +2,12 @@
   "name": "osl",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "_dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier -l"
+    "format": "prettier -l",
+    "dev":"node server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
