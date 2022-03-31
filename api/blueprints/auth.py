@@ -3,8 +3,11 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from api import lm, app
 from api.external_functions import _convert_error as conv_err
-from api.models import Users, db
-from api.field_models import*
+
+from api.db_models import db
+from api.db_models.user_models import Users
+
+from api.validation_models.auth_models import RegisterUserField, LoginUserField
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError

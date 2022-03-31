@@ -11,7 +11,7 @@ def create_app():
     try:
         setup_db(app)
     except Exception as err:
-        print(f"[ERROR]: Unable to setup database -> {err}")
+        print(type(err), f"[ERROR]: Unable to setup database -> {err}")
 
     CORS(app, supports_credentials=True, allow_headers="*")
 
@@ -20,7 +20,7 @@ def create_app():
         '/api/v1/apidocs',
         '/static/swagger.json')
     app.register_blueprint(swagger_bp)
-
+    
     return app
 
 

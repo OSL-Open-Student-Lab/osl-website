@@ -1,12 +1,15 @@
 import datetime
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, json, request, jsonify
 from flask_login import login_required, current_user
 from pydantic.error_wrappers import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
-from api.models import db, FacilityBooking, Facilities
-from api.field_models import QueueField
+from api.db_models import db
+from api.db_models.facility_models import Facilities, FacilityBooking
+
+from api.validation_models.queue_models import QueueField
+
 from api.external_functions import _validate_time as valid_time
 from api.external_functions import _convert_error as conv_err
 from api.external_functions import _str_to_time as str_to_time
@@ -83,19 +86,27 @@ def queries():
             return jsonify(all_positions), 200
 
         if request.method == 'DELETE':
-            facility_booking_id = request.args.get('facility_booking_id')
+            data = loads(request.data.decode(encoding='utf-8')) \
+                if not request.args else dict(request.args)
+
+            facility_booking_id = data.get('facility_booking_id')
+            if not isinstance(facility_booking_id, int):
+                return jsonify('id must be integer'), 400
 
             try:
                 booking = FacilityBooking.query.\
-                    filter_by(id=facility_booking_id)
+                    filter_by(id=facility_booking_id).all()[0]
+                print(booking)
                 if booking:
-                    if booking.user_id == current_user.get_id():
-                        booking.delete()
+                    if booking.user_id == int(current_user.get_id()):
+                        booking.query.delete()
                         return jsonify('booking was deleted successfully'), 200
                     else:
                         return jsonify('permission denied'), 403
                 else:
                     return jsonify('no bookings with such id'), 400
+            except IndexError as ierror:
+                return jsonify('no booking with such id'), 400
             except Exception as error:
                 print(type(error), error)
                 return jsonify('unable to fetch data from the database'), 500

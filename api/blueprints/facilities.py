@@ -7,9 +7,13 @@ from sqlalchemy.exc import SQLAlchemyError
 from pydantic import ValidationError
 
 from api import lm
-from api.models import FacilityType, Facilities, Roles, Users, db
+
+from api.db_models import db
+from api.db_models.facility_models import FacilityType, Facilities
+from api.db_models.user_models import Roles, Users
+
 from api.external_functions import _convert_error as conv_err
-from api.field_models import FacilityField, FacilityTypeField 
+from api.validation_models.facility_models import FacilityField, FacilityTypeField 
 
 facility_bp = Blueprint(
         name='facilities',

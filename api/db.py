@@ -1,5 +1,7 @@
 from flask_session import Session
-from api.models import db, Roles
+
+from api.db_models import db
+from api.db_models.user_models import Roles
 
 
 def setup_db(app):
