@@ -1,5 +1,3 @@
-from validate_email import validate_email
-
 
 def _convert_error(err):
     num_of_err = int(str(err).split('\n')[0][0])

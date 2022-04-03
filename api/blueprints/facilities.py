@@ -1,4 +1,3 @@
-from json import loads
 from functools import wraps
 
 from os.path import abspath
@@ -16,14 +15,17 @@ from api.db_models.facility_models import FacilityType, Facilities
 from api.db_models.user_models import Roles, Users
 
 from api.external_functions import _convert_error as conv_err
-from api.validation_models.facility_models import FacilityField, FacilityTypeField 
+from api.validation_models.facility_models import (
+        FacilityField,
+        FacilityTypeField
+)
 
 
 path = abspath(getcwd())
 
 facility_bp = Blueprint(
         name='facilities',
-        import_name=__name__, 
+        import_name=__name__,
         url_prefix='/facilities')
 
 
@@ -45,10 +47,13 @@ def admin_required(f):
             cur_user_role = db.session.query(Roles).filter_by(id=cur_user_role_id).all()[0]
             if cur_user_role.name.lower() == 'admin':
                 return f(*args, **kwargs)
+
             return jsonify(error_message="You don't have permission for this action"), 403
         except Exception as err:
+            print(err)
             return jsonify(error_message="Something goes wrong"), 500
     return wrapper
+
 
 @facility_bp.route('/add_type', methods=['POST'])
 @login_required
@@ -64,7 +69,7 @@ def add_type():
             except ValidationError as error:
                 print(error)
                 return jsonify(conv_err(error)), 400
-            
+
             try:
                 new_type = FacilityType(name=fac.name)
                 db.session.add(new_type)
@@ -81,7 +86,7 @@ def add_type():
                 print(error)
                 return jsonify('unable to save image'), 500
 
-            return jsonify('new facility type was successfully added'), 200 
+            return jsonify('new facility type was successfully added'), 200
         
         except Exception as error:
             print(error)
@@ -101,8 +106,8 @@ def add_equipment():
 
             try:
                 fac = FacilityField(
-                        name=name, 
-                        type_id=type_id, 
+                        name=name,
+                        type_id=type_id,
                         filename=file.filename)
             except ValidationError as error:
                 print(error)
@@ -144,7 +149,7 @@ def get_type():
             return jsonify('unable to fetch data from the database'), 500
 
         return jsonify(
-                [{'id':ft.id, 'name':ft.name} 
+                [{'id': ft.id, 'name': ft.name} 
                     for ft in facility_types]), 200   
 
     except Exception as error:
@@ -162,7 +167,7 @@ def get_list(id):
             return jsonify('unable to fetch data from the database'), 500
 
         return jsonify(
-                [{'id':ft.id, 'name':ft.name} 
+                [{'id': ft.id, 'name': ft.name} 
                     for ft in facility_types]), 200   
 
     except Exception as error:

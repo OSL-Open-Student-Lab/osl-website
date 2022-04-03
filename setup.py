@@ -1,4 +1,3 @@
-from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 
 from api import app
@@ -15,7 +14,7 @@ def create_app():
 
     CORS(app, supports_credentials=True, allow_headers="*")
     app.register_blueprint(api.api_bp)
-    
+
     return app
 
 
