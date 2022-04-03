@@ -14,12 +14,7 @@ def create_app():
         print(type(err), f"[ERROR]: Unable to setup database -> {err}")
 
     CORS(app, supports_credentials=True, allow_headers="*")
-
     app.register_blueprint(api.api_bp)
-    swagger_bp = get_swaggerui_blueprint(
-        '/api/v1/apidocs',
-        '/static/swagger.json')
-    app.register_blueprint(swagger_bp)
     
     return app
 

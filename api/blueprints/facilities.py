@@ -1,6 +1,9 @@
 from json import loads
 from functools import wraps
 
+from os.path import abspath
+from os import getcwd
+
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
@@ -14,6 +17,9 @@ from api.db_models.user_models import Roles, Users
 
 from api.external_functions import _convert_error as conv_err
 from api.validation_models.facility_models import FacilityField, FacilityTypeField 
+
+
+path = abspath(getcwd())
 
 facility_bp = Blueprint(
         name='facilities',
@@ -50,7 +56,8 @@ def admin_required(f):
 def add_type():
     if request.method == 'POST':
         try:
-            name = loads(request.data.decode(encoding='utf-8')).get('name')
+            name = request.form.get('type_name')
+            file = request.files.get('image')
 
             try:
                 fac = FacilityTypeField(name=name)
@@ -66,6 +73,14 @@ def add_type():
                 print(serr)
                 return jsonify('unable to write data to the database'), 500
 
+            try:
+                with open(path+f'/api/static/facility_types/{name}', 'w+b') as f:
+                    for byte in file.stream:
+                        f.write(byte)
+            except Exception as error:
+                print(error)
+                return jsonify('unable to save image'), 500
+
             return jsonify('new facility type was successfully added'), 200 
         
         except Exception as error:
@@ -79,11 +94,16 @@ def add_type():
 def add_equipment():
     if request.method == 'POST':
         try:
-            name = loads(request.data.decode(encoding='utf-8')).get('name')
-            type_id = loads(request.data.decode(encoding='utf-8')).get('type_id')
+            name = request.form.get('name')
+            type_id = request.form.get('type_id')
+            description = request.form.get('description')
+            file = request.files.get('image')
 
             try:
-                fac = FacilityField(name=name, type_id=type_id)
+                fac = FacilityField(
+                        name=name, 
+                        type_id=type_id, 
+                        filename=file.filename)
             except ValidationError as error:
                 print(error)
                 return jsonify(conv_err(error)), 400
@@ -91,12 +111,21 @@ def add_equipment():
             try:
                 new_facility = Facilities(
                     name=fac.name,
+                    description=description,
                     facility_type_id=fac.type_id)
                 db.session.add(new_facility)
                 db.session.commit()
             except SQLAlchemyError as serr:
                 print(serr)
                 return jsonify('unable to write data to the database'), 500
+
+            try:
+                with open(path+f'/api/static/facilities/{name}', 'w+b') as f:
+                    for byte in file.stream:
+                        f.write(byte)
+            except Exception as error:
+                print(error)
+                return jsonify('unable to save image'), 500
 
             return jsonify('new facility was successfully added'), 200 
         

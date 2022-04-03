@@ -1,5 +1,6 @@
 from api.db_models import db
 
+
 class FacilityBooking(db.Model):
     __tablename__ = 'FacilityBooking'
 
@@ -18,6 +19,8 @@ class Facilities(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String())
+    description = db.Column(db.Text())
+    amount = db.Column(db.Integer, default=1, nullable=False)
     facility_type_id = db.Column(
         db.Integer,
         db.ForeignKey('FacilityType.id'),
