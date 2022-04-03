@@ -4,15 +4,3 @@ venv/
 env/
 database/
 api/static/**
-задачи
-<<<<<<< HEAD
-key.pem
-cert.pem
-<<<<<<< HEAD
-key.pem
-=======
-=======
-cert.pem
-key.pem
->>>>>>> dev
->>>>>>> master
