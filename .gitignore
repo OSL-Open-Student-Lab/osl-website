@@ -3,6 +3,7 @@
 venv/
 env/
 database/
+api/static/**
 задачи
 <<<<<<< HEAD
 key.pem
