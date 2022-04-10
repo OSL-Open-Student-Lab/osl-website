@@ -7,9 +7,7 @@ export function BasicLayout({ children }: BaseProps): JSX.Element {
   return (
     <>
       <Header />
-
       <main className="main">{children}</main>
-
       <Footer />
     </>
   )

@@ -35,8 +35,9 @@ export function MonthPage({
                   const isDisabled = disabledDays
                     ? disabledDays.includes(currentDay.format('DD.MM.YYYY'))
                     : false
-                  const isAllowed = (minDate ? minDate.isSameOrBefore(currentDay) : true)
-                    && (maxDate ? maxDate.isSameOrAfter(currentDay) : true)
+                  const isAllowed =
+                    (minDate ? minDate.isSameOrBefore(currentDay) : true) &&
+                    (maxDate ? maxDate.isSameOrAfter(currentDay) : true)
                   let buttonVariant: string
                   switch (true) {
                     case isDisabled || !isAllowed:
@@ -63,7 +64,7 @@ export function MonthPage({
                       className={classNames('w-100 border-0 rounded-0')}
                       onClick={() => onSelect && onSelect(currentDay)}
                     >
-                      {currentDay.format('D')}
+                      <span className="h3">{currentDay.format('D')}</span>
                     </Button>
                   )
                 })}

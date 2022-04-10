@@ -4,6 +4,13 @@
 @import './fonts/main.scss';
 //=========>
 
+:root {
+  --dwawa: 5px;
+}
+:root.dark {
+  --dwawa: 10px;
+}
+
 #__next,
 html,
 body {
@@ -59,7 +66,20 @@ a {
     box-sizing: border-box;
   }
 }
-
+.modal-dialog {
+  font-size: 2rem !important;
+}
+.modal-title {
+  font-size: 2.5rem;
+}
+.modal-footer {
+  .btn {
+    font-size: 1.5rem !important;
+  }
+}
+footer {
+  font-size: 2rem;
+}
 //publicComponents =========>
 @import './public/header.scss';
 @import './public/buttons.scss';
@@ -67,7 +87,6 @@ a {
 
 //componentsStyles =========>
 @import './calendar/calendar.scss';
-@import './calendar/hours.scss';
 @import './home/main-section.scss';
 @import './home/facilities-section.scss';
 @import './home/project-section.scss';

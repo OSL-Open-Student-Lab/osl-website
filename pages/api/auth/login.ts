@@ -9,6 +9,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       httpOnly: true,
       sameSite: 'strict'
     })
+    setCookies('username', req.body.username, {
+      req,
+      res,
+      httpOnly: true,
+      sameSite: 'strict'
+    })
     return res.status(200).json({ message: 'OK' })
   }
   return res.status(404).json({ message: 'Not found' })

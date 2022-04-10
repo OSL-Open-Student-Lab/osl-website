@@ -1,7 +1,7 @@
-const {createServer} = require('https')
+const {createServer} = require('http')
 const { parse } = require('url')
 const next = require('next')
-const fs = require('fs')
+// const fs = require('fs')
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = 'localhost'
@@ -9,12 +9,12 @@ const port = 3000
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
-const opts = {
-  key: fs.readFileSync('../certs/server.key'),
-  cert: fs.readFileSync('../certs/server.crt')
-}
+// const opts = {
+//   key: fs.readFileSync('../certs/server.key'),
+//   cert: fs.readFileSync('../certs/server.crt')
+// }
 app.prepare().then(() => {
-  createServer(opts, async (req, res) => {
+  createServer( async (req, res) => {
     try {
       // Be sure to pass `true` as the second argument to `url.parse`.
       // This tells it to parse the query portion of the URL.

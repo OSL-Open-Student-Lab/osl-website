@@ -26,10 +26,11 @@ export function DecadePage({
                   2 * yearPairIndex + yearIndex,
                   'year'
                 )
-                const isAllowed = (minDate
-                  ? minDate.startOf('year').isSameOrBefore(currentYear)
-                  : true)
-                  && (maxDate
+                const isAllowed =
+                  (minDate
+                    ? minDate.startOf('year').isSameOrBefore(currentYear)
+                    : true) &&
+                  (maxDate
                     ? maxDate.endOf('year').isSameOrAfter(currentYear)
                     : true)
                 const isSelected = currentYear.isSame(
@@ -60,7 +61,7 @@ export function DecadePage({
                     className="w-100 border-0 rounded-0"
                     onClick={() => onSelect && onSelect(currentYear)}
                   >
-                    {currentYear.format('YYYY')}
+                    <span className="h3">{currentYear.format('YYYY')}</span>
                   </Button>
                 )
               })}

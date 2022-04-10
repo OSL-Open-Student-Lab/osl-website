@@ -58,7 +58,7 @@ export default function SignUpForm() {
                 isValid={dirtyFields.email && !errors.email}
               />
               <Form.Text className="text-danger">
-                {errors.username?.message}
+                {errors.email?.message}
               </Form.Text>
             </FloatingLabel>
           </Form.Group>

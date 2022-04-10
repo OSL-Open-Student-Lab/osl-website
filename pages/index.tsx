@@ -1,17 +1,21 @@
-import { Container } from 'react-bootstrap'
+import Head from 'next/head'
 import { BasicLayout } from 'components/BaseLayout/BaseLayout'
-import 'react-multi-carousel/lib/styles.css';
-import { IconButton } from 'components/public/Buttons';
-import MainSection from 'components/BaseLayout/MainSection';
-import FacilitiesSection from 'components/BaseLayout/FacilitiesSection';
-import OurProjects from 'components/BaseLayout/OurProjects';
+import MainSection from 'components/MainSection'
+import FacilitiesSection from 'components/FacilitiesSection'
+import OurProjects from 'components/OurProjects'
+import 'react-multi-carousel/lib/styles.css'
 
 export default function HomePage() {
   return (
-    <BasicLayout>
-      <MainSection />
-      <FacilitiesSection />
-      <OurProjects />
-    </BasicLayout>
+    <>
+      <Head>
+        <title>OSL: Домашняя</title>
+      </Head>
+      <BasicLayout>
+        <MainSection />
+        <FacilitiesSection />
+        <OurProjects />
+      </BasicLayout>
+    </>
   )
 }

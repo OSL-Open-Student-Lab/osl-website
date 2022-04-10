@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import dayjs, { Dayjs } from 'dayjs'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
@@ -13,7 +13,7 @@ import { WeekDays } from './CalenarWeekDays'
 import { MonthPage } from './CalenarMonthPage'
 import { YearPage } from './CalendarYearPage'
 import { DecadePage } from './CalendarDecadePage'
-// import { HoursPage } from './hours'
+
 export interface CalendarProps {
   minDate?: string
   maxDate?: string
@@ -64,17 +64,6 @@ export function Calendar({
       onSelectDate(selectedDate?.format('DD.MM.YYYY'))
     }
   }, [selectedDate])
-
-  // const [occupiedHoursesMassive, setOccupiedHoursesMassive] = useState<
-  //   number[]
-  // >([])
-  // useEffect(() => {
-  //   const min = Math.ceil(0)
-  //   const max = Math.floor(2)
-  //   const randVal = Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
-  //   setOccupiedHoursesMassive(Array(12).fill(randVal))
-  //   console.log(occupiedHoursesMassive)
-  // }, [selectedDate])
 
   function todayClickHandler() {
     setPageLevelType('month')
@@ -179,18 +168,11 @@ export function Calendar({
           : false) ? (
           <ButtonGroup className="w-100">
             <Button variant="danger" onClick={todayClickHandler}>
-              Сегодня
+              <span className="h3">Сегодня</span>
             </Button>
           </ButtonGroup>
         ) : null}
       </ButtonGroup>
-      {/* <CSSTransition
-        in={!!selectedDate}
-        timeout={300}
-        classNames="hour-page"
-        unmountOnExit>
-        <HoursPage occupiedHourses={occupiedHoursesMassive} />
-      </CSSTransition> */}
     </ButtonGroup>
   )
 }

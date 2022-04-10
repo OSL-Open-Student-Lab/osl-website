@@ -43,16 +43,16 @@ export function Controls({
     switch (currentPageType) {
       case PageLevelName.month:
         if (
-          !minDate
-          || newMonth.startOf('month').isSameOrAfter(minDate, 'month')
+          !minDate ||
+          newMonth.startOf('month').isSameOrAfter(minDate, 'month')
         ) {
           dateSetter(newMonth)
         }
         break
       case PageLevelName.year:
         if (
-          !minDate
-          || newYear.startOf('year').isSameOrAfter(minDate, 'year')
+          !minDate ||
+          newYear.startOf('year').isSameOrAfter(minDate, 'year')
         ) {
           dateSetter(newYear)
         }
@@ -105,13 +105,13 @@ export function Controls({
   return (
     <ButtonGroup>
       <Button variant="danger" style={{ flexGrow: 1 }} onClick={prevHandler}>
-        {'<'}
+        <span className="h3">{'<'}</span>
       </Button>
       <Button variant="danger" style={{ flexGrow: 5 }} onClick={switchPageType}>
-        {formattedDate}
+        <span className="h3">{formattedDate}</span>
       </Button>
       <Button variant="danger" style={{ flexGrow: 1 }} onClick={nextHandler}>
-        {'>'}
+        <span className="h3">{'>'}</span>
       </Button>
     </ButtonGroup>
   )

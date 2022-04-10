@@ -20,7 +20,9 @@ export function WeekDays(): JSX.Element {
                 'text-danger': isWeekEnd
               })}
             >
-              {currentWeekDay.format('dd').toUpperCase()}
+              <span className="h3">
+                {currentWeekDay.format('dd').toUpperCase()}
+              </span>
             </Button>
           )
         })}

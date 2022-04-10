@@ -23,10 +23,11 @@ export function YearPage({
                   2 * monthPairIndex + monthIndex,
                   'month'
                 )
-                const isAllowed = (minDate
-                  ? minDate.startOf('month').isSameOrBefore(currentMonth)
-                  : true)
-                  && (maxDate
+                const isAllowed =
+                  (minDate
+                    ? minDate.startOf('month').isSameOrBefore(currentMonth)
+                    : true) &&
+                  (maxDate
                     ? maxDate.endOf('month').isSameOrAfter(currentMonth)
                     : true)
                 const isSelected = currentMonth.isSame(
@@ -57,7 +58,7 @@ export function YearPage({
                     className="w-100 border-0 rounded-0"
                     onClick={() => onSelect && onSelect(currentMonth)}
                   >
-                    {currentMonth.format('MMMM')}
+                    <span className="h3">{currentMonth.format('MMMM')}</span>
                   </Button>
                 )
               })}
