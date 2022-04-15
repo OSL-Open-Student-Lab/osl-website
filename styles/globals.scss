@@ -80,6 +80,29 @@ a {
 footer {
   font-size: 2rem;
 }
+
+.input {
+  background: #FFFFFF;
+  border: 1px solid rgba(41, 34, 33, 0.2);
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #666666;
+  font-family: 'PT Root UI';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px 12px;
+  outline: none;
+  &::-webkit-inner-spin-button,
+  &::-webkit-calendar-picker-indicator{
+    display: none;
+  }
+ 
+}
+
+
 //publicComponents =========>
 @import './public/header.scss';
 @import './public/buttons.scss';
@@ -90,4 +113,5 @@ footer {
 @import './home/main-section.scss';
 @import './home/facilities-section.scss';
 @import './home/project-section.scss';
+@import './home/order-page.scss';
 //=========>

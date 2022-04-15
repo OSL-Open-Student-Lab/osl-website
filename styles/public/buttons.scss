@@ -23,6 +23,13 @@
 			fill: $dark;
 		}
 	}
+  &_disable{
+    color: $white;
+    background: $gray;
+    svg{
+      fill: $white;
+    }
+  }
 	&_medium {
 		height: 44px;
 		padding: 12px 24px;
