@@ -1,22 +1,26 @@
-# OSL Website API v.0.1
-## Run application locally(For frontend devs)
+# OSL Website API v.0.1.1
 
-```bash
-# Set virtual enviroment and nstall dependeces
-$ git clone https://github.com/timaracov/osl.git
-$ cd osl
+## Run api:
+```zsh
+$ git clone https://github.com/timaracov/osl-fast
+$ cd osl-fast
 $ python3 -m venv env
 $ . env/bin/activate
-$ pip install -r requirements.txt
-
-# Run api with gunicorn
-$ gunicorn setup:create_app
-
-# Or with pure flask
-$ export FLASK_APP=setup
-$ export FLASK_ENV=development
-$ flask run
+$ pip install -r req.txt
+$ uvicorn run:run_app --debug
 ```
 
-## Authors:
-+ [timaracov](https://github.com/timaracov)
+## Run tests:
+```zsh
+$ pip install -r req-dev.txt
+$ pytest
+```
+
+To look through docs go to the http://localhost:8000/docs or http://localhost:8000/redoc
+
+All static files will be accessed from http://localhost:8000/api/{v}/static
+
+---
+
+## Author:
+* [timaracov]( https://github.com/timaracov )
