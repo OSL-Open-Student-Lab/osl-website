@@ -1,0 +1,192 @@
+from datetime import datetime, timedelta
+
+from sqlalchemy.exc import SQLAlchemyError
+
+from fastapi import APIRouter
+
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
+from api.v1.request_models.queue import QueueField
+from api.v1.db.facilities import FacilityBooking, Facilities
+from api.v1.db import Session
+from api.v1.token_gen import decode_token
+
+router = APIRouter(prefix='/queue')
+
+
+@router.get('/get_all')
+async def get_queues(request: Request):
+    try:
+        token = request.cookies.get('osl-user-session')
+        dec_token = decode_token(token)
+        if dec_token:
+            uid = dec_token.get('uid')
+        else:
+            return JSONResponse(
+                    content={'message': 'invalid cookie'},
+                    status_code=400)
+    except Exception as err:
+        print(err)
+        return JSONResponse()
+
+    try:
+        with Session() as sess:
+            bookings = sess.query(FacilityBooking).filter_by(user_id=uid).all()
+            result = []
+            for book in bookings:
+                from_time = datetime.strptime(
+                        book.from_time,
+                        "%d-%m-%Y %H:%M")
+                if from_time > datetime.now():
+                    facility = sess.query(Facilities).filter_by(id=book.facility_id).all()[0]
+                    result.append({
+                        'booking_id': book.id,
+                        'facility_name': facility.name,
+                        'from_date': book.from_time,
+                        'to_date': book.to_time,
+                        'user_id': book.user_id})
+            return JSONResponse(content={'data': result}, status_code=200)
+    except SQLAlchemyError as serr:
+        print(serr)
+        return JSONResponse(
+                content={'message': 'unable to fetch data from the database'},
+                status_code=500)
+
+
+@router.delete('/delete_booking')
+async def delete_booking(id: int):
+    try:
+        with Session() as sess:
+            book_del = sess.query(FacilityBooking).filter_by(id=id)
+            if not book_del:
+                return JSONResponse(
+                    content={'message': 'no facility with such id'},
+                    status_code=400)
+            else:
+                book_del.delete() 
+                sess.commit() 
+                return JSONResponse(
+                    content={'message': 'boooking deleted successfully'},
+                    status_code=500)
+    except SQLAlchemyError as serrr:
+        print(serr)
+        return JSONResponse(
+            content={'message': 'unable to remove booking'},
+            status_code=500)
+
+
+@router.get('/get/{id}/{date}')
+async def get_specific(id: int, date: str):
+    try:
+        with Session() as sess:
+            facility = sess.query(Facilities).filter_by(id=id).first()
+            if not facility:
+                return JSONResponse(
+                    content={'message': 'invalid facility id'},
+                    status_code=400)
+            booking = sess.query(FacilityBooking).\
+                    filter_by(facility_id=id).all()
+            result = []
+            for book in booking:
+                from_time = datetime.strptime(
+                        book.from_time,
+                        "%d-%m-%Y %H:%M")
+                if from_time > datetime.strptime(f'{date} 00:00', "%d-%m-%Y %H:%M"):
+                    result.append({
+                        'booking_id': book.id,
+                        'facility_id': book.facility_id,
+                        'from_date': book.from_time,
+                        'to_date': book.to_time,
+                        'user_id': book.user_id}) 
+                return JSONResponse(content={'data': result}, status_code=200)
+    except SQLAlchemyError as serr:
+        print(serr)
+        return JSONResponse(
+                content={'message': 'unable to fetch data from the database'},
+                status_code=500)
+
+
+@router.post('/add_booking')
+async def add_booking(queue: QueueField, request: Request):
+    try:
+        token = request.cookies.get('osl-user-session')
+        dec_token = decode_token(token)
+        if dec_token:
+            uid = dec_token.get('uid')
+        else:
+            return JSONResponse(
+                    content={'message': 'invalid cookie'},
+                    status_code=400)
+    except Exception as err:
+        print(err)
+        return JSONResponse(
+                content={'message': 'unable to get cookie'},
+                status_code=403)
+
+    from_date = datetime.strptime(queue.from_date, "%d-%m-%Y %H:%M")
+    to_date = datetime.strptime(queue.to_date, "%d-%m-%Y %H:%M")
+    if from_date >= to_date:
+        return JSONResponse(
+                content={'message': 'invalide date format'},
+                status_code=400)
+    if (to_date - from_date) > timedelta(days=4):
+        return JSONResponse(
+                content={'message': 'booking time is too long'},
+                status_code=400)
+    if (to_date - from_date) < timedelta(hours=1):
+        return JSONResponse(
+                content={'message': 'booking time is too short'},
+                status_code=400)
+    try:
+        with Session() as sess:
+            existing_bookings = sess.query(FacilityBooking).\
+                filter_by(facility_id=queue.facility_id).all()
+            for el in existing_bookings:
+                fd = datetime.strptime(queue.from_date, '%d-%m-%Y %H:%M')
+                td = datetime.strptime(queue.to_date, '%d-%m-%Y %H:%M')
+                fdx = datetime.strptime(el.from_time, '%d-%m-%Y %H:%M')
+                tdx = datetime.strptime(el.to_time, '%d-%m-%Y %H:%M') 
+                valid = valid_time(fd, td, fdx, tdx)
+                if not valid:
+                    return JSONResponse(
+                            content={'message': 'your time crosses with another'},
+                            status_code=400)
+            
+            new_booking = FacilityBooking(
+                from_time=queue.from_date,
+                to_time=queue.to_date,
+                facility_id=queue.facility_id,
+                user_id=uid)
+            sess.add(new_booking)
+            sess.commit()
+    except SQLAlchemyError as serr:
+        print(serr)
+        return JSONResponse(
+                    content={'message': 'unable to write data to the database'},
+                    status_code=500)
+
+
+
+def valid_time(from_date, to_date, from_date_ex, to_date_ex):
+    A = from_date <= from_date_ex and \
+        to_date >= from_date_ex and \
+        to_date <= to_date_ex
+    B = from_date >= from_date_ex and \
+        from_date <= to_date and \
+        from_date <= to_date_ex and \
+        to_date <= to_date_ex
+    C = from_date >= from_date_ex and \
+        from_date <= to_date_ex and \
+        to_date >= to_date_ex
+    D = from_date_ex >= from_date and \
+        from_date_ex <= to_date_ex and \
+        from_date_ex <= to_date and \
+        to_date_ex <= to_date
+
+    if A or B or C or D:
+        return False
+    return True
+
+
+
