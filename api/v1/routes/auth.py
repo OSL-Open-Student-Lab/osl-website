@@ -1,10 +1,9 @@
 from datetime import timedelta
-from pydantic.main import validate_custom_root_type
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from passlib.context import CryptContext
 
-from fastapi import APIRouter, Cookie, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
@@ -34,13 +33,13 @@ router = APIRouter(prefix='/auth')
 
 
 async def is_authorized(func):
-    def func(*args, **kwargs):
-       pass 
+    def wrapper(*args, **kwargs):
+        pass
+    return wrapper
 
 
-@router.post('/register')
+@router.post('/registration')
 async def reg_usr(reg: RegisterUserField):
-
     try:
         with Session() as session:
             check_user = session.query(User).filter_by(name=reg.username).all()
@@ -174,11 +173,13 @@ async def read_me(request: Request):# token: str = Cookie(None)):
             print(serror)
             return JSONResponse(status_code=500)
 
+
 @router.get('/logout')
-async def logout(request: Request, response: Response):
+async def logout(response: Response):
     try:
         response.delete_cookie(key='osl-user-session')
         response.status_code = 200
     except:
         response.status_code = 403
     return response
+
