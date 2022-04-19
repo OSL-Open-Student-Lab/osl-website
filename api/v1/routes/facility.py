@@ -1,22 +1,32 @@
 from os import getcwd
 from os.path import abspath
 
-from fastapi import APIRouter, Form, File, UploadFile, Request
+from fastapi import APIRouter, Form, File, UploadFile, BackgroundTasks
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.responses import JSONResponse
 
 from api.v1.db import Session
 from api.v1.db.facilities import FacilityType, Facilities
 
-from api.v1.request_models.facilities import (
-    FacilityField,
-    FacilityTypeField
-)
 
 path = abspath(getcwd())
 router = APIRouter(prefix='/facilities')
 
-@router.get('/get_types')
+
+async def write_image(name, ext, file, folder):
+    try:
+        with open(path+f'/api/v1/static/{folder}/{name}.{ext}', 'w+b') as f:
+            content = await file.read()
+            f.write(content)
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+                content={'message': 'unable to save image'},
+                status_code=500)
+
+
+
+@router.get('/facilities')
 async def get_types():
     try:
         with Session() as sess:
@@ -31,7 +41,7 @@ async def get_types():
                     status_code=500)
 
 
-@router.get('/get_by_type/{id}')
+@router.get('/facilities/types/{id}')
 async def get_by_type(id: int | None):
     try:
         with Session() as sess:
@@ -49,8 +59,11 @@ async def get_by_type(id: int | None):
                 status_code=500)
 
 
-@router.post('/add_type')
-async def add_type(name: str = Form(...), file: UploadFile = File(...)):
+@router.post('/facilities/types')
+async def add_type(
+    bg_tasks: BackgroundTasks,
+    name: str = Form(...), 
+    file: UploadFile = File(...)):
     try:
         with Session() as sess:
             exists = sess.query(FacilityType).filter_by(name=name).all()
@@ -65,20 +78,10 @@ async def add_type(name: str = Form(...), file: UploadFile = File(...)):
             sess.add(new_type)
             sess.commit()
 
-        try:
-            with open(path+f'/api/v1/static/facility_types/{name}.{ext}', 'w+b') as f:
-                content = await file.read()
-                f.write(content)
-
-        except Exception as error:
-            print(error)
-            return JSONResponse(
-                    content={'message': 'unable to save image'},
-                    status_code=500)
-
+        bg_tasks.add_task(write_image, name, ext, file, 'facility_types')
         return JSONResponse(
                 content={'message': 'new facility type created successfully'},
-                status_code=200)
+                status_code=201)
 
     except SQLAlchemyError as serr:
         print(serr)
@@ -87,8 +90,9 @@ async def add_type(name: str = Form(...), file: UploadFile = File(...)):
                 status_code=500)
 
 
-@router.post('/add_facility')
+@router.post('/facilities')
 async def add_facility(
+            bg_tasks: BackgroundTasks,
             name: str = Form(...),
             description: str = Form(...),
             facility_type_id: int = Form(...),
@@ -109,19 +113,9 @@ async def add_facility(
                 content={'message': 'unable to write data to the database'},
                 status_code=500)
     
-    try:
-        ext = file.filename.split('.')[-1]
-        with open(path+f'/api/v1/static/facilities/{name}.{ext}', 'w+b') as f:
-            content = await file.read()
-            f.write(content)
-    except Exception as error:
-         print(error)
-         return JSONResponse(
-                 content={'message': 'unable to save image'},
-                 status_code=500)
-    
+    bg_tasks.add_task(write_image, name, ext, file, 'facilities')
     return JSONResponse(
             content={'message': 'new facility was successfully added'},
-            status_code=200)
+            status_code=201)
 
 

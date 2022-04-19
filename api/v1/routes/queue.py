@@ -2,20 +2,18 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
 
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-
-from api.v1.request_models.queue import QueueField
 from api.v1.db.facilities import FacilityBooking, Facilities
-from api.v1.db import Session
+from api.v1.request_models.queue import QueueField
 from api.v1.token_gen import decode_token
+from api.v1.db import Session
 
-router = APIRouter(prefix='/queue')
 
+router = APIRouter(prefix='/queues')
 
-@router.get('/get_all')
+@router.get('')
 async def get_queues(request: Request):
     try:
         token = request.cookies.get('osl-user-session')
@@ -54,7 +52,7 @@ async def get_queues(request: Request):
                 status_code=500)
 
 
-@router.delete('/delete_booking')
+@router.delete('')
 async def delete_booking(id: int):
     try:
         with Session() as sess:
@@ -69,16 +67,18 @@ async def delete_booking(id: int):
                 return JSONResponse(
                     content={'message': 'boooking deleted successfully'},
                     status_code=500)
-    except SQLAlchemyError as serrr:
+    except SQLAlchemyError as serr:
         print(serr)
         return JSONResponse(
             content={'message': 'unable to remove booking'},
             status_code=500)
 
 
-@router.get('/get/{id}/{date}')
-async def get_specific(id: int, date: str):
+@router.get('/{id}/{date}')
+async def get_specific(id: int, date: str | None):
     try:
+        if not date:
+            date = datetime.strftime(datetime.now(), '%d-%m-%Y 00:00')
         with Session() as sess:
             facility = sess.query(Facilities).filter_by(id=id).first()
             if not facility:
@@ -107,7 +107,7 @@ async def get_specific(id: int, date: str):
                 status_code=500)
 
 
-@router.post('/add_booking')
+@router.post('')
 async def add_booking(queue: QueueField, request: Request):
     try:
         token = request.cookies.get('osl-user-session')
