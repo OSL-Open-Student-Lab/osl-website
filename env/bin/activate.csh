@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/home/timaracov/main_files/dev/OSL_WEBSITE/osl-back/env"
+setenv VIRTUAL_ENV "/home/timaracov/main_files/dev/OSL_WEBSITE/fastapi_osl/env"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

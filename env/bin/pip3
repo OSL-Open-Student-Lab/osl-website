@@ -1,4 +1,4 @@
-#!/home/timaracov/main_files/dev/OSL_WEBSITE/osl-back/env/bin/python3
+#!/home/timaracov/main_files/dev/OSL_WEBSITE/fastapi_osl/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/timaracov/main_files/dev/OSL_WEBSITE/osl-back/env"
+VIRTUAL_ENV="/home/timaracov/main_files/dev/OSL_WEBSITE/fastapi_osl/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

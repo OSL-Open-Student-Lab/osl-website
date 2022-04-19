@@ -30,7 +30,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/timaracov/main_files/dev/OSL_WEBSITE/osl-back/env"
+set -gx VIRTUAL_ENV "/home/timaracov/main_files/dev/OSL_WEBSITE/fastapi_osl/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
