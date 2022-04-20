@@ -7,7 +7,7 @@ $ cd osl-fast
 $ python3 -m venv env
 $ . env/bin/activate
 $ pip install -r req.txt
-$ uvicorn run:run_app --debug
+$ uvicorn run:run_app --debug --workers 12
 ```
 
 ## Run tests:

@@ -6,6 +6,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from api.v1.db.facilities import FacilityBooking, Facilities
+from api.v1.routes.auth import is_authorized
 from api.v1.request_models.queue import QueueField
 from api.v1.token_gen import decode_token
 from api.v1.db import Session
@@ -14,6 +15,7 @@ from api.v1.db import Session
 router = APIRouter(prefix='/queues')
 
 @router.get('')
+@is_authorized
 async def get_queues(request: Request):
     try:
         token = request.cookies.get('osl-user-session')
@@ -53,6 +55,7 @@ async def get_queues(request: Request):
 
 
 @router.delete('')
+@is_authorized
 async def delete_booking(id: int):
     try:
         with Session() as sess:
@@ -62,8 +65,8 @@ async def delete_booking(id: int):
                     content={'message': 'no facility with such id'},
                     status_code=400)
             else:
-                book_del.delete() 
-                sess.commit() 
+                book_del.delete()
+                sess.commit()
                 return JSONResponse(
                     content={'message': 'boooking deleted successfully'},
                     status_code=500)
@@ -75,6 +78,7 @@ async def delete_booking(id: int):
 
 
 @router.get('/{id}/{date}')
+@is_authorized
 async def get_specific(id: int, date: str | None):
     try:
         if not date:
@@ -98,7 +102,7 @@ async def get_specific(id: int, date: str | None):
                         'facility_id': book.facility_id,
                         'from_date': book.from_time,
                         'to_date': book.to_time,
-                        'user_id': book.user_id}) 
+                        'user_id': book.user_id})
                 return JSONResponse(content={'data': result}, status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
@@ -108,6 +112,7 @@ async def get_specific(id: int, date: str | None):
 
 
 @router.post('')
+@is_authorized
 async def add_booking(queue: QueueField, request: Request):
     try:
         token = request.cookies.get('osl-user-session')
@@ -146,13 +151,13 @@ async def add_booking(queue: QueueField, request: Request):
                 fd = datetime.strptime(queue.from_date, '%d-%m-%Y %H:%M')
                 td = datetime.strptime(queue.to_date, '%d-%m-%Y %H:%M')
                 fdx = datetime.strptime(el.from_time, '%d-%m-%Y %H:%M')
-                tdx = datetime.strptime(el.to_time, '%d-%m-%Y %H:%M') 
+                tdx = datetime.strptime(el.to_time, '%d-%m-%Y %H:%M')
                 valid = valid_time(fd, td, fdx, tdx)
                 if not valid:
                     return JSONResponse(
                             content={'message': 'your time crosses with another'},
                             status_code=400)
-            
+
             new_booking = FacilityBooking(
                 from_time=queue.from_date,
                 to_time=queue.to_date,

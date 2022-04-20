@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 
 from api.v1.db import Session
 from api.v1.db.facilities import FacilityType, Facilities
-
+from api.v1.routes.auth import is_authorized
 
 path = abspath(getcwd())
 router = APIRouter(prefix='/facilities')
@@ -27,6 +27,7 @@ async def write_image(name, ext, file, folder):
 
 
 @router.get('/facilities')
+@is_authorized
 async def get_types():
     try:
         with Session() as sess:
@@ -42,6 +43,7 @@ async def get_types():
 
 
 @router.get('/facilities/types/{id}')
+@is_authorized
 async def get_by_type(id: int | None):
     try:
         with Session() as sess:
@@ -60,9 +62,10 @@ async def get_by_type(id: int | None):
 
 
 @router.post('/facilities/types')
+@is_authorized
 async def add_type(
     bg_tasks: BackgroundTasks,
-    name: str = Form(...), 
+    name: str = Form(...),
     file: UploadFile = File(...)):
     try:
         with Session() as sess:
@@ -91,6 +94,7 @@ async def add_type(
 
 
 @router.post('/facilities')
+@is_authorized
 async def add_facility(
             bg_tasks: BackgroundTasks,
             name: str = Form(...),
@@ -112,7 +116,7 @@ async def add_facility(
         return JSONResponse(
                 content={'message': 'unable to write data to the database'},
                 status_code=500)
-    
+
     bg_tasks.add_task(write_image, name, ext, file, 'facilities')
     return JSONResponse(
             content={'message': 'new facility was successfully added'},

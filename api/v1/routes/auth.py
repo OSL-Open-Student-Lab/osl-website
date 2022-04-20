@@ -1,11 +1,14 @@
 from datetime import timedelta
+from functools import wraps
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from passlib.context import CryptContext
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, requests
 from fastapi.responses import JSONResponse
 from starlette.responses import Response
+
+from jwt.exceptions import DecodeError
 
 from api.v1.request_models.user_models import (
     LoginUserField,
@@ -32,14 +35,42 @@ def get_passwd_hash(passwd):
 router = APIRouter(prefix='/auth')
 
 
-async def is_authorized(func):
-    def wrapper(*args, **kwargs):
-        pass
+def is_authorized(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            request = kwargs.get('request')
+            token = request.cookies.get('osl-user-session')
+            dec_token = decode_token(token)
+            if dec_token:
+                username = dec_token.get('user')
+            else:
+                return JSONResponse(
+                        content={'message': 'no username'},
+                        status_code=400)
+            with Session() as sess:
+                user = sess.query(User).filter_by(name=username).all()
+            if not user:
+                return JSONResponse(
+                        content={'message': 'no user with this username'},
+                        status_code=403)
+        except DecodeError:
+            return JSONResponse(
+                    content={'message': 'wrong headers'},
+                    status_code=500)
+        except Exception as err:
+            print(err, type(err))
+            return JSONResponse(
+                    content={'message': 'unable to check user'},
+                    status_code=500)
+
+        return await func(*args, **kwargs)
+
     return wrapper
 
 
 @router.post('/registration')
-async def reg_usr(reg: RegisterUserField):
+async def reg_usr(request: Request, reg: RegisterUserField):
     try:
         with Session() as session:
             check_user = session.query(User).filter_by(name=reg.username).all()
@@ -50,14 +81,14 @@ async def reg_usr(reg: RegisterUserField):
     except SQLAlchemyError as serror:
         print(serror)
         return JSONResponse(
-                content={'message': 'unable to check user'}, 
+                content={'message': 'unable to check user'},
                 status_code=500)
 
 
     try:
         with Session() as session:
             new_user = User(
-                name=reg.username, 
+                name=reg.username,
                 password=pwd_context.hash(reg.password1),
                 email=reg.email)
             session.add(new_user)
@@ -65,22 +96,22 @@ async def reg_usr(reg: RegisterUserField):
 
     except IntegrityError:
         return JSONResponse(
-                content={'message': 'user with this email already exists'}, 
+                content={'message': 'user with this email already exists'},
                 status_code=500)
     except SQLAlchemyError as serror:
         print(serror)
         return JSONResponse(
-                content={'message': 'unable write data to the database'}, 
+                content={'message': 'unable write data to the database'},
                 status_code=500)
 
     content = {'message': 'user created successfully'}
-    
+
     # Change
     with Session() as sess:
         u = sess.query(User).filter_by(name=reg.username).first()
         uid = u.id
         uname = u.name
-    
+
     token = create_access_token({'user': uname, 'uid': uid},timedelta(days=7))
     resp = JSONResponse(content=content, status_code=200)
     resp.set_cookie(
@@ -95,7 +126,8 @@ async def reg_usr(reg: RegisterUserField):
 
 
 @router.post('/login')
-async def login(log: LoginUserField):
+@is_authorized
+async def login(request: Request, log: LoginUserField):
     try:
         with Session() as sess:
             user = sess.query(User).filter_by(name=log.username).all()
@@ -105,13 +137,13 @@ async def login(log: LoginUserField):
             return JSONResponse(
                     content={'message': 'no user with this username'},
                     status_code=400)
-        
-        valid = verify_passwd(log.password, user.password) 
+
+        valid = verify_passwd(log.password, user.password)
         if not valid:
             return JSONResponse(
                     content={'message': 'wrong password'},
                     status_code=400)
-        
+
         delta = timedelta(days=7) \
                 if log.rememberme \
                 else timedelta(days=1)
@@ -120,7 +152,7 @@ async def login(log: LoginUserField):
                 {'user': log.username, 'uid': user.id},
                 delta)
         resp = JSONResponse(
-                content={'message':'user logged in successfully'}, 
+                content={'message':'user logged in successfully'},
                 status_code=200)
         resp.set_cookie(
             key='osl-user-session',
@@ -132,11 +164,12 @@ async def login(log: LoginUserField):
     except SQLAlchemyError as serror:
         print(serror)
         return JSONResponse(
-                content={'message': 'unable fetch data from the database'}, 
+                content={'message': 'unable fetch data from the database'},
                 status_code=500)
 
 
 @router.get('/current')
+@is_authorized
 async def read_me(request: Request):# token: str = Cookie(None)):
     try:
         token = request.cookies.get('osl-user-session')
@@ -147,19 +180,18 @@ async def read_me(request: Request):# token: str = Cookie(None)):
             return JSONResponse(status_code=400)
     except:
         return JSONResponse(content={'message': 'unauthorized'}, status_code=403)
-    
+
     if not username:
         return JSONResponse(status_code=400)
     else:
         try:
             with Session() as sess:
                 user = sess.query(User).filter_by(name=username).all()
-            
             if not user:
                 return JSONResponse(status_code=400)
             else:
                 user = user[0]
-                valid_tok = validate_access_token(token) 
+                valid_tok = validate_access_token(token)
                 if valid_tok:
                     return JSONResponse(
                             content={
@@ -175,7 +207,8 @@ async def read_me(request: Request):# token: str = Cookie(None)):
 
 
 @router.get('/logout')
-async def logout(response: Response):
+@is_authorized
+async def logout(request: Request, response: Response):
     try:
         response.delete_cookie(key='osl-user-session')
         response.status_code = 200
