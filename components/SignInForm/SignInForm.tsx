@@ -1,5 +1,4 @@
 import { Container, Form } from 'react-bootstrap'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -7,28 +6,20 @@ import classNames from 'classnames'
 import Link from 'next/link'
 
 import { useAuth } from 'packages/auth'
-import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
 import { SignIn } from 'components/icons'
+
 import styles from './SignInForm.module.scss'
 
 const SignInSchema = Yup.object({
-  username: Yup.string()
-    .required('Это обязательное поле')
-    .matches(/^\w+$/i, 'Логин должен быть на латинице и не содержать пробелов')
-    .min(8, 'Логин должен быть не менее 8 символов')
-    .max(20, 'Логин не должен превышать 20 символов'),
-  password: Yup.string()
-    .required('Это обязательное поле')
-    .min(8, 'Длина пароля не должна быть не менее 8 символов')
-    .matches(/[A-ZА-Я]{1}/, 'Пароль должен содержать заглавную букву')
-    .matches(/[0-9]{1}/, 'Пароль должен содержать цифру'),
+  username: Yup.string().required('Это обязательное поле'),
+  password: Yup.string().required('Это обязательное поле'),
   rememberMe: Yup.boolean().required()
 })
 
 type SignInData = Yup.InferType<typeof SignInSchema>
 
 export function SignInForm() {
-  const { signIn, authData } = useAuth()
+  const { signIn } = useAuth()
   const {
     handleSubmit,
     register,
@@ -44,19 +35,12 @@ export function SignInForm() {
     },
     resolver: yupResolver(SignInSchema)
   })
-  useDidMountEffect(() => {
-    clearErrors('username')
-    if (!authData?.logged && authData?.message) {
-      setError(
-        'username',
-        { type: 'authError', message: authData?.message },
-        { shouldFocus: true }
-      )
-    }
-  }, [authData])
   async function signinFetcher({ username, password, rememberMe }: SignInData) {
     signIn(username, password, rememberMe).catch(() => {
-      setError('username', { type: 'authError', message: 'Ошибка авторизации' })
+      setError('username', {
+        type: 'authError',
+        message: 'Ошибка авторизации попробуйте ещё раз'
+      })
     })
   }
   return (

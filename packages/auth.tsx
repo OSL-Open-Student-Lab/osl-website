@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { useRouter } from 'next/router'
 import { BaseProps } from 'packages/customTypes'
-import { createContext, useContext, useState } from 'react'
-import useSWR from 'swr'
+import { createContext, useContext, useEffect } from 'react'
+import useSWR, { useSWRConfig } from 'swr'
 
 import { api } from 'packages/api'
-import { useDidMountEffect } from 'packages/hooks/useDidMountEffect'
-import { useLocalStorage } from 'packages/hooks/useLocalStorage'
 
 interface AuthData {
   logged: boolean
@@ -21,7 +19,6 @@ interface AuthContextValue {
   ) => Promise<void>
   signUp: (email: string, username: string, password: string) => Promise<void>
   authData?: AuthData
-  username?: string
 }
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -38,12 +35,12 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export function AuthProvider({ children }: BaseProps): JSX.Element {
   const router = useRouter()
-  async function authChecker(authUrl: string): Promise<AuthData> {
+  async function authChecker(): Promise<AuthData> {
     try {
-      const response = await api.get(authUrl)
+      const response = await api.get(process.env.authCheckPath!)
       return {
         logged: response.status === 200 && response.statusText === 'OK',
-        username: response.data.data.username
+        username: response.data.username
       }
     } catch (e) {
       return {
@@ -53,31 +50,22 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
     }
   }
 
-  const {
-    data: authData,
-    error,
-    mutate
-  } = useSWR(process.env.authCheckPath, authChecker, {})
+  const { data: authData, error } = useSWR('AUTH_CHECK', authChecker, {})
+  const { mutate } = useSWRConfig()
 
-  useDidMountEffect(() => {
+  useEffect(() => {
     if (router.pathname.match(/\/auth\//)) {
       if (authData?.logged && !error) {
         router.push('/')
       }
     }
-  }, [authData, error])
+  }, [authData, error, router.pathname])
 
   const contextValue = {
     signOut: async function signOut() {
       try {
-        const response = await api.get(process.env.signOutPath!).then((res) => {
-          router.push('/')
-          return res
-        })
-        mutate(
-          { logged: false, message: response.data?.message },
-          { revalidate: true }
-        )
+        await api.get(process.env.signOutPath!)
+        mutate('AUTH_CHECK', {}, { revalidate: true })
       } catch (e) {
         console.error(e)
       }
@@ -88,21 +76,12 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
       rememberme: boolean
     ) {
       try {
-        const response = await api
-          .post(process.env.signInPath!, {
-            username,
-            password,
-            rememberme
-          })
-          .then((res) => {
-            return res
-          })
-        mutate(
-          {
-            logged: response.status === 200 && response.statusText === 'OK'
-          },
-          { revalidate: true }
-        )
+        await api.post(process.env.signInPath!, {
+          username,
+          password,
+          rememberme
+        })
+        mutate('AUTH_CHECK')
       } catch (e) {
         console.log(e)
       }
@@ -117,21 +96,12 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
           api.post('/auth/username_exists', { username }),
           api.post('/auth/email_exists', { email })
         ])
-        const response = await api
-          .post(process.env.signUpPath!, {
-            email,
-            username,
-            password
-          })
-          .then((res) => {
-            return res
-          })
-        mutate(
-          {
-            logged: response.status === 200 && response.statusText === 'OK'
-          },
-          { revalidate: true }
-        )
+        await api.post(process.env.signUpPath!, {
+          email,
+          username,
+          password
+        })
+        mutate('AUTH_CHECK')
       } catch (e) {
         console.error(e)
       }

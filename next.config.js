@@ -11,7 +11,10 @@ const nextConfig = {
     authCheckPath: '/auth/current',
     checkEmailPath: '/auth/email_exists',
     checkUsernamePath:'/auth/username_exists',
-    apiBasePath:process.env.NODE_ENV==='production'? 'http://localhost:8000/api/v1/' : '/api'
+    apiBasePath:
+      // process.env.NODE_ENV === 'production' ?
+      'http://localhost:8000/api/v1/'
+      // :'/api'
   },
   i18n: {
     locales:['ru'],

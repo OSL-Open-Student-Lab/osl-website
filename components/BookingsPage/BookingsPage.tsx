@@ -1,24 +1,17 @@
 import { api } from 'packages/api'
 import { Container } from 'react-bootstrap'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig } from 'swr'
 
 import { BookingCard } from './BookingCard'
 
 import styles from './BookingsPage.module.scss'
 
-interface BookingsPageProps {
-  bookings: { id: number; image: string; title: string }[]
+async function bookingsFetcher() {
+  return await api.get('/queue/get_all').then((res) => res)
 }
-
 export function BookingsPage() {
-  async function bookingsFetcher(url: string) {
-    try {
-      return await api.get(url).then((res) => res)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-  const { data, mutate } = useSWR('/queue/get_all', bookingsFetcher)
+  const { data: userBookings } = useSWR('GET_USER_BOOKINGS', bookingsFetcher)
+  const { mutate } = useSWRConfig()
   return (
     <Container>
       <div className={styles.header}>
@@ -28,7 +21,11 @@ export function BookingsPage() {
         </p>
       </div>
       <div className="d-flex flex-wrap gap-5 my-5 ">
-        <BookingCard />
+        {userBookings && userBookings.length > 0 ? (
+          userBookings.map((item) => <BookingCard {...item} key={item.id} />)
+        ) : (
+          <BookingCard />
+        )}
       </div>
     </Container>
   )
