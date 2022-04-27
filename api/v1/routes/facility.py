@@ -32,7 +32,7 @@ async def write_image(name, ext, file, folder):
 async def get_types(request: Request):
     try:
         with Session() as sess:
-            types = sess.query(FacilityType).all()
+            types = sess.query(Facilities).all()
         return JSONResponse(
                 content={'data': [{'id': t.id, 'name': t.name, 'image': t.image_url} for t in types]},
             status_code=200)
