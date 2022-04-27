@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import IntegrityError
 
 from api.v1.routes import apirouter
-from api.v1.db.setup_db import add_roles
+from api.v1.db.setup import add_roles
 from api.v1.config import prefix, TAGS
 
 
