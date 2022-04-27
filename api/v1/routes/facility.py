@@ -1,7 +1,7 @@
 from os import getcwd
 from os.path import abspath
 
-from fastapi import APIRouter, Form, File, UploadFile, BackgroundTasks
+from fastapi import APIRouter, Form, File, UploadFile, BackgroundTasks, Request
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.responses import JSONResponse
 
@@ -29,7 +29,7 @@ async def write_image(name, ext, file, folder):
 
 @router.get('')
 @is_authorized
-async def get_types():
+async def get_types(request: Request):
     try:
         with Session() as sess:
             types = sess.query(FacilityType).all()
@@ -45,7 +45,7 @@ async def get_types():
 
 @router.get('/types/{id}')
 @is_authorized
-async def get_by_type(id: int | None):
+async def get_by_type(request: Request, id: int | None):
     try:
         with Session() as sess:
             if id:
@@ -65,6 +65,7 @@ async def get_by_type(id: int | None):
 @router.post('/types')
 @is_authorized
 async def add_type(
+    request: Request,
     bg_tasks: BackgroundTasks,
     name: str = Form(...),
     file: UploadFile = File(...)):
@@ -97,6 +98,7 @@ async def add_type(
 @router.post('')
 @is_authorized
 async def add_facility(
+            request: Request,
             bg_tasks: BackgroundTasks,
             name: str = Form(...),
             description: str = Form(...),

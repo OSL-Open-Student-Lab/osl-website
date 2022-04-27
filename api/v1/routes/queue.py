@@ -52,7 +52,7 @@ async def get_queues(request: Request):
 
 @router.delete('')
 @is_authorized
-async def delete_booking(id: int):
+async def delete_booking(request: Request, id: int):
     try:
         with Session() as sess:
             book_del = sess.query(FacilityBooking).filter_by(id=id)
@@ -75,7 +75,7 @@ async def delete_booking(id: int):
 
 @router.get('/{id}/{date}')
 @is_authorized
-async def get_specific(id: int, date: str | None):
+async def get_specific(request: Request, id: int, date: str | None):
     try:
         if not date:
             date = datetime.strftime(datetime.now(), '%d-%m-%Y 00:00')

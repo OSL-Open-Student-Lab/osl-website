@@ -1,7 +1,7 @@
 from datetime import timedelta
 from functools import wraps
 
-import aioredis
+# import aioredis
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from passlib.context import CryptContext
