@@ -8,16 +8,18 @@ from sqlalchemy.exc import IntegrityError
 
 from api.v1.routes import apirouter
 from api.v1.db.setup_db import setup_db
-from api.v1.config import prefix
+from api.v1.config import prefix, TAGS
 
-def run_app():
+
+def run():
+
     try:
         os.makedirs('api/v1/static/facilities')
         os.makedirs('api/v1/static/facility_types')
     except FileExistsError as ferr:
-        print(' '.join((str(ferr).split()[2:])))
+        print(f'{prefix}\t ', ' '.join((str(ferr).split()[2:])))
 
-    app = FastAPI()
+    app = FastAPI(openapi_tags=TAGS)
 
     origins = [
         "http://localhost",
@@ -37,9 +39,11 @@ def run_app():
         '/api/v1/static',
         StaticFiles(directory='api/v1/static'),
         name='api/v1/static')
+
     try:
         setup_db()
     except IntegrityError:
         print(prefix+'\t  database already exists')
+
 
     return app

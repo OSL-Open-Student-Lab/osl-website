@@ -9,12 +9,12 @@ if not skey:
 
 db = getenv('PROJECT_DATABASES')
 if not db:
-    print(prefix, 'No database env variable found')
-    print(prefix, 'Creating database ./storage/fastapi_osl')
+    print(prefix, '\t  No database env variable found')
+    print(prefix, '\t  Creating database ./storage/fastapi_osl')
     try:
         mkdir('storage')
     except:
-        print(prefix, 'Database in storage directory already exists')
+        print(prefix, '\t  Database in storage directory already exists')
     db = 'storage'
 
 
@@ -22,3 +22,8 @@ SECRET_KEY = skey
 TOKEN_ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_DAYS = 7
 SQLALCHEMY_DATABASE_URL = f'sqlite:///{db}/fastapi_osl'
+TAGS = [
+    {'name': 'Auth'},
+    {'name': 'Facilities'},
+    {'name': 'Queues'}
+]

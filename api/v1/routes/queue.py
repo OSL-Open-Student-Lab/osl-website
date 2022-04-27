@@ -7,27 +7,23 @@ from fastapi.responses import JSONResponse
 
 from api.v1.db.facilities import FacilityBooking, Facilities
 from api.v1.routes.auth import is_authorized
-from api.v1.request_models.queue import QueueField
+from api.v1.models.requests.queue import QueueField
 from api.v1.token_gen import decode_token
 from api.v1.db import Session
 
+from api.v1.config import prefix
 
-router = APIRouter(prefix='/queues')
+
+router = APIRouter(prefix='/queues', tags=['Queues'])
 
 @router.get('')
 @is_authorized
 async def get_queues(request: Request):
     try:
         token = request.cookies.get('osl-user-session')
-        dec_token = decode_token(token)
-        if dec_token:
-            uid = dec_token.get('uid')
-        else:
-            return JSONResponse(
-                    content={'message': 'invalid cookie'},
-                    status_code=400)
+        uid = decode_token(token).get('uid')
     except Exception as err:
-        print(err)
+        print(prefix+err)
         return JSONResponse()
 
     try:
@@ -116,13 +112,7 @@ async def get_specific(id: int, date: str | None):
 async def add_booking(queue: QueueField, request: Request):
     try:
         token = request.cookies.get('osl-user-session')
-        dec_token = decode_token(token)
-        if dec_token:
-            uid = dec_token.get('uid')
-        else:
-            return JSONResponse(
-                    content={'message': 'invalid cookie'},
-                    status_code=400)
+        uid = decode_token(token).get('uid')
     except Exception as err:
         print(err)
         return JSONResponse(
@@ -148,16 +138,19 @@ async def add_booking(queue: QueueField, request: Request):
             existing_bookings = sess.query(FacilityBooking).\
                 filter_by(facility_id=queue.facility_id).all()
             for el in existing_bookings:
-                fd = datetime.strptime(queue.from_date, '%d-%m-%Y %H:%M')
-                td = datetime.strptime(queue.to_date, '%d-%m-%Y %H:%M')
-                fdx = datetime.strptime(el.from_time, '%d-%m-%Y %H:%M')
-                tdx = datetime.strptime(el.to_time, '%d-%m-%Y %H:%M')
-                valid = valid_time(fd, td, fdx, tdx)
+                from_date = datetime.strptime(queue.from_date, '%d-%m-%Y %H:%M')
+                to_date = datetime.strptime(queue.to_date, '%d-%m-%Y %H:%M')
+                from_date_ex = datetime.strptime(el.from_time, '%d-%m-%Y %H:%M')
+                to_date_ex = datetime.strptime(el.to_time, '%d-%m-%Y %H:%M')
+                valid = valid_time(
+                    from_date,
+                    to_date,
+                    from_date_ex,
+                    to_date_ex)
                 if not valid:
                     return JSONResponse(
                             content={'message': 'your time crosses with another'},
                             status_code=400)
-
             new_booking = FacilityBooking(
                 from_time=queue.from_date,
                 to_time=queue.to_date,

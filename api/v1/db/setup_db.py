@@ -1,7 +1,10 @@
+import aioredis
+
 from . import Base, Session, engine
 from .user import*
 from .articles import*
 from .facilities import*
+
 
 def setup_db():
     Base.metadata.create_all(bind=engine)

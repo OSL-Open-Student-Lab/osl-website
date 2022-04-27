@@ -10,7 +10,8 @@ from api.v1.db.facilities import FacilityType, Facilities
 from api.v1.routes.auth import is_authorized
 
 path = abspath(getcwd())
-router = APIRouter(prefix='/facilities')
+
+router = APIRouter(prefix='/facilities', tags=['Facilities'])
 
 
 async def write_image(name, ext, file, folder):
@@ -26,7 +27,7 @@ async def write_image(name, ext, file, folder):
 
 
 
-@router.get('/facilities')
+@router.get('')
 @is_authorized
 async def get_types():
     try:
@@ -42,7 +43,7 @@ async def get_types():
                     status_code=500)
 
 
-@router.get('/facilities/types/{id}')
+@router.get('/types/{id}')
 @is_authorized
 async def get_by_type(id: int | None):
     try:
@@ -61,7 +62,7 @@ async def get_by_type(id: int | None):
                 status_code=500)
 
 
-@router.post('/facilities/types')
+@router.post('/types')
 @is_authorized
 async def add_type(
     bg_tasks: BackgroundTasks,
@@ -93,7 +94,7 @@ async def add_type(
                 status_code=500)
 
 
-@router.post('/facilities')
+@router.post('')
 @is_authorized
 async def add_facility(
             bg_tasks: BackgroundTasks,

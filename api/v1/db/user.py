@@ -22,9 +22,3 @@ class Role(Base):
     posting_access = Column(Boolean(), default=False)
     admin_access = Column(Boolean(), default=False)
 
-# class Session(Base):
-#     __tablename__ = 'sessions'
-# 
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     key = Column(String(), nullable=False, unique=True)
-#     expire = Column(String(), nullable=False)
