@@ -22,6 +22,7 @@ SECRET_KEY = skey
 TOKEN_ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_DAYS = 7
 SQLALCHEMY_DATABASE_URL = f'sqlite:///{db}/fastapi_osl'
+REDIS_URL = 'redis://localhost:'
 TAGS = [
     {'name': 'Auth'},
     {'name': 'Facilities'},

@@ -186,5 +186,3 @@ def valid_time(from_date, to_date, from_date_ex, to_date_ex):
         return False
     return True
 
-
-
