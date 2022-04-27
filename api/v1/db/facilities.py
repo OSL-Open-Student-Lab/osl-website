@@ -1,3 +1,4 @@
+from enum import unique
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.sql.schema import ForeignKey
 
@@ -21,7 +22,7 @@ class Facilities(Base):
     __tablename__ = 'facilities'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String())
+    name = Column(String(), unique=True)
     description = Column(Text())
     amount = Column(Integer, default=1, nullable=False)
     image_url = Column(String(), unique=True)

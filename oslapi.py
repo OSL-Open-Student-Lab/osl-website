@@ -1,3 +1,4 @@
+from ast import arg
 import os
 
 from fastapi import FastAPI
@@ -7,17 +8,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import IntegrityError
 
 from api.v1.routes import apirouter
-from api.v1.db.setup_db import setup_db
+from api.v1.db.setup_db import add_roles
 from api.v1.config import prefix, TAGS
 
 
 def run():
+    from sys import argv
+    if 'add-admin' in argv:
+        pass
 
     try:
         os.makedirs('api/v1/static/facilities')
         os.makedirs('api/v1/static/facility_types')
     except FileExistsError as ferr:
-        print(f'{prefix}\t ', ' '.join((str(ferr).split()[2:])))
+        print(prefix+' '.join((str(ferr).split()[2:])))
 
     app = FastAPI(openapi_tags=TAGS)
 
@@ -41,9 +45,9 @@ def run():
         name='api/v1/static')
 
     try:
-        setup_db()
+        add_roles()
     except IntegrityError:
-        print(prefix+'\t  database already exists')
+        print(prefix+'database already exists')
 
 
     return app

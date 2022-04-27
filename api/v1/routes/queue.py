@@ -73,7 +73,7 @@ async def delete_booking(request: Request, id: int):
             status_code=500)
 
 
-@router.get('/{id}/{date}')
+@router.get('/{id}')
 @is_authorized
 async def get_specific(request: Request, id: int, date: str | None):
     try:

@@ -28,10 +28,13 @@ async def write_image(name, ext, file, folder):
 
 @router.get('')
 @is_authorized
-async def get_types(request: Request):
+async def get_types(request: Request, facility_id: int | None):
     try:
         with Session() as sess:
-            types = sess.query(Facilities).all()
+            if not facility_id:
+                types = sess.query(Facilities).all()
+            else:
+                types = sess.query(Facilities).filter_by(id=facility_id).all()
         return JSONResponse(
                 content={'data': [{
                     'id': t.id,

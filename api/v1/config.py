@@ -1,28 +1,26 @@
 from os import getenv, mkdir
 from random import getrandbits
 
-prefix = '\033[7;32mINFO:\033[0;0m' 
+prefix = '\033[7;32mINFO:\033[0;0m\t  '
 
 skey = getenv('FASTOSL_SECRETKEY')
 if not skey:
     skey = hex(getrandbits(512))
 
-db = getenv('PROJECT_DATABASES')
+db = None #getenv('PROJECT_DATABASES')
 if not db:
-    print(prefix, '\t  No database env variable found')
-    print(prefix, '\t  Creating database ./storage/fastapi_osl')
     try:
         mkdir('storage')
     except:
-        print(prefix, '\t  Database in storage directory already exists')
-    db = 'storage'
+        pass
+    db = 'sqlite:///storage/fastapi_osl.db'
 
 
 SECRET_KEY = skey
 TOKEN_ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_DAYS = 7
-SQLALCHEMY_DATABASE_URL = f'sqlite:///{db}/fastapi_osl'
-REDIS_URL = 'redis://localhost:'
+SQLALCHEMY_DATABASE_URL = db
+#REDIS_URL = 'redis://localhost:6379'
 TAGS = [
     {'name': 'Auth'},
     {'name': 'Facilities'},

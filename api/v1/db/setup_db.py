@@ -1,4 +1,4 @@
-import aioredis
+from getpass import getpass
 
 from . import Base, Session, engine
 from .user import*
@@ -6,7 +6,8 @@ from .articles import*
 from .facilities import*
 
 
-def setup_db():
+
+def add_roles():
     Base.metadata.create_all(bind=engine)
 
     author_role = Role(
