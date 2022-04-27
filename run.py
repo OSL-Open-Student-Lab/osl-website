@@ -1,4 +1,3 @@
-from ast import arg
 import os
 
 from fastapi import FastAPI
@@ -12,7 +11,7 @@ from api.v1.db.setup_db import add_roles
 from api.v1.config import prefix, TAGS
 
 
-def run():
+def app():
     from sys import argv
     if 'add-admin' in argv:
         pass
