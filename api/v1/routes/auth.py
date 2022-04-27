@@ -75,8 +75,9 @@ def is_authorized(func):
 @router.post('/registration')
 async def reg_usr(request: Request, reg: RegisterUserField, bg_tasks: BackgroundTasks):
     try:
-        redis = await aioredis.from_url('redis://localhost:6379')
-        data = await redis.get(f'user-{reg.username}')
+        #redis = await aioredis.from_url('redis://localhost:6379')
+        #data = await redis.get(f'user-{reg.username}')
+        data = None
         if data:
             return JSONResponse(
                     content={'message': 'user with with name already exists'},
@@ -122,8 +123,8 @@ async def reg_usr(request: Request, reg: RegisterUserField, bg_tasks: Background
             uid = u.id
             uname = u.name
 
-        redis = await aioredis.from_url('redis://localhost:6379')
-        await redis.set(f'user-{reg.username}', f'{reg.email}::{uid}::{pwd_context.hash(reg.password1)}') # ???????????????
+        #redis = await aioredis.from_url('redis://localhost:6379')
+        #await redis.set(f'user-{reg.username}', f'{reg.email}::{uid}::{pwd_context.hash(reg.password1)}') # ???????????????
         
         content = {'message': 'user created successfully'}
         token = create_access_token({'user': uname, 'uid': uid}, timedelta(days=7))
@@ -147,9 +148,9 @@ async def reg_usr(request: Request, reg: RegisterUserField, bg_tasks: Background
 @router.post('/login')
 async def login(request: Request, log: LoginUserField, bg_tasks: BackgroundTasks):
     try:
-        redis = await aioredis.from_url('redis://localhost:6379')
-        data = await redis.get(f'user-{log.username}')
-
+        #redis = await aioredis.from_url('redis://localhost:6379')
+        #data = await redis.get(f'user-{log.username}')
+        data = None
         if data:
             _, uid, password = data.decode().split('::')
         else:
