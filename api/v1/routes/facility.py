@@ -34,7 +34,7 @@ async def get_types(request: Request):
         with Session() as sess:
             types = sess.query(Facilities).all()
         return JSONResponse(
-                content={'data': [{'id': t.id, 'name': t.name, 'image': t.image_url} for t in types]},
+                content={'data': [{'id': t.id, 'description': t.description, 'amount': t.amount,'name': t.name, 'image': t.image_url, 'type': t.facility_type_id} for t in types]},
             status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
@@ -53,7 +53,7 @@ async def get_by_type(request: Request, id: int):
             else:
                 types = sess.query(Facilities).all()
         return JSONResponse(
-                content={'data': [{'id': t.id, 'name': t.name, 'image': t.image_url} for t in types]},
+            content={'data': [{'id': t.id, 'description': t.description, 'amount': t.amount,'name': t.name, 'image': t.image_url, 'type': t.facility_type_id} for t in types]},
             status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
@@ -68,7 +68,7 @@ async def get_by_type(request: Request):
         with Session() as sess:
             types = sess.query(FacilityType).all()
         return JSONResponse(
-                content={'data': [{'id': t.id, 'description': t.description, 'amount': t.amount,'name': t.name, 'image': t.image_url, 'type': t.facility_type} for t in types]},
+                content={'data': [{'id': t.id, 'name': t.name, 'image': t.image_url} for t in types]},
             status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
