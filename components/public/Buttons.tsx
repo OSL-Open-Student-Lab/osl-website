@@ -5,7 +5,7 @@ interface IconButtonProps {
   className?: string
   img: string
   text?: string
-  type?: 'primary' | 'secondary'
+  type?: 'primary' | 'secondary' | 'disable'
   size: 'medium' | 'small'
   onClick?: () => void
 }

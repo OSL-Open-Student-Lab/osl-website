@@ -17,7 +17,7 @@ interface AuthContextValue {
     password: string,
     rememberme: boolean
   ) => Promise<void>
-  signUp: (email: string, username: string, password: string) => Promise<void>
+  signUp: (email: string, username: string, password1: string, password2: string) => Promise<void>
   authData?: AuthData
 }
 
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
   const router = useRouter()
   async function authChecker(): Promise<AuthData> {
     try {
-      const response = await api.get(process.env.authCheckPath!)
+      const response = await api.get('/auth/current')
       return {
         logged: response.status === 200 && response.statusText === 'OK',
         username: response.data.username
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
   const contextValue = {
     signOut: async function signOut() {
       try {
-        await api.get(process.env.signOutPath!)
+        await api.get('/auth/logout')
         mutate('AUTH_CHECK', {}, { revalidate: true })
       } catch (e) {
         console.error(e)
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
       rememberme: boolean
     ) {
       try {
-        await api.post(process.env.signInPath!, {
+        await api.post('/auth/login', {
           username,
           password,
           rememberme
@@ -89,17 +89,19 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
     signUp: async function signUp(
       email: string,
       username: string,
-      password: string
+      password1: string,
+      password2:string
     ) {
       try {
-        await Promise.all([
-          api.post('/auth/username_exists', { username }),
-          api.post('/auth/email_exists', { email })
-        ])
-        await api.post(process.env.signUpPath!, {
+        // await Promise.all([
+        //   api.post('/auth/username_exists', { username }),
+        //   api.post('/auth/email_exists', { email })
+        // ])
+        await api.post('/auth/registration', {
           email,
           username,
-          password
+          password1,
+          password2
         })
         mutate('AUTH_CHECK')
       } catch (e) {

@@ -7,7 +7,7 @@ import { BookingCard } from './BookingCard'
 import styles from './BookingsPage.module.scss'
 
 async function bookingsFetcher() {
-  return await api.get('/queue/get_all').then((res) => res)
+  return await api.get('/queues').then((res) => res)
 }
 export function BookingsPage() {
   const { data: userBookings } = useSWR('GET_USER_BOOKINGS', bookingsFetcher)

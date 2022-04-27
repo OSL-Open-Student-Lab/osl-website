@@ -1,7 +1,11 @@
+import { FacilityData } from 'components/FacilitiesPage/FacilitiesPage'
+import Link from 'next/link'
 
+interface OrderPageEquipmenProps{
+  // data:FacilityData
+}
 
-const orderPageEquipment = () => {
-  
+const orderPageEquipment = ({}:OrderPageEquipmenProps) => {
   return(
     <div
       className="item equipment"
@@ -9,7 +13,7 @@ const orderPageEquipment = () => {
         <div
         className="equipment__image"
         >
-          <img src="#" alt="#"/>
+          <img width={96} height={96} alt=""/>
         </div>
         <div 
         className="equipment__info-container"
@@ -22,9 +26,12 @@ const orderPageEquipment = () => {
           className="equipment__name">
              Оборудование лаборатории   
           </p>
-          <a href="#" className="equipment__choose-link">
+          <Link passHref href="/facilities">
+          <a  className="equipment__choose-link">
           Выбрать
-        </a>   
+        </a>
+          </Link>
+             
       </div>          
         
     </div>   

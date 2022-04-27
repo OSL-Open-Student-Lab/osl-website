@@ -45,7 +45,7 @@ export function SignUpForm() {
     resolver: yupResolver(SignUpSchema)
   })
   async function signupFetcher({ email, password, username }: SignUpData) {
-    return signUp(email, username, password)
+    return signUp(email, username, password, password)
   }
   return (
     <Container>

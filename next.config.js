@@ -3,6 +3,7 @@ const withPWA=require('next-pwa')
 const runtimeCaching=require('next-pwa/cache')
 
 const nextConfig = {
+  domains: ['localhost'],
   reactStrictMode: true,
   env: {
     signUpPath:'/auth/register',

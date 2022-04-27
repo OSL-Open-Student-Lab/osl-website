@@ -13,7 +13,11 @@ export default function HomePage() {
         <title>OSL: Домашняя</title>
       </Head>
       <BasicLayout>
-        <OrderPage/>
+        {/* <OrderPage/> */}
+        <MainSection />
+        <FacilitiesSection />
+        <OurProjects />
+
       </BasicLayout>
     </>
   )

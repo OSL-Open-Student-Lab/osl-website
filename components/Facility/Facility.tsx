@@ -38,7 +38,7 @@ const Facility: FC<FacilityProps> = ({
             {status}
           </div>
         ) : null}
-        <Image src={image} className="facility__image" />
+        <Image src={image} className="facility__image" layout='fill'/>
       </div>
       <div className="facility__info-container">
         <h4 className="facility__title">{title}</h4>
@@ -61,7 +61,7 @@ const Facility: FC<FacilityProps> = ({
               text="забронировать"
               type="primary"
               size={'small'}
-              onClick={() => router.push('/facilities/add_booking')}
+              onClick={() => router.push(`/facilities/add_booking/${id}`)}
             />
           </div>
         )}
