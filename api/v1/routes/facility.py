@@ -45,7 +45,7 @@ async def get_types(request: Request):
 
 @router.get('/types/{id}')
 @is_authorized
-async def get_by_type(request: Request, id: int | None):
+async def get_by_type(request: Request, id: int):
     try:
         with Session() as sess:
             if id:
@@ -60,6 +60,21 @@ async def get_by_type(request: Request, id: int | None):
         return JSONResponse(
                 content={'message': 'unable to fetch data from the database'},
                 status_code=500)
+
+@router.get('/types')
+@is_authorized
+async def get_by_type(request: Request):
+    try:
+        with Session() as sess:
+            types = sess.query(FacilityType).all()
+        return JSONResponse(
+                content={'data': [{'id': t.id, 'description': t.description, 'amount': t.amount,'name': t.name, 'image': t.image_url, 'type': t.facility_type} for t in types]},
+            status_code=200)
+    except SQLAlchemyError as serr:
+        print(serr)
+        return JSONResponse(
+                    content={'message': 'unable to fetch data from the database'},
+                    status_code=500)
 
 
 @router.post('/types')
