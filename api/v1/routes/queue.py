@@ -84,7 +84,7 @@ async def get_specific(request: Request, id: int, date: str | None = None):
         with Session() as sess:
             facility = sess.query(Facilities).filter_by(id=id).first()
             if facility:
-                image_url = facility[0].image_url 
+                image_url = facility.image_url 
             else:
                 return JSONResponse(
                     content={'message': 'invalid facility id'},
