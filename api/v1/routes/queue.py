@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy.exc import SQLAlchemyError
+from api.v1.db import facilities
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -41,7 +42,7 @@ async def get_queues(request: Request):
                         'facility_name': facility.name,
                         'from_date': book.from_time,
                         'to_date': book.to_time,
-                        'user_id': book.user_id})
+                        'image': facility.image_url})
             return JSONResponse(content={'data': result}, status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
@@ -50,7 +51,7 @@ async def get_queues(request: Request):
                 status_code=500)
 
 
-@router.delete('')
+@router.delete('/{id}')
 @is_authorized
 async def delete_booking(request: Request, id: int):
     try:
