@@ -43,6 +43,7 @@ async def get_queues(request: Request):
                         'from_date': book.from_time,
                         'to_date': book.to_time,
                         'image': facility.image_url})
+            result.sort(key=lambda x: datetime.strptime(x, '%d-%m-%Y %H:%M'))
             return JSONResponse(content={'data': result}, status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
