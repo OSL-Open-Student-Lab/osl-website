@@ -3,8 +3,6 @@ import { BasicLayout } from 'components/BaseLayout/BaseLayout'
 import MainSection from 'components/MainSection'
 import FacilitiesSection from 'components/FacilitiesSection/FacilitiesSection'
 import OurProjects from 'components/OurProjects'
-import 'react-multi-carousel/lib/styles.css'
-import OrderPage from 'components/OrderPage'
 
 export default function HomePage() {
   return (
@@ -13,11 +11,9 @@ export default function HomePage() {
         <title>OSL: Домашняя</title>
       </Head>
       <BasicLayout>
-        {/* <OrderPage/> */}
         <MainSection />
         <FacilitiesSection />
         <OurProjects />
-
       </BasicLayout>
     </>
   )

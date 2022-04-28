@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 
 export default function Page() {
   const router = useRouter()
-  const {id} = router.query
-  return <BasicLayout>
-    {id}
-    <OrderPage id={id}/>
-  </BasicLayout>
+  const { id } = router.query
+  return (
+    <BasicLayout>
+      <OrderPage id={id} />
+    </BasicLayout>
+  )
 }

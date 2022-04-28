@@ -27,9 +27,6 @@ const Facility: FC<FacilityProps> = ({
       ? 'facility__status_popular'
       : 'facility__status_new'
     : false
-
-  function addBooking() {}
-  function submitChoose() {}
   return (
     <div className="facility">
       <div className="facility__img-container">
@@ -38,7 +35,7 @@ const Facility: FC<FacilityProps> = ({
             {status}
           </div>
         ) : null}
-        <Image src={image} className="facility__image" layout='fill'/>
+        <img src={image} className="facility__image" />
       </div>
       <div className="facility__info-container">
         <h4 className="facility__title">{title}</h4>

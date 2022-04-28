@@ -3,11 +3,11 @@ import {
   NoBookingsIcon,
   CalendarWhite
 } from 'components/icons'
-import { Button, Modal } from 'react-bootstrap'
+import { Button, Modal, Image } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import { useState } from 'react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import dayjs from 'dayjs'
 
 import 'packages/dayjsConfig'
@@ -51,7 +51,7 @@ export function BookingCard({
   }
   async function cancelBook() {
     api
-      .delete('/queue/delete_booking', {}, {})
+      .delete('/queues', { params: { id: id } })
       .then(() => setModalVisible(false))
     onCancel && onCancel()
   }
@@ -67,7 +67,7 @@ export function BookingCard({
               className={styles.card_header_info_image}
               width={72}
               height={72}
-              {...{ src: image }}
+              src={`http://localhost:8000/api/v1/static${image}`}
             />
           ) : (
             <NoBookingsIcon />

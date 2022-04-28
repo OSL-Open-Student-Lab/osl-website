@@ -17,7 +17,12 @@ interface AuthContextValue {
     password: string,
     rememberme: boolean
   ) => Promise<void>
-  signUp: (email: string, username: string, password1: string, password2: string) => Promise<void>
+  signUp: (
+    email: string,
+    username: string,
+    password1: string,
+    password2: string
+  ) => Promise<void>
   authData?: AuthData
 }
 
@@ -49,17 +54,38 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
       }
     }
   }
-
-  const { data: authData, error } = useSWR('AUTH_CHECK', authChecker, {})
+  const { data: authData } = useSWR('AUTH_CHECK', authChecker, {})
   const { mutate } = useSWRConfig()
-
   useEffect(() => {
-    if (router.pathname.match(/\/auth\//)) {
-      if (authData?.logged && !error) {
-        router.push('/')
-      }
+    const allowedPaths = [/\/auth.+?/, /\/facilities$/, /\/$/]
+    const shouldRedirect = !allowedPaths.reduce(
+      (acc: boolean, item: RegExp): boolean => {
+        if (acc) {
+          return acc
+        }
+        return item.test(router.pathname)
+      },
+      false
+    )
+    if (!authData?.logged && shouldRedirect) {
+      router.push('/')
     }
-  }, [authData, error, router.pathname])
+  }, [authData, router.pathname])
+  useEffect(() => {
+    const allowedPaths = [/\/auth.+?/]
+    const shouldRedirect = allowedPaths.reduce(
+      (acc: boolean, item: RegExp): boolean => {
+        if (acc) {
+          return acc
+        }
+        return item.test(router.pathname)
+      },
+      false
+    )
+    if (authData?.logged && shouldRedirect) {
+      router.push('/')
+    }
+  }, [authData, router.pathname])
 
   const contextValue = {
     signOut: async function signOut() {
@@ -81,7 +107,7 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
           password,
           rememberme
         })
-        mutate('AUTH_CHECK')
+        mutate('AUTH_CHECK').then(() => router.push('/'))
       } catch (e) {
         console.log(e)
       }
@@ -90,13 +116,9 @@ export function AuthProvider({ children }: BaseProps): JSX.Element {
       email: string,
       username: string,
       password1: string,
-      password2:string
+      password2: string
     ) {
       try {
-        // await Promise.all([
-        //   api.post('/auth/username_exists', { username }),
-        //   api.post('/auth/email_exists', { email })
-        // ])
         await api.post('/auth/registration', {
           email,
           username,

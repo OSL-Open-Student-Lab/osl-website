@@ -3,9 +3,10 @@
 /* eslint-disable react/function-component-definition */
 import React, { FC } from 'react'
 import { Container, Image } from 'react-bootstrap'
-import { IconButton } from 'components/public/Buttons'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+
+import { IconButton } from 'components/public/Buttons'
 import { useAuth } from 'packages/auth'
 
 export const Header: FC = () => {

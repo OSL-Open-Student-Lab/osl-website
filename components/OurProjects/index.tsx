@@ -19,8 +19,8 @@ const OurProjects = () => {
                   Система устранения нефтеразливов
                 </p>
                 <p className="project__description">
-                  Таким образом, перспективное планирование играет определяющее
-                  значение для вывода текущих активов.
+                  С идеей нейтрализации нефтеразливов в 2020 году мы выиграли
+                  грант по программе «УМНИК 2020»...
                 </p>
               </div>
               <div className="project__image-container">
@@ -31,13 +31,11 @@ const OurProjects = () => {
           <Col md={6}>
             <div className="project">
               <div className="project__info-container">
-                <h4 className="project__number">#1</h4>
-                <p className="project__title">
-                  Система устранения нефтеразливов
-                </p>
+                <h4 className="project__number">#2</h4>
+                <p className="project__title">Сайт лаборатории.</p>
                 <p className="project__description">
-                  Таким образом, перспективное планирование играет определяющее
-                  значение для вывода текущих активов.
+                  С помощью сайта мы хотим сделать нашу жизнь проще, удобней а
+                  ваши глаза радовать...
                 </p>
               </div>
               <div className="project__image-container">
@@ -48,13 +46,13 @@ const OurProjects = () => {
           <Col md={6}>
             <div className="project">
               <div className="project__info-container">
-                <h4 className="project__number">#1</h4>
+                <h4 className="project__number">#3</h4>
                 <p className="project__title">
-                  Система устранения нефтеразливов
+                  Система пропуска в лабораторию.
                 </p>
                 <p className="project__description">
-                  Таким образом, перспективное планирование играет определяющее
-                  значение для вывода текущих активов.
+                  На данный момент это весьма острая проблема т.к людей,
+                  способных открыть лабораторию всего-то пару человек и...
                 </p>
               </div>
               <div className="project__image-container">
