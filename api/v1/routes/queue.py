@@ -81,7 +81,9 @@ async def get_specific(request: Request, id: int, date: str | None = None):
             date = datetime.strftime(datetime.now(), '%d-%m-%Y 00:00')
         with Session() as sess:
             facility = sess.query(Facilities).filter_by(id=id).first()
-            if not facility:
+            if facility:
+                image_url = facility[0].image_url 
+            else:
                 return JSONResponse(
                     content={'message': 'invalid facility id'},
                     status_code=400)
@@ -98,7 +100,7 @@ async def get_specific(request: Request, id: int, date: str | None = None):
                         'facility_id': book.facility_id,
                         'from_date': book.from_time,
                         'to_date': book.to_time,
-                        'user_id': book.user_id})
+                        'image': image_url})
                 return JSONResponse(content={'data': result}, status_code=200)
     except SQLAlchemyError as serr:
         print(serr)
