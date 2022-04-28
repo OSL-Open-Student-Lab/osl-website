@@ -92,7 +92,7 @@ async def get_specific(request: Request, id: int, date: str | None = None):
                 from_time = datetime.strptime(
                         book.from_time,
                         "%d-%m-%Y %H:%M")
-                if from_time > datetime.strptime(f'{date} 00:00', "%d-%m-%Y %H:%M"):
+                if from_time > datetime.strptime(f'{date}', "%d-%m-%Y %H:%M"):
                     result.append({
                         'booking_id': book.id,
                         'facility_id': book.facility_id,
