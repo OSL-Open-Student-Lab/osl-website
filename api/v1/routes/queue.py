@@ -75,7 +75,7 @@ async def delete_booking(request: Request, id: int):
 
 @router.get('/{id}')
 @is_authorized
-async def get_specific(request: Request, id: int, date: str | None):
+async def get_specific(request: Request, id: int, date: str | None = None):
     try:
         if not date:
             date = datetime.strftime(datetime.now(), '%d-%m-%Y 00:00')
