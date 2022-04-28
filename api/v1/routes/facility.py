@@ -27,7 +27,6 @@ async def write_image(name, ext, file, folder):
 
 
 @router.get('')
-@is_authorized
 async def get_types(request: Request, facility_id: int | None = None):
     try:
         with Session() as sess:
@@ -76,7 +75,6 @@ async def get_by_type(request: Request, id: int):
                 status_code=500)
 
 @router.get('/types')
-@is_authorized
 async def get_by_type(request: Request):
     try:
         with Session() as sess:
@@ -97,7 +95,8 @@ async def add_type(
     request: Request,
     bg_tasks: BackgroundTasks,
     name: str = Form(...),
-    file: UploadFile = File(...)):
+    file: UploadFile = File(...)
+):
     try:
         with Session() as sess:
             exists = sess.query(FacilityType).filter_by(name=name).all()
@@ -127,12 +126,13 @@ async def add_type(
 @router.post('')
 @is_authorized
 async def add_facility(
-            request: Request,
-            bg_tasks: BackgroundTasks,
-            name: str = Form(...),
-            description: str = Form(...),
-            facility_type_id: int = Form(...),
-            file: UploadFile = File(...)):
+    request: Request,
+    bg_tasks: BackgroundTasks,
+    name: str = Form(...),
+    description: str = Form(...),
+    facility_type_id: int = Form(...),
+    file: UploadFile = File(...)
+):
     try:
         ext = file.filename.split('.')[-1]
         new_facility = Facilities(
