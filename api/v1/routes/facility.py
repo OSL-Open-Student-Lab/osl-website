@@ -28,7 +28,7 @@ async def write_image(name, ext, file, folder):
 
 @router.get('')
 @is_authorized
-async def get_types(request: Request, facility_id: int | None):
+async def get_types(request: Request, facility_id: int | None = None):
     try:
         with Session() as sess:
             if not facility_id:
