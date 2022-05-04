@@ -39,6 +39,36 @@ def write_log(message):
         log.write(f'{message}\n')
 
 
+def is_author(func, role_id):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            request = kwargs.get('request')
+            token = request.cookies.get('osl-user-session')
+            user_id = decode_token(token).get('uid')
+            if not user_id:
+                return JSONResponse(
+                        content={'message': 'wrong cookie'},
+                        status_code=403)
+            with Session() as sess:
+                role = sess.query(User).filter_by(id=user_id).first().role
+            if role != role_id:
+                return JSONResponse(
+                        content={'message': 'user is not author'},
+                        status_code=403)
+
+        except SQLAlchemyError as serr:
+            print(serr)
+            return JSONResponse(
+                    content={'message': 'unable to fetch data from the database'},
+                    status_code=500)
+        except Exception as err:
+            print(err, type(err))
+            return JSONResponse(
+                    content={'message': 'unable to check user'},
+                    status_code=500)
+
+
 def is_authorized(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):

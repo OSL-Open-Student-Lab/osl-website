@@ -42,6 +42,7 @@ def app():
         '/api/v1/static',
         StaticFiles(directory='api/v1/static'),
         name='api/v1/static')
+    
 
     try:
         add_roles()

@@ -24,5 +24,6 @@ SQLALCHEMY_DATABASE_URL = db
 TAGS = [
     {'name': 'Auth'},
     {'name': 'Facilities'},
-    {'name': 'Queues'}
+    {'name': 'Queues'},
+    {'name': 'Articles'}
 ]
