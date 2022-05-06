@@ -42,11 +42,9 @@ def is_author(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
-            role_id = 1
             request = kwargs.get('request')
             token = request.cookies.get('osl-user-session')
             user_id = decode_token(token).get('uid')
-            print(user_id, role_id, token)
             if not user_id:
                 return JSONResponse(
                         content={'message': 'wrong cookie'},
@@ -54,7 +52,7 @@ def is_author(func):
             with Session() as sess:
                 role = sess.query(User).filter_by(id=user_id).first().role
                 print(role)
-            if role != role_id:
+            if role != 1 and role != 3:
                 return JSONResponse(
                         content={'message': 'user is not author'},
                         status_code=403)

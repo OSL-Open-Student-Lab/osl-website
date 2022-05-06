@@ -23,3 +23,4 @@ class ArticleCard(Base):
             'User',
             secondary=user_likes_table,
             back_populates='likes')
+

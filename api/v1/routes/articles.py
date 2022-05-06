@@ -12,11 +12,10 @@ from api.v1.routes.auth import is_authorized, is_author
 from api.v1.token_gen import decode_token
 
 
-router = APIRouter(prefix='/articles') 
+router = APIRouter(prefix='/articles', tags=['Articles'])
 
 
 @router.get('')
-@is_authorized
 async def get_all_articles(request: Request):
     try:
         with Session() as sess:
@@ -25,7 +24,6 @@ async def get_all_articles(request: Request):
         all_articles = [{
             'id': a.id,
             'header': a.header,
-            'text': a.text,
             'likes': a.likes_number,
             'saves': a.saves_number,
             'author': a.author}
@@ -78,7 +76,6 @@ async def get_saved_articles(request: Request):
 
 
 @router.get('/{id}')
-@is_authorized
 async def get_article(request: Request, id: int):
     try:
         with Session() as sess:
@@ -90,8 +87,7 @@ async def get_article(request: Request, id: int):
         else:
             data = {
                 'header': article.header,
-                'title': article.title,
-                'data': article.data,
+                'text': article.text,
                 'likes': article.likes_number,
                 'saves': article.saves_number,
                 'author': article.author}
@@ -144,7 +140,7 @@ async def create_article(request: Request, article: ArticleField):
                 status_code=500)
 
 
-@router.get('/{id}/saves')
+@router.get('/{id}/save')
 @is_authorized
 async def update_saves(request: Request, id: int):
     try:
@@ -179,7 +175,7 @@ async def update_saves(request: Request, id: int):
                 status_code=500)
 
 
-@router.get('/{id}/likes')
+@router.get('/{id}/like')
 @is_authorized
 async def update_likes(request: Request, id: int):
     try:
