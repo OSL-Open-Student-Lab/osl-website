@@ -1,8 +1,6 @@
 from datetime import timedelta
 from functools import wraps
 
-import aioredis
-
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from passlib.context import CryptContext
 
@@ -39,19 +37,23 @@ def write_log(message):
         log.write(f'{message}\n')
 
 
-def is_author(func, role_id):
+def is_author(func):
+    print(func)
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
+            role_id = 1
             request = kwargs.get('request')
             token = request.cookies.get('osl-user-session')
             user_id = decode_token(token).get('uid')
+            print(user_id, role_id, token)
             if not user_id:
                 return JSONResponse(
                         content={'message': 'wrong cookie'},
                         status_code=403)
             with Session() as sess:
                 role = sess.query(User).filter_by(id=user_id).first().role
+                print(role)
             if role != role_id:
                 return JSONResponse(
                         content={'message': 'user is not author'},
@@ -67,7 +69,8 @@ def is_author(func, role_id):
             return JSONResponse(
                     content={'message': 'unable to check user'},
                     status_code=500)
-
+        return await func(*args, **kwargs)
+    return wrapper
 
 def is_authorized(func):
     @wraps(func)
@@ -81,7 +84,7 @@ def is_authorized(func):
             else:
                 return JSONResponse(
                         content={'message': 'no username'},
-                        status_code=400)
+                        status_code=403)
             with Session() as sess:
                 user = sess.query(User).filter_by(name=username).all()
             if not user:

@@ -1,9 +1,12 @@
 from pydantic import BaseModel, validator
 
-class Article(BaseModel):
+class ArticleField(BaseModel):
+    text: str
     header: str
-    title: str
-    data: str
-    likes: int
-    saves: int
-    author: str
+
+    @validator('header')
+    def validate_header(cls, header):
+        if len(header) > 250:
+            raise ValueError('header is too long')
+        return header
+
