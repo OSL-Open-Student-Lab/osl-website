@@ -3,12 +3,12 @@ requires Python3.10^
 
 ## Run api:
 ```zsh
-$ git clone https://github.com/timaracov/osl-fast
+$ git clone https://github.com/OSL-Open-Student-Lab/osl-website
 $ cd osl-fast
 $ python3 -m venv env
 $ . env/bin/activate
 $ pip install -r req.txt
-$ uvicorn run:run_app --debug --workers 12
+$ uvicorn run:app --debug --workers 4
 ```
 <!-- 
 ## Run tests:
@@ -17,9 +17,9 @@ $ pip install -r req-dev.txt
 $ pytest
 ``` -->
 
-To look through docs go to the http://localhost:8000/docs or http://localhost:8000/redoc
+You can find OpenAPI generated docs at http://localhost:8000/docs or http://localhost:8000/redoc
 
-All static files will be accessed from http://localhost:8000/api/v1/static
+All static files can be accessed at http://localhost:8000/api/v1/static
 
 ---
 
